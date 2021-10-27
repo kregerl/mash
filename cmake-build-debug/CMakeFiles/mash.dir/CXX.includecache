@@ -1,0 +1,42 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/mnt/c/Users/kregerl/CLionProjects/mash/src/Operations.cpp
+Operations.h
+/mnt/c/Users/kregerl/CLionProjects/mash/src/Operations.h
+cmath
+-
+
+/mnt/c/Users/kregerl/CLionProjects/mash/src/Operations.h
+string
+-
+iostream
+-
+stack
+-
+functional
+-
+unordered_map
+-
+
+/mnt/c/Users/kregerl/CLionProjects/mash/src/main.cpp
+iostream
+-
+stack
+-
+cmath
+-
+cassert
+-
+main.h
+/mnt/c/Users/kregerl/CLionProjects/mash/src/main.h
+
+/mnt/c/Users/kregerl/CLionProjects/mash/src/main.h
+Operations.h
+/mnt/c/Users/kregerl/CLionProjects/mash/src/Operations.h
+

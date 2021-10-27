@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/mash.dir/src/main.cpp.o CMakeFiles/mash.dir/src/Operations.cpp.o  -o mash 
