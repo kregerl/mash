@@ -5,10 +5,11 @@
 #include "main.h"
 
 //#define DEBUG
-static bool steps = true;
+std::unordered_map<std::string, double> global_variables;
+std::unordered_map<std::string, Function> functions;
 
 int main() {
-    tests();
+//    tests();
     std::string command;
     while (command != "exit") {
         std::cout << "Mash > ";
@@ -16,16 +17,81 @@ int main() {
         if (command == "exit") {
             break;
         }
-//        std::string assignment = command.substr(0, command.find("="));
-//        std::string exp = command.substr(command.find("=") + 1);
-//        std::cout << exp << std::endl;
-//        std::cout << assignment << std::endl;
-        std::cout << evaluate(command) << std::endl;
-//        printf(OutputFormats[static_cast<int>(res.type)].c_str(), res);
+        // Split the command by equals sign and assign a variable the value on the other side, otherwise just evaluate.
+        int eqPos = static_cast<int>(command.find('='));
+        if (eqPos > 0) {
+            std::string var;
+            for (int i = 0; i < eqPos; i++) {
+                if (command[i] == ' ') {
+                    continue;
+                } else if (std::isalpha(command[i]) && constants.find(std::string(1, command[i])) == constants.end()) {
+                    var.push_back(command[i]);
+                } else if (command[i] == '(') {
+                    // If function was already defined, remove it to be overwritten.
+                    if (functions.find(var) != functions.end()) {
+                        functions.erase(var);
+                    }
+                    functions[var].name = var;
+                    std::cout << "Define function with name: " << var << std::endl;
+                    while (i < eqPos && command[i] != ')') {
+                        if (command[i] == ' ') {
+                            i++;
+                            continue;
+                        } else if (std::isalpha(command[i])) {
+                            functions[var].params.emplace_back(std::string(1, command[i++]));
+                        } else {
+                            i++;
+                        }
+                    }
+                    std::reverse(functions.at(var).params.begin(), functions.at(var).params.end());
+                    for (auto &param: functions.at(var).params) {
+                        std::string expression = command.substr(eqPos + 1);
+                        if (expression.find(param) == std::string::npos) {
+                            std::cout << "Function must use every parameter at least once!" << std::endl;
+                            exit(1);
+                        }
+                    }
+                    functions.at(var).expression = command.substr(eqPos + 1, command.length());
+                    std::cout << "Expression: " << functions.at(var).expression << std::endl;
+                } else {
+                    std::cout << "Cannot have a variable named the same as a constant!" << std::endl;
+                    exit(1);
+                }
+            }
+
+            std::string functionSignature = command.substr(0, eqPos);
+            if (operations.find(var) != operations.end()) {
+                std::cout << "Cannot have a variable named the same as an operator!" << std::endl;
+                exit(1);
+            } else if (functionSignature.find('(') == std::string::npos ||
+                       functionSignature.find(')') == std::string::npos) {
+                // No-op, just to prevent functions from being read as variables.
+                std::string expression = command.substr(eqPos + 1);
+                global_variables[var] = evaluate(expression);
+            }
+        } else if (global_variables.find(command) != global_variables.end()) {
+            // If a command is a global variable.
+            printf("%s = %.3f\n", command.c_str(), global_variables.at(command));
+        } else if (functions.find(command) != functions.end()) {
+            printf("%s = %s\n", functions.at(command).name.c_str(), functions.at(command).expression.c_str());
+        } else {
+            // Otherwise just evaluate expression.
+            printf("Result: %.3f\n", evaluate(command));
+        }
     }
 
     return 0;
 }
+
+Op functionToOp(const Function &function) {
+    Op op;
+    op.token = function.name;
+    op.precedence = 4;
+    op.num_params = static_cast<int>(function.params.size());
+    op.func = nullptr;
+    return op;
+}
+
 
 void tests() {
     assert(("`123 + 10` was evaluated incorrectly", evaluate("123 + 10") == 133));
@@ -42,13 +108,23 @@ void tests() {
     assert(("`bor(2, 3) + 1` was evaluated incorrectly", evaluate("bor(2, 3) + 1") == 4));
     assert(("`2 & 3 + 1` was evaluated incorrectly", evaluate("2 & 3 + 1") == 0));
     assert(("`band(2, 3) + 1` was evaluated incorrectly", evaluate("band(2, 3) + 1") == 3));
-    assert(("`exp(2, (band(2, 3) + 1))` was evaluated incorrectly", evaluate("exp(2, (band(2, 3) + 1))") == 8));
-
-
+    assert(("`3!` was evaluated incorrectly", evaluate("3!") == 6));
+    assert(("`exp(2, 3!)` was evaluated incorrectly", evaluate("exp(2, 3!)") == 64));
+    assert(("`12!` was evaluated incorrectly", evaluate("12!") == 479001600));
+    assert(("`exp(2, mod(12!, 17))` was evaluated incorrectly", evaluate("exp(2, mod(12!, 17))") == 4096));
+    assert(("`12.3` was evaluated incorrectly", evaluate("12.3") == 12.3));
+    assert(("`11.245 / 1.353` was evaluated incorrectly", evaluate("11.245 / 1.353") == 11.245 / 1.353));
+    assert(("`exp(1.124, 5.5)` was evaluated incorrectly", evaluate("exp(1.124, 5.5)") == pow(1.124, 5.5)));
 
 
 }
 
+/**
+ * Call the top operator's operation function and return the result
+ * @param ops - Operation stack
+ * @param values - Value stack
+ * @return The result of the top operator applied to the value stack
+ */
 double applyOps(std::stack<Op> &ops, std::stack<double> &values) {
     const Op op = ops.top();
     double result = 0;
@@ -58,11 +134,24 @@ double applyOps(std::stack<Op> &ops, std::stack<double> &values) {
             printf("Error\n");
         }
         return res.num;
+    } else if (functions.find(op.token) != functions.end()) {
+        ops.pop();
+        std::unordered_map<std::string, double> variables;
+        Function function = functions.at(op.token);
+        size_t paramsSize = function.params.size();
+        if (values.size() >= paramsSize) {
+            for (int i = 0; i < paramsSize; i++) {
+                variables[function.params.at(i)] = values.top();
+                values.pop();
+            }
+            return evaluate(function.expression, variables);
+        }
     } else {
         printf("Error, unknown operation.\n");
     }
     return result;
 }
+
 
 bool hasPrecedence(const Op &op1, const Op &op2) {
 #ifdef DEBUG
@@ -72,26 +161,52 @@ bool hasPrecedence(const Op &op1, const Op &op2) {
     return op1.precedence <= op2.precedence;
 }
 
+/**
+ * Evaluate will evaluate the expression with the global variable map.
+ * @param expression The expression to evaluate
+ * @return The result of the  expression
+ */
 double evaluate(const std::string &expression) {
+    return evaluate(expression, global_variables);
+}
+
+/**
+ * Evaluate will evaluate the expression with the specific variable map passed by variables
+ * @param expression The expression to evaluate
+ * @param variables The list of variables that are valid for expression
+ * @return The result of the expression evaluated with the variables
+ */
+double evaluate(const std::string &expression, std::unordered_map<std::string, double> &variables) {
     std::stack<double> values;
     std::stack<Op> ops;
-
     for (int i = 0; i < expression.length(); i++) {
         char token = expression[i];
         if (token == ' ') {
             continue;
         }
-        if (std::isdigit(token)) {
-            int num = 0;
+        if (std::isdigit(token) || token == '.') {
+            std::string number;
             while (i < expression.length() && std::isdigit(expression[i])) {
-//                if (expression[i] == ',') {
-//                    break;
-//                }
-                num *= 10;
-                num += expression[i++] - '0';
+                number.push_back(expression[i++]);
             }
-            values.push(num);
+            std::string decimal;
+            if (expression[i] == '.') {
+                while (i < expression.length() && std::isdigit(expression[++i])) {
+                    decimal.push_back(expression[i]);
+                }
+            }
+            number.push_back('.');
+            number.append(decimal);
+            values.push(std::stod(number));
             i--;
+        } else if (token == '!') {
+            // TODO: Check if the char in front is a number, if not check if it is a variable.
+            if (i - 1 >= 0 && std::isdigit(expression[i - 1])) {
+                ops.push(operations.at(std::string(1, token)));
+                values.push(applyOps(ops, values));
+            } else {
+                std::cout << "Must have the factorial operator next to a number!" << std::endl;
+            }
         } else if (token == '(' || token == ',') {
             ops.push(operations.at(std::string(1, token)));
         } else if (token == ')') {
@@ -116,12 +231,9 @@ double evaluate(const std::string &expression) {
                     exit(1);
                 }
             }
-
         } else if (token == '+' || token == '-' || token == '*' || token == '/' || token == '%' || token == '^' ||
                    token == '&' || token == '|') {
             while (!ops.empty() && hasPrecedence(operations.at(std::string(1, token)), ops.top())) {
-//                Op op = ops.top();
-//                ops.pop();
                 values.push(applyOps(ops, values));
             }
             ops.push(operations.at(std::string(1, token)));
@@ -133,8 +245,17 @@ double evaluate(const std::string &expression) {
             }
             i--;
             // i will point to the letter before the opening paren (`mod(x)`[i] -> 'd')
-//            std::cout << expression[i] << std::endl;
-            ops.push(operations.at(str));
+            if (constants.find(str) != constants.end()) {
+                values.push(constants.at(str));
+            } else if (variables.find(str) != variables.end() && operations.find(str) == operations.end()) {
+                values.push(variables.at(str));
+            } else if (functions.find(str) != functions.end()) {
+                ops.push(functionToOp(functions.at(str)));
+            } else if (variables.find(str) == variables.end() && operations.find(str) != operations.end()) {
+                ops.push(operations.at(str));
+            } else {
+                std::cout << "ERROR: Token not found" << std::endl;
+            }
         }
     }
 #ifdef DEBUG
