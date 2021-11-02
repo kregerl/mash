@@ -16,6 +16,18 @@
 - [X] Square Root: <b> sqrt(x) </b>
 - [X] Sine: <b> sin(x) </b>
 - [X] Cosine: <b> cos(x) </b>
+- [X] Tangent: <b> tan(x) </b>
+- [X] Cotangent: <b> cot(x) </b>
+- [X] Secant: <b> sec(x) </b>
+- [X] Cosecant: <b> csc(x) </b>
+- [X] arcsin: <b> arcsin(x) </b>
+- [X] arccos: <b> arccos(x) </b>
+- [X] arctan: <b> arctan(x) </b>
+- [X] Natural Log: <b> ln(x) </b>
+- [X] Log base 10: <b> log(x) </b>
+- [X] Log base x: <b> logb(x, y) </b>
+- [X] Greatest Common Divisor (GCD): <b> gcd(x, y) </b>
+- [X] Least Common Multiple: <b> lcm(x, y) </b>
 - [X] Combination (Read x choose y): <b> choose(x, y) </b>
 - [ ] Permutation
 

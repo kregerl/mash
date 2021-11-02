@@ -1,15 +1,16 @@
-#include <iostream>
-#include <stack>
-#include <cmath>
-#include <cassert>
 #include "main.h"
 
 //#define DEBUG
-std::unordered_map<std::string, double> global_variables;
+std::unordered_map<std::string, Value> global_variables;
 std::unordered_map<std::string, Function> functions;
 
 int main() {
 //    tests();
+    printf("Number of operators: %d\nNumber of constants: %d\n", operations.size(), constants.size());
+    fflush(stdout);
+
+//    std::cout << derivative("2 * x^3") << std::endl;
+
     std::string command;
     while (command != "exit") {
         std::cout << "Mash > ";
@@ -24,7 +25,8 @@ int main() {
             for (int i = 0; i < eqPos; i++) {
                 if (command[i] == ' ') {
                     continue;
-                } else if (std::isalpha(command[i]) && constants.find(std::string(1, command[i])) == constants.end()) {
+                } else if ((std::isalpha(command[i]) || command[i] == '`') &&
+                           constants.find(std::string(1, command[i])) == constants.end()) {
                     var.push_back(command[i]);
                 } else if (command[i] == '(') {
                     // If function was already defined, remove it to be overwritten.
@@ -71,12 +73,39 @@ int main() {
             }
         } else if (global_variables.find(command) != global_variables.end()) {
             // If a command is a global variable.
-            printf("%s = %.3f\n", command.c_str(), global_variables.at(command));
+            Value val = evaluate(command);
+            if (const std::vector<double> *vec = std::get_if<std::vector<double>>(&global_variables.at(command))) {
+                std::cout << "[";
+                for (int i = vec->size() - 1; i >= 0; i--) {
+                    if (i > 0) {
+                        std::cout << vec->at(i) << ", ";
+                    } else {
+                        std::cout << vec->at(i);
+                    }
+                }
+                std::cout << "]" << std::endl;
+            } else if (const double *dval = std::get_if<double>(&global_variables.at(command))) {
+                printf("%s = %.3f\n", command.c_str(), *dval);
+            }
+
         } else if (functions.find(command) != functions.end()) {
             printf("%s = %s\n", functions.at(command).name.c_str(), functions.at(command).expression.c_str());
         } else {
             // Otherwise just evaluate expression.
-            printf("Result: %.3f\n", evaluate(command));
+            Value val = evaluate(command);
+            if (const std::vector<double> *vec = std::get_if<std::vector<double>>(&val)) {
+                std::cout << "[";
+                for (int i = 0; i < vec->size(); i++) {
+                    if (i < vec->size() - 1) {
+                        std::cout << vec->at(i) << ", ";
+                    } else {
+                        std::cout << vec->at(i) << " ";
+                    }
+                }
+                std::cout << "]";
+            } else if (const double *dval = std::get_if<double>(&val)) {
+                printf("Result: %.3f\n", *dval);
+            }
         }
     }
 
@@ -94,27 +123,31 @@ Op functionToOp(const Function &function) {
 
 
 void tests() {
-    assert(("`123 + 10` was evaluated incorrectly", evaluate("123 + 10") == 133));
-    assert(("`10 - 10` was evaluated incorrectly", evaluate("10 - 10") == 0));
-    assert(("`(10 * 5) / 5` was evaluated incorrectly", evaluate("(10 * 5) / 5") == 10));
-    assert(("`(12 % 5) * 6` was evaluated incorrectly", evaluate("(12 % 5) * 6") == 12));
-    assert(("`7 / 7 % 3` was evaluated incorrectly", evaluate("7 / 7 % 3") == 1));
-    assert(("`7 / (7 % 3)` was evaluated incorrectly", evaluate("7 / (7 % 3)") == 7));
-    assert(("`7 / mod(7, 3)` was evaluated incorrectly", evaluate("7 / mod(7,3)") == 7));
-    assert(("`exp(2, 3)` was evaluated incorrectly", evaluate("exp(2, 3)") == 8));
-    assert(("`2^3` was evaluated incorrectly", evaluate("2^3") == 8));
-    assert(("`sqrt(mod(12, 5))` was evaluated incorrectly", evaluate("sqrt(mod(12, 5))") == sqrt(12 % 5)));
-    assert(("`2 | 3 + 1` was evaluated incorrectly", evaluate("2 | 3 + 1") == 6));
-    assert(("`bor(2, 3) + 1` was evaluated incorrectly", evaluate("bor(2, 3) + 1") == 4));
-    assert(("`2 & 3 + 1` was evaluated incorrectly", evaluate("2 & 3 + 1") == 0));
-    assert(("`band(2, 3) + 1` was evaluated incorrectly", evaluate("band(2, 3) + 1") == 3));
-    assert(("`3!` was evaluated incorrectly", evaluate("3!") == 6));
-    assert(("`exp(2, 3!)` was evaluated incorrectly", evaluate("exp(2, 3!)") == 64));
-    assert(("`12!` was evaluated incorrectly", evaluate("12!") == 479001600));
-    assert(("`exp(2, mod(12!, 17))` was evaluated incorrectly", evaluate("exp(2, mod(12!, 17))") == 4096));
-    assert(("`12.3` was evaluated incorrectly", evaluate("12.3") == 12.3));
-    assert(("`11.245 / 1.353` was evaluated incorrectly", evaluate("11.245 / 1.353") == 11.245 / 1.353));
-    assert(("`exp(1.124, 5.5)` was evaluated incorrectly", evaluate("exp(1.124, 5.5)") == pow(1.124, 5.5)));
+    assert(("`123 + 10` was evaluated incorrectly", std::get<double>(evaluate("123 + 10")) == 133));
+    assert(("`10 - 10` was evaluated incorrectly", std::get<double>(evaluate("10 - 10")) == 0));
+    assert(("`(10 * 5) / 5` was evaluated incorrectly", std::get<double>(evaluate("(10 * 5) / 5")) == 10));
+    assert(("`(12 % 5) * 6` was evaluated incorrectly", std::get<double>(evaluate("(12 % 5) * 6")) == 12));
+    assert(("`7 / 7 % 3` was evaluated incorrectly", std::get<double>(evaluate("7 / 7 % 3")) == 1));
+    assert(("`7 / (7 % 3)` was evaluated incorrectly", std::get<double>(evaluate("7 / (7 % 3)")) == 7));
+    assert(("`7 / mod(7, 3)` was evaluated incorrectly", std::get<double>(evaluate("7 / mod(7,3)")) == 7));
+    assert(("`exp(2, 3)` was evaluated incorrectly", std::get<double>(evaluate("exp(2, 3)")) == 8));
+    assert(("`2^3` was evaluated incorrectly", std::get<double>(evaluate("2^3")) == 8));
+    assert(("`sqrt(mod(12, 5))` was evaluated incorrectly", std::get<double>(evaluate("sqrt(mod(12, 5))")) ==
+                                                            sqrt(12 % 5)));
+    assert(("`2 | 3 + 1` was evaluated incorrectly", std::get<double>(evaluate("2 | 3 + 1")) == 6));
+    assert(("`bor(2, 3) + 1` was evaluated incorrectly", std::get<double>(evaluate("bor(2, 3) + 1")) == 4));
+    assert(("`2 & 3 + 1` was evaluated incorrectly", std::get<double>(evaluate("2 & 3 + 1")) == 0));
+    assert(("`band(2, 3) + 1` was evaluated incorrectly", std::get<double>(evaluate("band(2, 3) + 1")) == 3));
+    assert(("`3!` was evaluated incorrectly", std::get<double>(evaluate("3!")) == 6));
+    assert(("`exp(2, 3!)` was evaluated incorrectly", std::get<double>(evaluate("exp(2, 3!)")) == 64));
+    assert(("`12!` was evaluated incorrectly", std::get<double>(evaluate("12!")) == 479001600));
+    assert(("`exp(2, mod(12!, 17))` was evaluated incorrectly", std::get<double>(evaluate("exp(2, mod(12!, 17))")) ==
+                                                                4096));
+    assert(("`12.3` was evaluated incorrectly", std::get<double>(evaluate("12.3")) == 12.3));
+    assert(("`11.245 / 1.353` was evaluated incorrectly", std::get<double>(evaluate("11.245 / 1.353")) ==
+                                                          11.245 / 1.353));
+    assert(("`exp(1.124, 5.5)` was evaluated incorrectly", std::get<double>(evaluate("exp(1.124, 5.5)")) ==
+                                                           pow(1.124, 5.5)));
 
 
 }
@@ -125,7 +158,7 @@ void tests() {
  * @param values - Value stack
  * @return The result of the top operator applied to the value stack
  */
-double applyOps(std::stack<Op> &ops, std::stack<double> &values) {
+Value applyOps(std::stack<Op> &ops, std::stack<Value> &values) {
     const Op op = ops.top();
     double result = 0;
     if (operations.count(op.token)) {
@@ -136,7 +169,7 @@ double applyOps(std::stack<Op> &ops, std::stack<double> &values) {
         return res.num;
     } else if (functions.find(op.token) != functions.end()) {
         ops.pop();
-        std::unordered_map<std::string, double> variables;
+        std::unordered_map<std::string, Value> variables;
         Function function = functions.at(op.token);
         size_t paramsSize = function.params.size();
         if (values.size() >= paramsSize) {
@@ -166,7 +199,7 @@ bool hasPrecedence(const Op &op1, const Op &op2) {
  * @param expression The expression to evaluate
  * @return The result of the  expression
  */
-double evaluate(const std::string &expression) {
+Value evaluate(const std::string &expression) {
     return evaluate(expression, global_variables);
 }
 
@@ -176,8 +209,15 @@ double evaluate(const std::string &expression) {
  * @param variables The list of variables that are valid for expression
  * @return The result of the expression evaluated with the variables
  */
-double evaluate(const std::string &expression, std::unordered_map<std::string, double> &variables) {
-    std::stack<double> values;
+Value evaluate(const std::string &expression, std::unordered_map<std::string, Value> &variables) {
+    std::stack<Value> values;
+//    std::stack<Value> vals;
+//    std::vector<double> vec = {10.0, 9, 8, 7, 6, 5};
+//    vals.push(vec);
+//    Value v = vals.top();
+//    for (auto &num : *std::get_if<std::vector<double>>(&v)) {
+//        std::cout << num << std::endl;
+//    }
     std::stack<Op> ops;
     for (int i = 0; i < expression.length(); i++) {
         char token = expression[i];
@@ -207,7 +247,7 @@ double evaluate(const std::string &expression, std::unordered_map<std::string, d
             } else {
                 std::cout << "Must have the factorial operator next to a number!" << std::endl;
             }
-        } else if (token == '(' || token == ',') {
+        } else if (token == '(' || token == ',' || token == '[' || token == '{') {
             ops.push(operations.at(std::string(1, token)));
         } else if (token == ')') {
             int counter = 0;
@@ -231,6 +271,24 @@ double evaluate(const std::string &expression, std::unordered_map<std::string, d
                     exit(1);
                 }
             }
+        } else if (token == ']' || token == '}') {
+            std::vector<double> val;
+            if (!values.empty()) {
+                val.emplace_back(std::get<double>(values.top()));
+                values.pop();
+            }
+            while (ops.top().token != "[" && ops.top().token != "{") {
+                Op op = ops.top();
+                if (op.token == ",") {
+                    ops.pop();
+                    if (!values.empty()) {
+                        val.emplace_back(std::get<double>(values.top()));
+                        values.pop();
+                    }
+                }
+            }
+            ops.pop();
+            values.push(val);
         } else if (token == '+' || token == '-' || token == '*' || token == '/' || token == '%' || token == '^' ||
                    token == '&' || token == '|') {
             while (!ops.empty() && hasPrecedence(operations.at(std::string(1, token)), ops.top())) {
@@ -262,7 +320,7 @@ double evaluate(const std::string &expression, std::unordered_map<std::string, d
     std::cout << expression << std::endl;
     int c1 = 0;
     while (!values.empty()) {
-        std::cout << c1++ << " :Values: " << values.top() << std::endl;
+        std::cout << c1++ << " :Values: " << std::get<double>(values.top()) << std::endl;
         values.pop();
     }
     int c2 = 0;
@@ -279,7 +337,8 @@ double evaluate(const std::string &expression, std::unordered_map<std::string, d
     }
 //    Result result = DEFAULT_RESULT;
 //    result.error = false;
-    double result = values.top();
+    Value result = values.top();
     values.pop();
     return result;
+
 }

@@ -1,6 +1,6 @@
 #ifndef MASH_MAIN_H
 #define MASH_MAIN_H
-
+#include <cassert>
 #include "Operations.h"
 typedef struct {
     std::string name;
@@ -10,9 +10,9 @@ typedef struct {
 
 void tests();
 Op functionToOp(const Function &function);
-double applyOps(std::stack<Op> &ops, std::stack<double> &values);
+Value applyOps(std::stack<Op> &ops, std::stack<Value> &values);
 bool hasPrecedence(Op &op1, Op &op2);
-double evaluate(const std::string &expression);
-double evaluate(const std::string &expression, std::unordered_map<std::string, double> &variables);
+Value evaluate(const std::string &expression);
+Value evaluate(const std::string &expression, std::unordered_map<std::string, Value> &variables);
 
 #endif

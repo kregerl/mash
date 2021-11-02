@@ -9,8 +9,6 @@
 /mnt/c/Users/kregerl/CLionProjects/mash/src/Operations.cpp
 Operations.h
 /mnt/c/Users/kregerl/CLionProjects/mash/src/Operations.h
-cmath
--
 
 /mnt/c/Users/kregerl/CLionProjects/mash/src/Operations.h
 string
@@ -23,20 +21,18 @@ functional
 -
 unordered_map
 -
-
-/mnt/c/Users/kregerl/CLionProjects/mash/src/main.cpp
-iostream
--
-stack
--
 cmath
 -
-cassert
+variant
 -
+
+/mnt/c/Users/kregerl/CLionProjects/mash/src/main.cpp
 main.h
 /mnt/c/Users/kregerl/CLionProjects/mash/src/main.h
 
 /mnt/c/Users/kregerl/CLionProjects/mash/src/main.h
+cassert
+-
 Operations.h
 /mnt/c/Users/kregerl/CLionProjects/mash/src/Operations.h
 
