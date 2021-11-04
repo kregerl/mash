@@ -3,8 +3,13 @@
 
 CMakeFiles/mash.dir/src/Operations.cpp.o: ../src/Operations.cpp
 CMakeFiles/mash.dir/src/Operations.cpp.o: ../src/Operations.h
+CMakeFiles/mash.dir/src/Operations.cpp.o: ../src/Value.h
+
+CMakeFiles/mash.dir/src/Value.cpp.o: ../src/Value.cpp
+CMakeFiles/mash.dir/src/Value.cpp.o: ../src/Value.h
 
 CMakeFiles/mash.dir/src/main.cpp.o: ../src/Operations.h
+CMakeFiles/mash.dir/src/main.cpp.o: ../src/Value.h
 CMakeFiles/mash.dir/src/main.cpp.o: ../src/main.cpp
 CMakeFiles/mash.dir/src/main.cpp.o: ../src/main.h
 

@@ -9,6 +9,8 @@
 #include <cmath>
 #include <variant>
 
+#include "Value.h"
+
 /**
  * precedence
  * - Bracket and seperator characters -1
@@ -24,15 +26,17 @@
 
 // Add a string for when an operation errors.
 typedef struct {
-    double num;
+    Value num;
     bool error;
 //    OutputType type;
 } Result;
 const static Result DEFAULT_RESULT = {0, true};
 
-typedef std::variant<int, double, std::vector<double>> Value;
+
+//typedef std::variant<int, double, std::vector<double>> Value;
 
 typedef struct Op {
+//    std::vector<ValueType> paramTypes;
     int num_params;
     int precedence;
     std::string token;
@@ -65,7 +69,7 @@ Result opBor(std::stack<Op> &ops, std::stack<Value> &values);
 
 Result opBxor(std::stack<Op> &ops, std::stack<Value> &values);
 
-long factorial(int n);
+int factorial(int n);
 
 Result opFactorial(std::stack<Op> &ops, std::stack<Value> &values);
 

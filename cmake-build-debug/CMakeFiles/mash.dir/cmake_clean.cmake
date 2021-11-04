@@ -1,6 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/mash.dir/src/main.cpp.o"
   "CMakeFiles/mash.dir/src/Operations.cpp.o"
+  "CMakeFiles/mash.dir/src/Value.cpp.o"
   "mash.pdb"
   "mash"
 )

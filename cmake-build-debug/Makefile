@@ -150,6 +150,33 @@ src/Operations.cpp.s:
 	$(MAKE) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Operations.cpp.s
 .PHONY : src/Operations.cpp.s
 
+src/Value.o: src/Value.cpp.o
+
+.PHONY : src/Value.o
+
+# target to build an object file
+src/Value.cpp.o:
+	$(MAKE) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Value.cpp.o
+.PHONY : src/Value.cpp.o
+
+src/Value.i: src/Value.cpp.i
+
+.PHONY : src/Value.i
+
+# target to preprocess a source file
+src/Value.cpp.i:
+	$(MAKE) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Value.cpp.i
+.PHONY : src/Value.cpp.i
+
+src/Value.s: src/Value.cpp.s
+
+.PHONY : src/Value.s
+
+# target to generate assembly for a file
+src/Value.cpp.s:
+	$(MAKE) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Value.cpp.s
+.PHONY : src/Value.cpp.s
+
 src/main.o: src/main.cpp.o
 
 .PHONY : src/main.o
@@ -189,6 +216,9 @@ help:
 	@echo "... src/Operations.o"
 	@echo "... src/Operations.i"
 	@echo "... src/Operations.s"
+	@echo "... src/Value.o"
+	@echo "... src/Value.i"
+	@echo "... src/Value.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

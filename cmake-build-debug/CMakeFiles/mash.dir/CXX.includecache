@@ -25,10 +25,24 @@ cmath
 -
 variant
 -
+Value.h
+/mnt/c/Users/kregerl/CLionProjects/mash/src/Value.h
+
+/mnt/c/Users/kregerl/CLionProjects/mash/src/Value.cpp
+Value.h
+/mnt/c/Users/kregerl/CLionProjects/mash/src/Value.h
+
+/mnt/c/Users/kregerl/CLionProjects/mash/src/Value.h
+variant
+-
+vector
+-
 
 /mnt/c/Users/kregerl/CLionProjects/mash/src/main.cpp
 main.h
 /mnt/c/Users/kregerl/CLionProjects/mash/src/main.h
+sstream
+-
 
 /mnt/c/Users/kregerl/CLionProjects/mash/src/main.h
 cassert

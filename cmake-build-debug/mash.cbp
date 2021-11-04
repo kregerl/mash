@@ -90,6 +90,12 @@
 		<Unit filename="/mnt/c/Users/kregerl/CLionProjects/mash/src/Operations.h">
 			<Option target="mash"/>
 		</Unit>
+		<Unit filename="/mnt/c/Users/kregerl/CLionProjects/mash/src/Value.cpp">
+			<Option target="mash"/>
+		</Unit>
+		<Unit filename="/mnt/c/Users/kregerl/CLionProjects/mash/src/Value.h">
+			<Option target="mash"/>
+		</Unit>
 		<Unit filename="/mnt/c/Users/kregerl/CLionProjects/mash/src/main.cpp">
 			<Option target="mash"/>
 		</Unit>

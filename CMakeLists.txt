@@ -3,4 +3,4 @@ project(mash)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(mash src/main.cpp src/main.h src/Operations.cpp src/Operations.h)
+add_executable(mash src/main.cpp src/main.h src/Operations.cpp src/Operations.h src/Value.cpp src/Value.h)
