@@ -2,40 +2,39 @@
 
 ***
 
-## Operators
 
-### Math Operators
+## Math Operators
 
-- [X] Addition: <b> x + y </b>
-- [X] Subtraction: <b> x - y </b>
-- [X] Multiplication: <b> x * y </b>
-- [X] Division: <b> x / y </b>
-- [X] Modulus: <b> x % y or mod(x, y) </b>
-- [X] Exponents: <b> x^y or exp(x, y) </b>
-- [X] Factorial: <b> x! </b>
-- [X] Square Root: <b> sqrt(x) </b>
-- [X] Sine: <b> sin(x) </b>
-- [X] Cosine: <b> cos(x) </b>
-- [X] Tangent: <b> tan(x) </b>
-- [X] Cotangent: <b> cot(x) </b>
-- [X] Secant: <b> sec(x) </b>
-- [X] Cosecant: <b> csc(x) </b>
-- [X] arcsin: <b> arcsin(x) </b>
-- [X] arccos: <b> arccos(x) </b>
-- [X] arctan: <b> arctan(x) </b>
-- [X] Natural Log: <b> ln(x) </b>
-- [X] Log base 10: <b> log(x) </b>
-- [X] Log base x: <b> logb(x, y) </b>
-- [X] Greatest Common Divisor (GCD): <b> gcd(x, y) </b>
-- [X] Least Common Multiple: <b> lcm(x, y) </b>
-- [X] Combination (Read x choose y): <b> choose(x, y) </b>
+- Addition: <b> x + y </b>
+- Subtraction: <b> x - y </b>
+- Multiplication: <b> x * y </b>
+- Division: <b> x / y </b>
+- Modulus: <b> x % y or mod(x, y) </b>
+- Exponents: <b> x^y or exp(x, y) </b>
+- Factorial: <b> x! </b>
+- Square Root: <b> sqrt(x) </b>
+- Sine: <b> sin(x) </b>
+- Cosine: <b> cos(x) </b>
+- Tangent: <b> tan(x) </b>
+- Cotangent: <b> cot(x) </b>
+- Secant: <b> sec(x) </b>
+- Cosecant: <b> csc(x) </b>
+- arcsin: <b> arcsin(x) </b>
+- arccos: <b> arccos(x) </b>
+- arctan: <b> arctan(x) </b>
+- Natural Log: <b> ln(x) </b>
+- Log base 10: <b> log(x) </b>
+- Log base x: <b> logb(x, y) </b>
+- Greatest Common Divisor (GCD): <b> gcd(x, y) </b>
+- Least Common Multiple: <b> lcm(x, y) </b>
+- Combination (Read x choose y): <b> choose(x, y) </b>
 - [ ] Permutation
 
-### Bitwise Operators
+## Bitwise Operators
 
-- [X] Or: <b> x | y or box(x, y) </b>
-- [X] And: <b> x & y or band(x, y) </b>
-- [X] Xor: <b> bxor(x, y) </b>
+- Or: <b> x | y or box(x, y) </b>
+- And: <b> x & y or band(x, y) </b>
+- Xor: <b> bxor(x, y) </b>
 
 ## Variables
 
@@ -68,4 +67,26 @@ Ex:
 > `f(x) = x + 1`  
 > `f(1) + 3`  
 > `5`
+
+## Vectors and Sets
+Vectors and sets are defined in a similar way, using outer braces and comma seperated values.  
+A vector is defined by using square brackets, while sets use curley braces.  
+Vector Ex: 
+```shell
+Mash > x = [1, 2, 3]
+Mash > x
+[1, 2, 3]
+Mash > y = [2, 2, 2]
+Mash > dot(x, y)
+12
+```
+Set Ex: 
+```shell
+Mash > x = {1, 3, 5}
+Mash > x
+{1, 3, 5}
+Mash > y = {3, 4, 5}
+Mash > union(x, y)
+{1, 3, 4, 5}
+```
 

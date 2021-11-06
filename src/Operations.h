@@ -36,10 +36,11 @@ const static Result DEFAULT_RESULT = {0, true};
 //typedef std::variant<int, double, std::vector<double>> Value;
 
 typedef struct Op {
-//    std::vector<ValueType> paramTypes;
-    int num_params;
+//    std::vector<int> validValueTypes;
     int precedence;
+    int num_params;
     std::string token;
+    std::vector<int> validValueTypes;
     std::function<Result(std::stack<struct Op> &, std::stack<Value> &)> func;
 } Op;
 
@@ -102,43 +103,43 @@ Result opArctan(std::stack<Op> &ops, std::stack<Value> &values);
 //double derivative(const std::string &expression);
 
 const static std::unordered_map<std::string, Op> operations = {
-        {"(",      {0, -1, "(",      noOp}},
-        {")",      {0, -1, ")",      noOp}},
-        {"[",      {0, -1, "[",      noOp}},
-        {"]",      {0, -1, "]",      noOp}},
-        {"{",      {0, -1, "{",      noOp}},
-        {"}",      {0, -1, "}",      noOp}},
-        {",",      {0, -1, ",",      noOp}},
-        {"|",      {0, 0,  "|",      opBor}},
-        {"&",      {0, 1,  "&",      opBand}},
-        {"+",      {0, 2,  "+",      opAdd}},
-        {"-",      {0, 2,  "-",      opSub}},
-        {"*",      {0, 3,  "*",      opMul}},
-        {"/",      {0, 3,  "/",      opDiv}},
-        {"%",      {0, 3,  "%",      opMod}},
-        {"^",      {0, 4,  "^",      opExp}},
-        {"!",      {0, 4,  "!",      opFactorial}},
-        {"sqrt",   {1, 4,  "sqrt",   opSqrt}},
-        {"sin",    {1, 4,  "sin",    opSin}},
-        {"cos",    {1, 4,  "cos",    opCos}},
-        {"tan",    {1, 4,  "tan",    opTan}},
-        {"cot",    {1, 4,  "cot",    opCot}},
-        {"sec",    {1, 4,  "sec",    opSec}},
-        {"csc",    {1, 4,  "csc",    opCsc}},
-        {"arcsin", {1, 4,  "arcsin", opArcsin}},
-        {"arccos", {1, 4,  "arccos", opArccos}},
-        {"arctan", {1, 4,  "arctan", opArctan}},
-        {"ln",     {1, 4,  "ln",     opLn}},         // ln(y) or log_e(y)
-        {"log",    {1, 4,  "log",    opLog}},      // log_10(y)
-        {"logb",   {2, 4,  "logb",   opLog}},    // log_x(y)
-        {"gcd",    {2, 4,  "gcd",    opGCD}},      // Greatest Common Divisor
-        {"lcm",    {2, 4,  "lcm",    opLCM}},      // Least Common Multiple
-        {"bxor",   {2, 4,  "bxor",   opBxor}},   // bxor(a, b) treated as (a ^ b)
-        {"bor",    {2, 4,  "bor",    opBor}},      // bor(a, b) treated as (a | b)
-        {"band",   {2, 4,  "band",   opBand}},   // band(a, b) treated as (a & b)
-        {"mod",    {2, 4,  "mod",    opMod}},      // mod(a, b) treated as (a % b)
-        {"exp",    {2, 4,  "exp",    opExp}},      // exp(a, b) treated as (a ** b)
-        {"choose", {2, 4,  "choose", opChoose}},   // choose(a, b) treated as (a choose b)
+        {"(",      {0, -1, "(",      {NONE},                               noOp}},
+        {")",      {0, -1, ")",      {NONE},                               noOp}},
+        {"[",      {0, -1, "[",      {NONE},                               noOp}},
+        {"]",      {0, -1, "]",      {NONE},                               noOp}},
+        {"{",      {0, -1, "{",      {NONE},                               noOp}},
+        {"}",      {0, -1, "}",      {NONE},                               noOp}},
+        {",",      {0, -1, ",",      {NONE},                               noOp}},
+        {"|",      {0, 0,  "|",      {INTEGER, INTEGER},                   opBor}},
+        {"&",      {0, 1,  "&",      {INTEGER, INTEGER},                   opBand}},
+        {"+",      {0, 2,  "+",      {INTEGER | DOUBLE, INTEGER | DOUBLE}, opAdd}},
+        {"-",      {0, 2,  "-",      {INTEGER | DOUBLE, INTEGER | DOUBLE}, opSub}},
+        {"*",      {0, 3,  "*",      {INTEGER | DOUBLE, INTEGER | DOUBLE}, opMul}},
+        {"/",      {0, 3,  "/",      {INTEGER | DOUBLE, INTEGER | DOUBLE}, opDiv}},
+        {"%",      {0, 3,  "%",      {INTEGER, INTEGER},                   opMod}},
+        {"^",      {0, 4,  "^",      {INTEGER | DOUBLE, INTEGER | DOUBLE}, opExp}},
+        {"!",      {0, 4,  "!",      {INTEGER | DOUBLE},                   opFactorial}},
+        {"sqrt",   {1, 4,  "sqrt",   {INTEGER | DOUBLE},                   opSqrt}},
+        {"sin",    {1, 4,  "sin",    {INTEGER | DOUBLE, INTEGER | DOUBLE}, opSin}},
+        {"cos",    {1, 4,  "cos",    {INTEGER | DOUBLE, INTEGER | DOUBLE}, opCos}},
+        {"tan",    {1, 4,  "tan",    {INTEGER | DOUBLE, INTEGER | DOUBLE}, opTan}},
+        {"cot",    {1, 4,  "cot",    {INTEGER | DOUBLE, INTEGER | DOUBLE}, opCot}},
+        {"sec",    {1, 4,  "sec",    {INTEGER | DOUBLE, INTEGER | DOUBLE}, opSec}},
+        {"csc",    {1, 4,  "csc",    {INTEGER | DOUBLE, INTEGER | DOUBLE}, opCsc}},
+        {"arcsin", {1, 4,  "arcsin", {INTEGER | DOUBLE, INTEGER | DOUBLE}, opArcsin}},
+        {"arccos", {1, 4,  "arccos", {INTEGER | DOUBLE, INTEGER | DOUBLE}, opArccos}},
+        {"arctan", {1, 4,  "arctan", {INTEGER | DOUBLE, INTEGER | DOUBLE}, opArctan}},
+        {"ln",     {1, 4,  "ln",     {INTEGER | DOUBLE, INTEGER | DOUBLE}, opLn}},         // ln(y) or log_e(y)
+        {"log",    {1, 4,  "log",    {INTEGER | DOUBLE, INTEGER | DOUBLE}, opLog}},      // log_10(y)
+        {"logb",   {2, 4,  "logb",   {INTEGER | DOUBLE, INTEGER | DOUBLE}, opLog}},    // log_x(y)
+        {"gcd",    {2, 4,  "gcd",    {INTEGER, INTEGER},                   opGCD}},      // Greatest Common Divisor
+        {"lcm",    {2, 4,  "lcm",    {INTEGER, INTEGER},                   opLCM}},      // Least Common Multiple
+        {"bxor",   {2, 4,  "bxor",   {INTEGER, INTEGER},                   opBxor}},   // bxor(a, b) treated as (a ^ b)
+        {"bor",    {2, 4,  "bor",    {INTEGER, INTEGER},                   opBor}},      // bor(a, b) treated as (a | b)
+        {"band",   {2, 4,  "band",   {INTEGER, INTEGER},                   opBand}},   // band(a, b) treated as (a & b)
+        {"mod",    {2, 4,  "mod",    {INTEGER, INTEGER},                   opMod}},      // mod(a, b) treated as (a % b)
+        {"exp",    {2, 4,  "exp",    {INTEGER | DOUBLE, INTEGER | DOUBLE}, opExp}},
+        {"choose", {2, 4,  "choose", {INTEGER | DOUBLE, INTEGER | DOUBLE}, opChoose}}
 };
 
 const static std::unordered_map<std::string, double> constants = {

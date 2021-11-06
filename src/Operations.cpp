@@ -1,4 +1,5 @@
 #include "Operations.h"
+#include <cassert>
 
 Result noOp(std::stack<Op> &ops, std::stack<Value> &values) {
     ops.pop();
@@ -11,6 +12,62 @@ Result opAdd(std::stack<Op> &ops, std::stack<Value> &values) {
     Result result = DEFAULT_RESULT;
     ops.pop();
     if (values.size() >= 2) {
+//        Value num1 = values.top();
+//        values.pop();
+//        Value num2 = values.top();
+//        values.pop();
+//
+//        if (const int *inum1 = std::get_if<int>(&num1.num)) {
+//            if (const int *inum2 = std::get_if<int>(&num2.num)) {
+//                result.error = false;
+//                result.num = *inum1 + *inum2;
+//            } else if (const double *dnum2 = std::get_if<double>(&num2.num)) {
+//                result.error = false;
+//                result.num = *inum1 + *dnum2;
+//            } else if (std::vector<double> *vnum2 = std::get_if<std::vector<double>>(&num2.num)) {
+//                if ((num2.type & VECTOR) == VECTOR) {
+//                    assert(("Unimplemented", false));
+//                } else if ((num2.type & SET) == SET) {
+//                    if (std::count(vnum2->begin(), vnum2->end(), static_cast<double>(*inum1)) == 0) {
+//                        std::reverse(vnum2->begin(), vnum2->end());
+//                        vnum2->emplace_back(static_cast<double>(*inum1));
+//                        std::reverse(vnum2->begin(), vnum2->end());
+//                    }
+//                    result.error = false;
+//                    result.num = Value(*vnum2, SET);
+//                }
+//
+////              NoOP
+//            }
+//        } else if (const double *dnum1 = std::get_if<double>(&num1.num)) {
+//            if (const int *inum2 = std::get_if<int>(&num2.num)) {
+//                result.error = false;
+//                result.num = *dnum1 + *inum2;
+//            } else if (const double *dnum2 = std::get_if<double>(&num2.num)) {
+//                result.error = false;
+//                result.num = *dnum1 + *dnum2;
+//            } else if (std::vector<double> *vnum2 = std::get_if<std::vector<double>>(&num2.num)) {
+//                if ((num2.type & VECTOR) == num2.type) {
+//                    assert(("Unimplemented", false));
+//                }else if ((num2.type & SET) == SET) {
+//                    if (std::count(vnum2->begin(), vnum2->end(), *dnum1) == 0) {
+//                        std::reverse(vnum2->begin(), vnum2->end());
+//                        vnum2->emplace_back(*dnum1);
+//                        std::reverse(vnum2->begin(), vnum2->end());
+//                    }
+//                    result.error = false;
+//                    result.num = Value(*vnum2, SET);
+//                }
+//            }
+//        } else if (const std::vector<double> *vnum1 = std::get_if<std::vector<double>>(&num1.num)) {
+//            if ((num2.type & VECTOR) == num2.type) {
+//                assert(("Unimplemented", false));
+//            }else if ((num1.type & SET) == SET && (num2.type & SET) == SET) {
+////                  NoOP
+//            }
+//        }
+
+
         double num1 = *std::get_if<double>(&values.top().num);
         values.pop();
         double num2 = *std::get_if<double>(&values.top().num);
@@ -25,7 +82,7 @@ Result opSub(std::stack<Op> &ops, std::stack<Value> &values) {
     Result result = DEFAULT_RESULT;
     ops.pop();
     if (values.size() >= 2) {
-        double num1 =*std::get_if<double>(&values.top().num);
+        double num1 = *std::get_if<double>(&values.top().num);
         values.pop();
         double num2 = *std::get_if<double>(&values.top().num);
         values.pop();
@@ -197,11 +254,11 @@ Result opFactorial(std::stack<Op> &ops, std::stack<Value> &values) {
     Result result = DEFAULT_RESULT;
     ops.pop();
     if (!values.empty()) {
-        if (const int* inum = std::get_if<int>(&values.top().num)) {
+        if (const int *inum = std::get_if<int>(&values.top().num)) {
             values.pop();
             result.error = false;
             result.num = factorial(*inum);
-        } else if (const double* dnum = std::get_if<double>(&values.top().num)){
+        } else if (const double *dnum = std::get_if<double>(&values.top().num)) {
             values.pop();
             result.error = false;
             result.num = std::tgamma(1 + (*dnum));

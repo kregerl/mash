@@ -3,23 +3,27 @@
 
 #include <variant>
 #include <vector>
+#include <optional>
 
+#define NONE 0x0
+#define INTEGER 0x01
+#define DOUBLE 0x02
+#define SET 0x04
+#define VECTOR 0x08
+#define MATRIX 0x10
 
-
-enum class ValueType {
-    None = 0, Integer, Double, Set, Vector, Matrix
-};
 
 class Value {
 public:
     Value();
-    Value(int n, ValueType valueType = ValueType::Integer);
-    Value(double n, ValueType valueType = ValueType::Double);
-    Value(std::vector<double> n, ValueType valueType);
+    Value(int n, int valueType = INTEGER);
+    Value(double n, int valueType = DOUBLE);
+    Value(std::vector<double> n, int valueType);
     ~Value() = default;
 public:
     std::variant<int, double, std::vector<double>> num;
-    ValueType type;
+    int type;
+
 };
 
 

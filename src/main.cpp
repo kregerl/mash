@@ -74,8 +74,15 @@ int main() {
             }
         } else if (global_variables.find(command) != global_variables.end()) {
             // If a command is a global variable.
-            if (const std::vector<double> *vec = std::get_if<std::vector<double>>(&global_variables.at(command).num)) {
-                std::cout << "[";
+            if (const std::vector<double> *vec = std::get_if<std::vector<double>>(&global_variables[command].num)) {
+                std::array<char, 2> brackets = {};
+                if ((global_variables[command].type & VECTOR) == VECTOR) {
+                    brackets = {'[', ']'};
+                } else if ((global_variables[command].type & SET) == SET) {
+                    brackets = {'{', '}'};
+                }
+
+                std::cout << brackets[0];
                 for (int i = vec->size() - 1; i >= 0; i--) {
                     if (i > 0) {
                         std::cout << vec->at(i) << ", ";
@@ -83,11 +90,11 @@ int main() {
                         std::cout << vec->at(i);
                     }
                 }
-                std::cout << "]" << std::endl;
-            } else if (const double *dval = std::get_if<double>(&global_variables.at(command).num)) {
-                printf("%s = %.3f\n", command.c_str(), *dval);
+                std::cout << brackets[1] << std::endl;
+            } else if (const double *dval = std::get_if<double>(&global_variables[command].num)) {
+                printf("Result: %.3f\n", *dval);
                 fflush(stdout);
-            } else if (const int *ival = std::get_if<int>(&global_variables.at(command).num)) {
+            } else if (const int *ival = std::get_if<int>(&global_variables[command].num)) {
                 printf("Result: %d\n", *ival);
                 fflush(stdout);
             }
@@ -99,9 +106,9 @@ int main() {
             Value val = evaluate(command);
             if (const std::vector<double> *vec = std::get_if<std::vector<double>>(&val.num)) {
                 std::array<char, 2> brackets = {};
-                if (val.type == ValueType::Vector) {
+                if ((val.type & VECTOR) == VECTOR) {
                     brackets = {'[', ']'};
-                } else if (val.type == ValueType::Set) {
+                } else if ((val.type & SET) == SET) {
                     brackets = {'{', '}'};
                 }
 
@@ -243,7 +250,7 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
         // If this token is `0`, increment and the next token is `x`
         if (std::isdigit(token) || token == '.') {
             // Read hex numbers and convert them to integers on the values stack.
-            if (expression[i + 1] == '0' && std::tolower(expression[i + 2]) == 'x') {
+            if (expression[i] == '0' && std::tolower(expression[i + 1]) == 'x') {
                 i += 2;
                 std::string num;
                 while (i < expression.length() && std::isdigit(token)) {
@@ -265,7 +272,12 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
                     number.push_back('.');
                     number.append(decimal);
                 }
-                values.push(std::stod(number));
+                if (decimal.empty()) {
+                    values.push(std::stoi(number));
+                } else {
+                    values.push(std::stod(number));
+                }
+//                values.push(std::stod(number));
                 i--;
             }
         } else if (token == '!') {
@@ -301,6 +313,11 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
                 }
             }
         } else if (token == ']' || token == '}') {
+//            if ((values.top().type & INTEGER) == INTEGER) {
+//
+//            } else if ((values.top().type & DOUBLE) == DOUBLE) {
+//
+//            }
             std::vector<double> val;
             if (!values.empty()) {
                 val.emplace_back(std::get<double>(values.top().num));
@@ -318,10 +335,10 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
             }
             Op top = ops.top();
             ops.pop();
-            if (token == ']' && top.token == "[" ) {
-                values.push({val, ValueType::Vector});
-            } else if (token == '}' && top.token == "{" ) {
-                values.push({val, ValueType::Set});
+            if (token == ']' && top.token == "[") {
+                values.push({val, VECTOR});
+            } else if (token == '}' && top.token == "{") {
+                values.push({val, SET});
             } else {
                 fprintf(stderr, "Syntax Error: missing bracket\n");
                 fflush(stderr);
