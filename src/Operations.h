@@ -27,10 +27,11 @@
 // Add a string for when an operation errors.
 typedef struct {
     Value num;
-    bool error;
+    std::string error;
+//    bool error;
 //    OutputType type;
 } Result;
-const static Result DEFAULT_RESULT = {0, true};
+const static Result DEFAULT_RESULT = {0, ""};
 
 
 //typedef std::variant<int, double, std::vector<double>> Value;
@@ -47,6 +48,14 @@ typedef struct Op {
 Result noOp(std::stack<Op> &ops, std::stack<Value> &values);
 
 Result opAdd(std::stack<Op> &ops, std::stack<Value> &values);
+
+Value addToSet(const double &a, std::vector<double> &b);
+
+Value subtractFromSet(const double &a, std::vector<double> &b);
+
+Value addVectors(std::vector<double> &v1, std::vector<double> &v2);
+
+Value subtractVectors(std::vector<double> &v1, std::vector<double> &v2);
 
 Result opSub(std::stack<Op> &ops, std::stack<Value> &values);
 

@@ -92,7 +92,7 @@ int main() {
                 }
                 std::cout << brackets[1] << std::endl;
             } else if (const double *dval = std::get_if<double>(&global_variables[command].num)) {
-                printf("Result: %.3f\n", *dval);
+                printf("Result: %.20f\n", *dval);
                 fflush(stdout);
             } else if (const int *ival = std::get_if<int>(&global_variables[command].num)) {
                 printf("Result: %d\n", *ival);
@@ -122,7 +122,7 @@ int main() {
                 }
                 std::cout << brackets[1] << std::endl;
             } else if (const double *dval = std::get_if<double>(&val.num)) {
-                printf("Result: %.3f\n", *dval);
+                printf("Result: %.20f\n", *dval);
                 fflush(stdout);
             } else if (const int *ival = std::get_if<int>(&val.num)) {
                 printf("Result: %d\n", *ival);
@@ -186,8 +186,8 @@ Value applyOps(std::stack<Op> &ops, std::stack<Value> &values) {
     double result = 0;
     if (operations.count(op.token)) {
         Result res = op.func(ops, values);
-        if (res.error) {
-            printf("Error\n");
+        if (!res.error.empty()) {
+            printf("%s\n", res.error.c_str());
         }
         return res.num;
     } else if (functions.find(op.token) != functions.end()) {
@@ -272,12 +272,12 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
                     number.push_back('.');
                     number.append(decimal);
                 }
-                if (decimal.empty()) {
-                    values.push(std::stoi(number));
-                } else {
-                    values.push(std::stod(number));
-                }
-//                values.push(std::stod(number));
+//                if (decimal.empty()) {
+//                    values.push(std::stoi(number));
+//                } else {
+//                    values.push(std::stod(number));
+//                }
+                values.push(std::stod(number));
                 i--;
             }
         } else if (token == '!') {
