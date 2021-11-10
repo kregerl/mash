@@ -4,6 +4,7 @@
 #include <variant>
 #include <vector>
 #include <optional>
+#include "Collection1D.h"
 
 #define NONE 0x0
 #define INTEGER 0x01
@@ -16,12 +17,21 @@
 class Value {
 public:
     Value();
+
     Value(int n, int valueType = INTEGER);
+
     Value(double n, int valueType = DOUBLE);
+
+    Value(Vector n);
+
+    Value(Set n);
+
     Value(std::vector<double> n, int valueType);
+
     ~Value() = default;
+
 public:
-    std::variant<int, double, std::vector<double>> num;
+    std::variant<int, double, Vector, Set> num;
     int type;
 
 };

@@ -84,6 +84,12 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/mnt/c/Users/kregerl/CLionProjects/mash/src/Collection1D.cpp">
+			<Option target="mash"/>
+		</Unit>
+		<Unit filename="/mnt/c/Users/kregerl/CLionProjects/mash/src/Collection1D.h">
+			<Option target="mash"/>
+		</Unit>
 		<Unit filename="/mnt/c/Users/kregerl/CLionProjects/mash/src/Operations.cpp">
 			<Option target="mash"/>
 		</Unit>

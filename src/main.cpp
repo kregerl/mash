@@ -73,26 +73,19 @@ int main() {
                 global_variables[var] = evaluate(expression);
             }
         } else if (global_variables.find(command) != global_variables.end()) {
+            // TODO: Replace this with Set and Vector get_ifs.
             // If a command is a global variable.
-            if (const std::vector<double> *vec = std::get_if<std::vector<double>>(&global_variables[command].num)) {
-                std::array<char, 2> brackets = {};
-                if ((global_variables[command].type & VECTOR) == VECTOR) {
-                    brackets = {'[', ']'};
-                } else if ((global_variables[command].type & SET) == SET) {
-                    brackets = {'{', '}'};
-                }
-
-                std::cout << brackets[0];
-                for (int i = vec->size() - 1; i >= 0; i--) {
-                    if (i > 0) {
-                        std::cout << vec->at(i) << ", ";
-                    } else {
-                        std::cout << vec->at(i);
-                    }
-                }
-                std::cout << brackets[1] << std::endl;
+            if (const Vector *vec = std::get_if<Vector>(&global_variables[command].num)) {
+                std::cout << '[';
+                std::cout << *vec << std::endl;
+                std::cout << ']' << std::endl;
+            } else if (const Set *set = std::get_if<Set>(&global_variables[command].num)) {
+                std::cout << '{';
+                std::cout << *vec << std::endl;
+                std::cout << '}' << std::endl;
             } else if (const double *dval = std::get_if<double>(&global_variables[command].num)) {
-                printf("Result: %.20f\n", *dval);
+
+                printf("Result: %.3f\n", *dval);
                 fflush(stdout);
             } else if (const int *ival = std::get_if<int>(&global_variables[command].num)) {
                 printf("Result: %d\n", *ival);
@@ -104,25 +97,16 @@ int main() {
         } else {
             // Otherwise just evaluate expression.
             Value val = evaluate(command);
-            if (const std::vector<double> *vec = std::get_if<std::vector<double>>(&val.num)) {
-                std::array<char, 2> brackets = {};
-                if ((val.type & VECTOR) == VECTOR) {
-                    brackets = {'[', ']'};
-                } else if ((val.type & SET) == SET) {
-                    brackets = {'{', '}'};
-                }
-
-                std::cout << brackets[0];
-                for (int i = vec->size() - 1; i >= 0; i--) {
-                    if (i > 0) {
-                        std::cout << vec->at(i) << ", ";
-                    } else {
-                        std::cout << vec->at(i);
-                    }
-                }
-                std::cout << brackets[1] << std::endl;
+            if (const Vector *vec = std::get_if<Vector>(&val.num)) {
+                std::cout << '[';
+                std::cout << *vec;
+                std::cout << ']' << std::endl;
+            } else if (const Set *set = std::get_if<Set>(&val.num)) {
+                std::cout << '{';
+                std::cout << *vec;
+                std::cout << '}' << std::endl;
             } else if (const double *dval = std::get_if<double>(&val.num)) {
-                printf("Result: %.20f\n", *dval);
+                printf("Result: %.3f\n", *dval);
                 fflush(stdout);
             } else if (const int *ival = std::get_if<int>(&val.num)) {
                 printf("Result: %d\n", *ival);

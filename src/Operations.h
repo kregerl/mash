@@ -7,8 +7,7 @@
 #include <functional>
 #include <unordered_map>
 #include <cmath>
-#include <variant>
-
+#include "Collection1D.h"
 #include "Value.h"
 
 /**

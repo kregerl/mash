@@ -123,6 +123,33 @@ mash/fast:
 	$(MAKE) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/build
 .PHONY : mash/fast
 
+src/Collection1D.o: src/Collection1D.cpp.o
+
+.PHONY : src/Collection1D.o
+
+# target to build an object file
+src/Collection1D.cpp.o:
+	$(MAKE) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Collection1D.cpp.o
+.PHONY : src/Collection1D.cpp.o
+
+src/Collection1D.i: src/Collection1D.cpp.i
+
+.PHONY : src/Collection1D.i
+
+# target to preprocess a source file
+src/Collection1D.cpp.i:
+	$(MAKE) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Collection1D.cpp.i
+.PHONY : src/Collection1D.cpp.i
+
+src/Collection1D.s: src/Collection1D.cpp.s
+
+.PHONY : src/Collection1D.s
+
+# target to generate assembly for a file
+src/Collection1D.cpp.s:
+	$(MAKE) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Collection1D.cpp.s
+.PHONY : src/Collection1D.cpp.s
+
 src/Operations.o: src/Operations.cpp.o
 
 .PHONY : src/Operations.o
@@ -213,6 +240,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... mash"
 	@echo "... edit_cache"
+	@echo "... src/Collection1D.o"
+	@echo "... src/Collection1D.i"
+	@echo "... src/Collection1D.s"
 	@echo "... src/Operations.o"
 	@echo "... src/Operations.i"
 	@echo "... src/Operations.s"
