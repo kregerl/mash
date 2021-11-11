@@ -1,4 +1,6 @@
 #include "Operations.h"
+#include "Set.h"
+#include "Vector.h"
 
 Result noOp(std::stack<Op> &ops, std::stack<Value> &values) {
     ops.pop();
@@ -58,63 +60,18 @@ Result opAdd(std::stack<Op> &ops, std::stack<Value> &values) {
         Value num2 = values.top();
         values.pop();
 
-//        result.num = std::visit(overload{
-//                [](int &a, int &b) -> Value { return a + b; },
-//                [](int &a, double &b) -> Value { return a + b; },
-//                [&result, &num2](int &a, std::vector<double> &b) -> Value {
-//                    if ((num2.type & SET) == SET) {
-//                        return addToSet(static_cast<double>(a), b);
-//                    } else {
-//                        result.error = "Cannot add a vector and integer.";
-//                        return 0;
-//                    }
-//                },
-//                [](double &a, int &b) -> Value { return a + b; },
-//                [](double &a, double &b) -> Value { return a + b; },
-//                [&result, &num2](double &a, std::vector<double> &b) -> Value {
-//                    if ((num2.type & SET) == SET) {
-//                        return addToSet(a, b);
-//                    } else {
-//                        result.error = "Cannot add a vector and double.";
-//                        return 0;
-//                    }
-//                },
-//                [&result, &num1](std::vector<double> &a, int &b) -> Value {
-//                    if ((num1.type & SET) == SET) {
-//                        return addToSet(static_cast<double>(b), a);
-//                    } else {
-//                        result.error = "Cannot add a vector and integer.";
-//                        return 0;
-//                    }
-//                },
-//                [&result, &num1](std::vector<double> &a, double &b) -> Value {
-//                    if ((num1.type & SET) == SET) {
-//                        return addToSet(b, a);
-//                    } else {
-//                        result.error = "Cannot add a vector and double.";
-//                        return 0;
-//                    }
-//                },
-//                [&result, &num1, &num2](std::vector<double> &a, std::vector<double> &b) -> Value {
-//                    if ((num1.type & SET) == SET && (num2.type & SET) == SET) {
-//                        std::reverse(a.begin(), a.end());
-//                        for (auto &val: a) {
-//                            addToSet(val, b);
-//                        }
-//                        return {b, SET};
-//                    } else if ((num1.type & VECTOR) == VECTOR && (num2.type & VECTOR) == VECTOR) {
-//                        if (a.size() == b.size()) {
-//                            return addVectors(a, b);
-//                        } else {
-//                            result.error = "Cannot add vectors of different dimensions.";
-//                            return 0;
-//                        }
-//                    } else {
-//                        result.error = "Cannot add vectors and sets.";
-//                        return 0;
-//                    }
-//                }
-//        }, num1.num, num2.num);
+        result.num = std::visit(overload{
+                [](int &a, int &b) -> Value { return a + b; },
+                [](int &a, double &b) -> Value { return a + b; },
+                [](double &a, int &b) -> Value { return a + b; },
+                [](double &a, double &b) -> Value { return a + b; },
+                [](Vector &a, Vector &b) -> Value { return a + b; },
+                [](Set &a, Set &b) -> Value { return a + b; },
+                [&result](auto &a, auto &b) -> Value {
+                    result.error = "Unsupported opperation";
+                    return 0;
+                }
+        }, num1.num, num2.num);
     }
     return result;
 }
@@ -129,63 +86,18 @@ Result opSub(std::stack<Op> &ops, std::stack<Value> &values) {
         Value num2 = values.top();
         values.pop();
 
-//        result.num = std::visit(overload{
-//                [](int &a, int &b) -> Value { return a - b; },
-//                [](int &a, double &b) -> Value { return a - b; },
-//                [&result, &num2](int &a, std::vector<double> &b) -> Value {
-//                    if ((num2.type & SET) == SET) {
-//                        return subtractFromSet(static_cast<double>(a), b);
-//                    } else {
-//                        result.error = "Cannot add a vector and integer.";
-//                        return 0;
-//                    }
-//                },
-//                [](double &a, int &b) -> Value { return a - b; },
-//                [](double &a, double &b) -> Value { return a - b; },
-//                [&result, &num2](double &a, std::vector<double> &b) -> Value {
-//                    if ((num2.type & SET) == SET) {
-//                        return subtractFromSet(a, b);
-//                    } else {
-//                        result.error = "Cannot add a vector and double.";
-//                        return 0;
-//                    }
-//                },
-//                [&result, &num1](std::vector<double> &a, int &b) -> Value {
-//                    if ((num1.type & SET) == SET) {
-//                        return subtractFromSet(static_cast<double>(b), a);
-//                    } else {
-//                        result.error = "Cannot add a vector and integer.";
-//                        return 0;
-//                    }
-//                },
-//                [&result, &num1](std::vector<double> &a, double &b) -> Value {
-//                    if ((num1.type & SET) == SET) {
-//                        return subtractFromSet(b, a);
-//                    } else {
-//                        result.error = "Cannot add a vector and double.";
-//                        return 0;
-//                    }
-//                },
-//                [&result, &num1, &num2](std::vector<double> &a, std::vector<double> &b) -> Value {
-//                    if ((num1.type & SET) == SET && (num2.type & SET) == SET) {
-//                        std::reverse(a.begin(), a.end());
-//                        for (auto &val: a) {
-//                            subtractFromSet(val, b);
-//                        }
-//                        return {b, SET};
-//                    } else if ((num1.type & VECTOR) == VECTOR && (num2.type & VECTOR) == VECTOR) {
-//                        if (a.size() == b.size()) {
-//                            return subtractVectors(a, b);
-//                        } else {
-//                            result.error = "Cannot add vectors of different dimensions.";
-//                            return 0;
-//                        }
-//                    } else {
-//                        result.error = "Cannot add vectors and sets.";
-//                        return 0;
-//                    }
-//                }
-//        }, num1.num, num2.num);
+        result.num = std::visit(overload{
+                [](int &a, int &b) -> Value { return a - b; },
+                [](int &a, double &b) -> Value { return a - b; },
+                [](double &a, int &b) -> Value { return a - b; },
+                [](double &a, double &b) -> Value { return b - a; },
+                [](Vector &a, Vector &b) -> Value { return b - a; },
+                [](Set &a, Set &b) -> Value { return b - a; },
+                [&result](auto &a, auto &b) -> Value {
+                    result.error = "Unsupported opperation";
+                    return 0;
+                }
+        }, num1.num, num2.num);
     } else if (!values.empty()) {
         // TODO: Remove this entirely or find a reason for keeping it
 //        Value num = values.top();

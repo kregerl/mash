@@ -177,6 +177,33 @@ src/Operations.cpp.s:
 	$(MAKE) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Operations.cpp.s
 .PHONY : src/Operations.cpp.s
 
+src/Set.o: src/Set.cpp.o
+
+.PHONY : src/Set.o
+
+# target to build an object file
+src/Set.cpp.o:
+	$(MAKE) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Set.cpp.o
+.PHONY : src/Set.cpp.o
+
+src/Set.i: src/Set.cpp.i
+
+.PHONY : src/Set.i
+
+# target to preprocess a source file
+src/Set.cpp.i:
+	$(MAKE) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Set.cpp.i
+.PHONY : src/Set.cpp.i
+
+src/Set.s: src/Set.cpp.s
+
+.PHONY : src/Set.s
+
+# target to generate assembly for a file
+src/Set.cpp.s:
+	$(MAKE) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Set.cpp.s
+.PHONY : src/Set.cpp.s
+
 src/Value.o: src/Value.cpp.o
 
 .PHONY : src/Value.o
@@ -203,6 +230,33 @@ src/Value.s: src/Value.cpp.s
 src/Value.cpp.s:
 	$(MAKE) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Value.cpp.s
 .PHONY : src/Value.cpp.s
+
+src/Vector.o: src/Vector.cpp.o
+
+.PHONY : src/Vector.o
+
+# target to build an object file
+src/Vector.cpp.o:
+	$(MAKE) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Vector.cpp.o
+.PHONY : src/Vector.cpp.o
+
+src/Vector.i: src/Vector.cpp.i
+
+.PHONY : src/Vector.i
+
+# target to preprocess a source file
+src/Vector.cpp.i:
+	$(MAKE) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Vector.cpp.i
+.PHONY : src/Vector.cpp.i
+
+src/Vector.s: src/Vector.cpp.s
+
+.PHONY : src/Vector.s
+
+# target to generate assembly for a file
+src/Vector.cpp.s:
+	$(MAKE) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Vector.cpp.s
+.PHONY : src/Vector.cpp.s
 
 src/main.o: src/main.cpp.o
 
@@ -246,9 +300,15 @@ help:
 	@echo "... src/Operations.o"
 	@echo "... src/Operations.i"
 	@echo "... src/Operations.s"
+	@echo "... src/Set.o"
+	@echo "... src/Set.i"
+	@echo "... src/Set.s"
 	@echo "... src/Value.o"
 	@echo "... src/Value.i"
 	@echo "... src/Value.s"
+	@echo "... src/Vector.o"
+	@echo "... src/Vector.i"
+	@echo "... src/Vector.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

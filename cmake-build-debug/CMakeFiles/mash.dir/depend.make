@@ -3,20 +3,40 @@
 
 CMakeFiles/mash.dir/src/Collection1D.cpp.o: ../src/Collection1D.cpp
 CMakeFiles/mash.dir/src/Collection1D.cpp.o: ../src/Collection1D.h
+CMakeFiles/mash.dir/src/Collection1D.cpp.o: ../src/Set.h
 CMakeFiles/mash.dir/src/Collection1D.cpp.o: ../src/Value.h
+CMakeFiles/mash.dir/src/Collection1D.cpp.o: ../src/Vector.h
 
 CMakeFiles/mash.dir/src/Operations.cpp.o: ../src/Collection1D.h
 CMakeFiles/mash.dir/src/Operations.cpp.o: ../src/Operations.cpp
 CMakeFiles/mash.dir/src/Operations.cpp.o: ../src/Operations.h
+CMakeFiles/mash.dir/src/Operations.cpp.o: ../src/Set.h
 CMakeFiles/mash.dir/src/Operations.cpp.o: ../src/Value.h
+CMakeFiles/mash.dir/src/Operations.cpp.o: ../src/Vector.h
+
+CMakeFiles/mash.dir/src/Set.cpp.o: ../src/Collection1D.h
+CMakeFiles/mash.dir/src/Set.cpp.o: ../src/Set.cpp
+CMakeFiles/mash.dir/src/Set.cpp.o: ../src/Set.h
+CMakeFiles/mash.dir/src/Set.cpp.o: ../src/Value.h
+CMakeFiles/mash.dir/src/Set.cpp.o: ../src/Vector.h
 
 CMakeFiles/mash.dir/src/Value.cpp.o: ../src/Collection1D.h
+CMakeFiles/mash.dir/src/Value.cpp.o: ../src/Set.h
 CMakeFiles/mash.dir/src/Value.cpp.o: ../src/Value.cpp
 CMakeFiles/mash.dir/src/Value.cpp.o: ../src/Value.h
+CMakeFiles/mash.dir/src/Value.cpp.o: ../src/Vector.h
+
+CMakeFiles/mash.dir/src/Vector.cpp.o: ../src/Collection1D.h
+CMakeFiles/mash.dir/src/Vector.cpp.o: ../src/Set.h
+CMakeFiles/mash.dir/src/Vector.cpp.o: ../src/Value.h
+CMakeFiles/mash.dir/src/Vector.cpp.o: ../src/Vector.cpp
+CMakeFiles/mash.dir/src/Vector.cpp.o: ../src/Vector.h
 
 CMakeFiles/mash.dir/src/main.cpp.o: ../src/Collection1D.h
 CMakeFiles/mash.dir/src/main.cpp.o: ../src/Operations.h
+CMakeFiles/mash.dir/src/main.cpp.o: ../src/Set.h
 CMakeFiles/mash.dir/src/main.cpp.o: ../src/Value.h
+CMakeFiles/mash.dir/src/main.cpp.o: ../src/Vector.h
 CMakeFiles/mash.dir/src/main.cpp.o: ../src/main.cpp
 CMakeFiles/mash.dir/src/main.cpp.o: ../src/main.h
 

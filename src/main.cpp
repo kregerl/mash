@@ -7,6 +7,15 @@ std::unordered_map<std::string, Function> functions;
 
 int main() {
 //    tests();
+    std::vector<double> l1 = {1.1, 2, 3, 4.2, 5.2532};
+    std::vector<double> l2 = {1.1, 3.2, 5.2532};
+    Set v1 = Set(l1);
+    Set v2 = Set(l2);
+    Set v3 = v1 - v2;
+    std::cout << v3 << std::endl;
+    std::cout << v3.getInternalType() << std::endl;
+
+
     printf("Number of operators: %d\nNumber of constants: %d\n", operations.size(), constants.size());
     fflush(stdout);
 
@@ -68,23 +77,17 @@ int main() {
                 exit(1);
             } else if (functionSignature.find('(') == std::string::npos ||
                        functionSignature.find(')') == std::string::npos) {
-                // No-op, just to prevent functions from being read as variables.
+                // prevent functions from being read as variables.
                 std::string expression = command.substr(eqPos + 1);
                 global_variables[var] = evaluate(expression);
             }
         } else if (global_variables.find(command) != global_variables.end()) {
-            // TODO: Replace this with Set and Vector get_ifs.
             // If a command is a global variable.
             if (const Vector *vec = std::get_if<Vector>(&global_variables[command].num)) {
-                std::cout << '[';
                 std::cout << *vec << std::endl;
-                std::cout << ']' << std::endl;
             } else if (const Set *set = std::get_if<Set>(&global_variables[command].num)) {
-                std::cout << '{';
                 std::cout << *vec << std::endl;
-                std::cout << '}' << std::endl;
             } else if (const double *dval = std::get_if<double>(&global_variables[command].num)) {
-
                 printf("Result: %.3f\n", *dval);
                 fflush(stdout);
             } else if (const int *ival = std::get_if<int>(&global_variables[command].num)) {
@@ -98,13 +101,9 @@ int main() {
             // Otherwise just evaluate expression.
             Value val = evaluate(command);
             if (const Vector *vec = std::get_if<Vector>(&val.num)) {
-                std::cout << '[';
-                std::cout << *vec;
-                std::cout << ']' << std::endl;
+                std::cout << *vec << std::endl;
             } else if (const Set *set = std::get_if<Set>(&val.num)) {
-                std::cout << '{';
-                std::cout << *vec;
-                std::cout << '}' << std::endl;
+                std::cout << *set << std::endl;
             } else if (const double *dval = std::get_if<double>(&val.num)) {
                 printf("Result: %.3f\n", *dval);
                 fflush(stdout);
@@ -201,6 +200,24 @@ bool hasPrecedence(const Op &op1, const Op &op2) {
     return op1.precedence <= op2.precedence;
 }
 
+std::string oppositeToken(const char &token) {
+    switch (token) {
+        case '[': {
+            return "]";
+        }
+        case ']': {
+            return "[";
+        }
+        case '{': {
+            return "}";
+        }
+        case '}': {
+            return "{";
+        }
+    }
+    return {1, token};
+}
+
 /**
  * Evaluate will evaluate the expression with the global variable map.
  * @param expression The expression to evaluate
@@ -218,13 +235,6 @@ Value evaluate(const std::string &expression) {
  */
 Value evaluate(const std::string &expression, std::unordered_map<std::string, Value> &variables) {
     std::stack<Value> values;
-//    std::stack<Value> vals;
-//    std::vector<double> vec = {10.0, 9, 8, 7, 6, 5};
-//    vals.push(vec);
-//    Value v = vals.top();
-//    for (auto &num : *std::get_if<std::vector<double>>(&v)) {
-//        std::cout << num << std::endl;
-//    }
     std::stack<Op> ops;
     for (int i = 0; i < expression.length(); i++) {
         char token = expression[i];
@@ -256,12 +266,11 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
                     number.push_back('.');
                     number.append(decimal);
                 }
-//                if (decimal.empty()) {
-//                    values.push(std::stoi(number));
-//                } else {
-//                    values.push(std::stod(number));
-//                }
-                values.push(std::stod(number));
+                if (decimal.empty()) {
+                    values.push(std::stoi(number));
+                } else {
+                    values.push(std::stod(number));
+                }
                 i--;
             }
         } else if (token == '!') {
@@ -297,35 +306,52 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
                 }
             }
         } else if (token == ']' || token == '}') {
-//            if ((values.top().type & INTEGER) == INTEGER) {
-//
-//            } else if ((values.top().type & DOUBLE) == DOUBLE) {
-//
-//            }
-            std::vector<double> val;
+            Collection1D collection;
             if (!values.empty()) {
-                val.emplace_back(std::get<double>(values.top().num));
-                values.pop();
+                // Only place ints and doubles in the collection
+                std::visit(overload{
+                        [&collection, &values](int &num) {
+                            collection.emplace_back(num);
+                            values.pop();
+                        },
+                        [&collection, &values](double &num) {
+                            collection.emplace_back(num);
+                            values.pop();
+                        },
+                        [](auto &num) {
+//                            No op
+                        }
+                }, values.top().num);
             }
-            while (ops.top().token != "[" && ops.top().token != "{") {
+            while (ops.top().token != oppositeToken(token)) {
                 Op op = ops.top();
+                // numbers seperated by commas.
                 if (op.token == ",") {
                     ops.pop();
                     if (!values.empty()) {
-                        val.emplace_back(std::get<double>(values.top().num));
-                        values.pop();
+                        // Only place ints and doubles in the collection
+                        std::visit(overload{
+                                [&collection, &values](int &num) {
+                                    collection.emplace_back(num);
+                                    values.pop();
+                                },
+                                [&collection, &values](double &num) {
+                                    collection.emplace_back(num);
+                                    values.pop();
+                                },
+                                [](auto &num) {
+//                            No op
+                                }
+                        }, values.top().num);
                     }
                 }
             }
             Op top = ops.top();
             ops.pop();
-            if (token == ']' && top.token == "[") {
-                values.push({val, VECTOR});
-            } else if (token == '}' && top.token == "{") {
-                values.push({val, SET});
-            } else {
-                fprintf(stderr, "Syntax Error: missing bracket\n");
-                fflush(stderr);
+            if (token == ']' && top.token == oppositeToken(token)) {
+                values.push(Vector(collection));
+            } else if (token == '}' && top.token == oppositeToken(token)) {
+                values.push(Set(collection));
             }
 
         } else if (token == '+' || token == '-' || token == '*' || token == '/' || token == '%' || token == '^' ||
@@ -381,3 +407,5 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
     return result;
 
 }
+
+
