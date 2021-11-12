@@ -9,6 +9,8 @@
 #include <cmath>
 #include "Value.h"
 
+
+
 /**
  * precedence
  * - Bracket and seperator characters -1
@@ -25,19 +27,18 @@
 // Add a string for when an operation errors.
 typedef struct {
     Value num;
-    std::string error;
+    std::optional<std::string> error;
 //    bool error;
 //    OutputType type;
 } Result;
-const static Result DEFAULT_RESULT = {0, ""};
+const static Result DEFAULT_RESULT = {0};
 
 
 //typedef std::variant<int, double, std::vector<double>> Value;
 
 typedef struct Op {
-//    std::vector<int> validValueTypes;
-    int precedence;
     int num_params;
+    int precedence;
     std::string token;
     std::vector<int> validValueTypes;
     std::function<Result(std::stack<struct Op> &, std::stack<Value> &)> func;

@@ -7,8 +7,6 @@ class Vector : public Collection1D {
 public:
     Vector() = default;
 
-    Vector(std::vector<int> &num);
-
     Vector(std::vector<double> &num);
 
     Vector(Collection1D &num);
@@ -26,6 +24,10 @@ public:
     Vector add(const Vector &vec);
 
     Vector sub(const Vector &vec);
+
+    Vector scalarMul(const double &val);
+
+    double dot(const Vector &vec);
 
 };
 

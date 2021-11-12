@@ -81,17 +81,17 @@ int main() {
                 std::string expression = command.substr(eqPos + 1);
                 global_variables[var] = evaluate(expression);
             }
+            std::cout << std::endl;
         } else if (global_variables.find(command) != global_variables.end()) {
             // If a command is a global variable.
             if (const Vector *vec = std::get_if<Vector>(&global_variables[command].num)) {
                 std::cout << *vec << std::endl;
+//                std::cout << vec->getInternalType() << std::endl;
             } else if (const Set *set = std::get_if<Set>(&global_variables[command].num)) {
-                std::cout << *vec << std::endl;
+                std::cout << *set << std::endl;
+//                std::cout << set->getInternalType() << std::endl;
             } else if (const double *dval = std::get_if<double>(&global_variables[command].num)) {
-                printf("Result: %.3f\n", *dval);
-                fflush(stdout);
-            } else if (const int *ival = std::get_if<int>(&global_variables[command].num)) {
-                printf("Result: %d\n", *ival);
+                printf("Result: %.3f\nType: %d\n", *dval, global_variables[command].type);
                 fflush(stdout);
             }
 
@@ -102,13 +102,12 @@ int main() {
             Value val = evaluate(command);
             if (const Vector *vec = std::get_if<Vector>(&val.num)) {
                 std::cout << *vec << std::endl;
+//                std::cout << vec->getInternalType() << std::endl;
             } else if (const Set *set = std::get_if<Set>(&val.num)) {
                 std::cout << *set << std::endl;
+//                std::cout << set->getInternalType() << std::endl;
             } else if (const double *dval = std::get_if<double>(&val.num)) {
-                printf("Result: %.3f\n", *dval);
-                fflush(stdout);
-            } else if (const int *ival = std::get_if<int>(&val.num)) {
-                printf("Result: %d\n", *ival);
+                printf("Result: %.3f\nType: %d\n", *dval, val.type);
                 fflush(stdout);
             }
         }
@@ -169,8 +168,8 @@ Value applyOps(std::stack<Op> &ops, std::stack<Value> &values) {
     double result = 0;
     if (operations.count(op.token)) {
         Result res = op.func(ops, values);
-        if (!res.error.empty()) {
-            printf("%s\n", res.error.c_str());
+        if (res.error) {
+            printf("%s\n", res.error->c_str());
         }
         return res.num;
     } else if (functions.find(op.token) != functions.end()) {
@@ -213,6 +212,12 @@ std::string oppositeToken(const char &token) {
         }
         case '}': {
             return "{";
+        }
+        case '(': {
+            return ")";
+        }
+        case ')': {
+            return "(";
         }
     }
     return {1, token};
@@ -266,11 +271,8 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
                     number.push_back('.');
                     number.append(decimal);
                 }
-                if (decimal.empty()) {
-                    values.push(std::stoi(number));
-                } else {
-                    values.push(std::stod(number));
-                }
+                // TODO: If decimal is empty, push the double with a value type of INTEGER.
+                values.push(std::stod(number));
                 i--;
             }
         } else if (token == '!') {
@@ -285,7 +287,7 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
             ops.push(operations.at(std::string(1, token)));
         } else if (token == ')') {
             int counter = 0;
-            while (ops.top().token != "(") {
+            while (ops.top().token != oppositeToken(token)) {
                 Op op = ops.top();
                 if (op.token == ",") {
                     counter++;
@@ -308,12 +310,8 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
         } else if (token == ']' || token == '}') {
             Collection1D collection;
             if (!values.empty()) {
-                // Only place ints and doubles in the collection
+                // Only place doubles in the collection
                 std::visit(overload{
-                        [&collection, &values](int &num) {
-                            collection.emplace_back(num);
-                            values.pop();
-                        },
                         [&collection, &values](double &num) {
                             collection.emplace_back(num);
                             values.pop();
@@ -329,12 +327,8 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
                 if (op.token == ",") {
                     ops.pop();
                     if (!values.empty()) {
-                        // Only place ints and doubles in the collection
+                        // Only place doubles in the collection
                         std::visit(overload{
-                                [&collection, &values](int &num) {
-                                    collection.emplace_back(num);
-                                    values.pop();
-                                },
                                 [&collection, &values](double &num) {
                                     collection.emplace_back(num);
                                     values.pop();

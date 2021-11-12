@@ -1,20 +1,28 @@
+
+# Consider dependencies only in project.
+set(CMAKE_DEPENDS_IN_PROJECT_ONLY OFF)
+
 # The set of languages for which implicit dependencies are needed:
 set(CMAKE_DEPENDS_LANGUAGES
   "CXX"
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/mnt/c/Users/kregerl/CLionProjects/mash/src/Collection1D.cpp" "/mnt/c/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Collection1D.cpp.o"
-  "/mnt/c/Users/kregerl/CLionProjects/mash/src/Operations.cpp" "/mnt/c/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Operations.cpp.o"
-  "/mnt/c/Users/kregerl/CLionProjects/mash/src/Set.cpp" "/mnt/c/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Set.cpp.o"
-  "/mnt/c/Users/kregerl/CLionProjects/mash/src/Value.cpp" "/mnt/c/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Value.cpp.o"
-  "/mnt/c/Users/kregerl/CLionProjects/mash/src/Vector.cpp" "/mnt/c/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Vector.cpp.o"
-  "/mnt/c/Users/kregerl/CLionProjects/mash/src/main.cpp" "/mnt/c/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/main.cpp.o"
+  "C:/Users/kregerl/CLionProjects/mash/src/Collection1D.cpp" "C:/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Collection1D.cpp.obj"
+  "C:/Users/kregerl/CLionProjects/mash/src/Operations.cpp" "C:/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Operations.cpp.obj"
+  "C:/Users/kregerl/CLionProjects/mash/src/Set.cpp" "C:/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Set.cpp.obj"
+  "C:/Users/kregerl/CLionProjects/mash/src/Value.cpp" "C:/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Value.cpp.obj"
+  "C:/Users/kregerl/CLionProjects/mash/src/Vector.cpp" "C:/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Vector.cpp.obj"
+  "C:/Users/kregerl/CLionProjects/mash/src/main.cpp" "C:/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/main.cpp.obj"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
+  )
+
+# The set of dependency files which are needed:
+set(CMAKE_DEPENDS_DEPENDENCY_FILES
   )
 
 # Targets to which this target links.

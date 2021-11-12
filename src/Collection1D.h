@@ -6,17 +6,9 @@
 #include <ostream>
 
 
-template<class... Ts>
-struct overload : Ts ... {
-    using Ts::operator()...;
-};
-template<class... Ts> overload(Ts...) -> overload<Ts...>;
-
 class Collection1D {
 public:
     Collection1D() = default;
-
-    explicit Collection1D(std::vector<int> &num);
 
     explicit Collection1D(std::vector<double> &num);
 
@@ -26,17 +18,15 @@ public:
 
     virtual int getInternalType() const;
 
-    std::variant<std::vector<int>, std::vector<double>> &getValue();
+    std::vector<double> &getValue();
 
-    std::variant<std::vector<int>, std::vector<double>> getValue() const;
-
-    virtual void emplace_back(int n);
+    std::vector<double> getValue() const;
 
     virtual void emplace_back(double n);
 
 protected:
     int m_internalType;
-    std::variant<std::vector<int>, std::vector<double>> m_value;
+    std::vector<double> m_value;
 
 };
 

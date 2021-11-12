@@ -1,6 +1,5 @@
 #include "Operations.h"
-#include "Set.h"
-#include "Vector.h"
+
 
 Result noOp(std::stack<Op> &ops, std::stack<Value> &values) {
     ops.pop();
@@ -61,9 +60,6 @@ Result opAdd(std::stack<Op> &ops, std::stack<Value> &values) {
         values.pop();
 
         result.num = std::visit(overload{
-                [](int &a, int &b) -> Value { return a + b; },
-                [](int &a, double &b) -> Value { return a + b; },
-                [](double &a, int &b) -> Value { return a + b; },
                 [](double &a, double &b) -> Value { return a + b; },
                 [](Vector &a, Vector &b) -> Value { return a + b; },
                 [](Set &a, Set &b) -> Value { return a + b; },
@@ -87,9 +83,6 @@ Result opSub(std::stack<Op> &ops, std::stack<Value> &values) {
         values.pop();
 
         result.num = std::visit(overload{
-                [](int &a, int &b) -> Value { return a - b; },
-                [](int &a, double &b) -> Value { return a - b; },
-                [](double &a, int &b) -> Value { return a - b; },
                 [](double &a, double &b) -> Value { return b - a; },
                 [](Vector &a, Vector &b) -> Value { return b - a; },
                 [](Set &a, Set &b) -> Value { return b - a; },
@@ -121,11 +114,25 @@ Result opMul(std::stack<Op> &ops, std::stack<Value> &values) {
     Result result = DEFAULT_RESULT;
     ops.pop();
     if (values.size() >= 2) {
-        double num1 = *std::get_if<double>(&values.top().num);
+        Value num1 = values.top();
         values.pop();
-        double num2 = *std::get_if<double>(&values.top().num);
+        Value num2 = values.top();
         values.pop();
-        result.num = num1 * num2;
+
+        result.num = std::visit(overload{
+                [](double &a, double &b) -> Value { return b * a; },
+                [](double &a, Vector &b) -> Value { return b.scalarMul(a); },
+                [](double &a, Set &b) -> Value { return b.scalarMul(a); },
+                [](Vector &a, double &b) -> Value { return a.scalarMul(b); },
+                [](Vector &a, Vector &b) -> Value { return a.dot(b); },
+                [](Set &a, double &b) -> Value { return a.scalarMul(b); },
+                [](Set &a, Set &b) -> Value { return a.cartesianProduct(b); },
+                [&result](auto &a, auto &b) -> Value {
+                    result.error = "Unsupported opperation";
+                    return 0;
+                }
+        }, num1.num, num2.num);
+
     }
     return result;
 }
@@ -263,10 +270,7 @@ Result opFactorial(std::stack<Op> &ops, std::stack<Value> &values) {
     Result result = DEFAULT_RESULT;
     ops.pop();
     if (!values.empty()) {
-        if (const int *inum = std::get_if<int>(&values.top().num)) {
-            values.pop();
-            result.num = factorial(*inum);
-        } else if (const double *dnum = std::get_if<double>(&values.top().num)) {
+        if (const double *dnum = std::get_if<double>(&values.top().num)) {
             values.pop();
             result.num = std::tgamma(1 + (*dnum));
         }

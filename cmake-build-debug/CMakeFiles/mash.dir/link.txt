@@ -1,1 +1,3 @@
-/usr/bin/c++  -g   CMakeFiles/mash.dir/src/main.cpp.o CMakeFiles/mash.dir/src/Operations.cpp.o CMakeFiles/mash.dir/src/Value.cpp.o CMakeFiles/mash.dir/src/Collection1D.cpp.o CMakeFiles/mash.dir/src/Vector.cpp.o CMakeFiles/mash.dir/src/Set.cpp.o  -o mash 
+"C:\Program Files\JetBrains\CLion 2021.1.3\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\mash.dir/objects.a
+C:\PROGRA~1\MINGW-~1\X86_64~2.0-P\mingw64\bin\ar.exe cr CMakeFiles\mash.dir/objects.a @CMakeFiles\mash.dir\objects1.rsp
+C:\PROGRA~1\MINGW-~1\X86_64~2.0-P\mingw64\bin\G__~1.EXE -g -Wl,--whole-archive CMakeFiles\mash.dir/objects.a -Wl,--no-whole-archive -o mash.exe -Wl,--out-implib,libmash.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\mash.dir\linklibs.rsp

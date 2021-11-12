@@ -2,12 +2,13 @@
 #include "Value.h"
 #include <set>
 #include <algorithm>
+#include <iostream>
 
-Set::Set(std::vector<double> &num) : Collection1D(num) {}
+Set::Set() : m_layout(SetLayout::Layout::Single) {}
 
-Set::Set(std::vector<int> &num) : Collection1D(num) {}
+Set::Set(std::vector<double> &num, SetLayout layout) : Collection1D(num), m_layout(layout) {}
 
-Set::Set(Collection1D &num) : Collection1D(num) {}
+Set::Set(Collection1D &num, SetLayout layout) : Collection1D(num), m_layout(layout) {}
 
 int Set::getType() const {
     return SET;
@@ -17,89 +18,106 @@ int Set::getInternalType() const {
     return m_internalType;
 }
 
+const SetLayout &Set::getLayout() const {
+    return m_layout;
+}
+
 std::ostream &operator<<(std::ostream &os, const Set &set) {
-    std::visit(overload{
-            [&os](const auto &set) {
-                os << '{';
-                for (int i = set.size() - 1; i >= 0; i--) {
-                    if (i == 0) {
-                        os << set.at(i);
-                    } else {
-                        os << set.at(i) << ", ";
-                    }
-                }
-                os << '}';
-            }
-    }, set.getValue());
+    std::vector<double> values = set.getValue();
+    set.getLayout().printContents(os, values);
     return os;
 }
 
 Set Set::operator+(const Set &vec) {
     Set tmp(*this);
-    tmp.add(vec);
+    tmp = tmp.add(vec);
     return tmp;
 }
 
 Set Set::operator-(const Set &vec) {
     Set tmp(*this);
-    tmp.sub(vec);
+    tmp = tmp.sub(vec);
     return tmp;
 }
 
 Set Set::add(const Set &set) {
-    return std::visit(overload{
-            [this](std::vector<int> &s1, const std::vector<int> &s2) -> Set {
-                std::set<int> set;
-                for (auto &num1: s1) {
-                    for (auto &num2: s2) {
-                        set.insert(num1 + num2);
-                    }
-                }
-                std::vector<int> vec = std::vector<int>(set.begin(), set.end());
-                m_value = vec;
-                m_internalType = INTEGER;
-                return vec;
-            },
-            [this](auto &s1, const auto &s2) -> Set {
-                std::set<double> set;
-                for (auto &num1: s1) {
-                    for (auto &num2: s2) {
-                        set.insert(num1 + num2);
-                    }
-                }
-                std::vector<double> vec = std::vector<double>(set.begin(), set.end());
-                m_value = vec;
-                m_internalType = DOUBLE;
-                return vec;
-            }
-    }, m_value, set.getValue());
+    std::vector<double> s2 = set.getValue();
+    std::set<double> s;
+    for (auto &num1: m_value) {
+        for (auto &num2: s2) {
+            s.insert(num1 + num2);
+        }
+    }
+    std::vector<double> vec = std::vector<double>(s.begin(), s.end());
+    return Set(vec);
 }
 
 Set Set::sub(const Set &set) {
-    return std::visit(overload{
-            [this](std::vector<int> &s1, const std::vector<int> &s2) -> Set {
-                std::set<int> set;
-                for (int &num: s1) {
-                    if (std::find(s2.begin(), s2.end(), num) == s2.end()) {
-                        set.insert(num);
-                    }
-                }
-                std::vector<int> vec = std::vector<int>(set.begin(), set.end());
-                m_value = vec;
-                m_internalType = INTEGER;
-                return vec;
-            },
-            [this](auto &s1, const auto &s2) -> Set {
-                std::set<double> set;
-                for (auto &num: s1) {
-                    if (std::find(s2.begin(), s2.end(), num) == s2.end()) {
-                        set.insert(num);
-                    }
-                }
-                std::vector<double> vec = std::vector<double>(set.begin(), set.end());
-                m_value = vec;
-                m_internalType = DOUBLE;
-                return vec;
+    std::vector<double> s2 = set.getValue();
+    std::set<double> s;
+    for (auto &num: m_value) {
+        if (std::find(s2.begin(), s2.end(), num) == s2.end()) {
+            s.insert(num);
+        }
+    }
+    std::vector<double> vec = std::vector<double>(s.begin(), s.end());
+    return Set(vec);
+}
+
+Set Set::scalarMul(const double &num) {
+    std::set<double> set;
+    for (auto &s: m_value) {
+        set.insert(s * num);
+    }
+    std::vector<double> vec = std::vector<double>(set.begin(), set.end());
+    return Set(vec);
+}
+
+Set Set::cartesianProduct(const Set &set) {
+    std::vector<double> vec;
+    for (double &s: m_value) {
+        for (double &s1: set.getValue()) {
+            vec.push_back(s);
+            vec.push_back(s1);
+        }
+    }
+    return Set(vec, SetLayout::Layout::Pair);
+}
+
+
+//---------------------
+//----- SetLayout -----
+//---------------------
+SetLayout::SetLayout(SetLayout::Layout layout) : m_layout(layout) {}
+
+void SetLayout::printContents(std::ostream &os, const std::vector<double> &vec) const {
+    if (m_layout == Layout::Single) {
+        os << '{';
+        for (int i = vec.size() - 1; i >= 0; i--) {
+            if (i == 0) {
+                os << vec.at(i);
+            } else {
+                os << vec.at(i) << ", ";
             }
-    }, m_value, set.getValue());
+        }
+        os << '}';
+    } else if (m_layout == Layout::Pair) {
+        if (vec.size() % 2 == 0) {
+            os << '{';
+            for (int i = vec.size() - 1; i >= 0; i--) {
+                if (i >= 1) {
+                    os << '(';
+                    os << vec.at(i);
+                    os << ", " << vec.at(--i);
+                    os << ')';
+                }
+                if (i > 0) {
+                    os << ", ";
+                }
+            }
+            os << '}';
+        } else {
+            os << "Cannot have a pair layout on a set with an odd number of elements";
+        }
+    }
 }

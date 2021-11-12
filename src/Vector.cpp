@@ -3,8 +3,6 @@
 
 Vector::Vector(std::vector<double> &num) : Collection1D(num) {}
 
-Vector::Vector(std::vector<int> &num) : Collection1D(num) {}
-
 Vector::Vector(Collection1D &num) : Collection1D(num) {}
 
 int Vector::getType() const {
@@ -16,78 +14,63 @@ int Vector::getInternalType() const {
 }
 
 std::ostream &operator<<(std::ostream &os, const Vector &vec) {
-    std::visit(overload{
-            [&os](const auto &vec) {
-                os << '[';
-                for (int i = vec.size() - 1; i >= 0; i--) {
-                    if (i == 0) {
-                        os << vec.at(i);
-                    } else {
-                        os << vec.at(i) << ", ";
-                    }
-                }
-                os << ']';
-            }
-    }, vec.getValue());
+    std::vector<double> values = vec.getValue();
+    os << '[';
+    for (int i = values.size() - 1; i >= 0; i--) {
+        if (i == 0) {
+            os << values.at(i);
+        } else {
+            os << values.at(i) << ", ";
+        }
+    }
+    os << ']';
     return os;
 }
 
 Vector Vector::operator+(const Vector &vec) {
     Vector tmp(*this);
-    tmp.add(vec);
+    tmp = tmp.add(vec);
     return tmp;
 }
 
 Vector Vector::operator-(const Vector &vec) {
     Vector tmp(*this);
-    tmp.sub(vec);
+    tmp = tmp.sub(vec);
     return tmp;
 }
 
 Vector Vector::add(const Vector &vec) {
-    return std::visit(overload{
-            [this](std::vector<int> &s1, const std::vector<int> &s2) -> Vector {
-                std::vector<int> vec(s1);
-                for (int i = 0; i < vec.size(); i++) {
-                    vec.at(i) = s1.at(i) + s2.at(i);
-                }
-                m_value = vec;
-                m_internalType = INTEGER;
-                return vec;
-            },
-            [this](auto &s1, const auto &s2) -> Vector {
-                std::vector<double> vec(s1.size());
-                for (int i = 0; i < vec.size(); i++) {
-                    vec.at(i) = s1.at(i) + s2.at(i);
-                }
-                m_value = vec;
-                m_internalType = DOUBLE;
-                return vec;
-            }
-    }, m_value, vec.getValue());
+    std::vector<double> v(m_value.size());
+    for (int i = 0; i < v.size(); i++) {
+        v.at(i) = m_value.at(i) + vec.getValue().at(i);
+    }
+    return v;
 }
 
 Vector Vector::sub(const Vector &vec) {
-    return std::visit(overload{
-            [this](std::vector<int> &s1, const std::vector<int> &s2) -> Vector {
-                std::vector<int> vec(s1);
-                for (int i = 0; i < vec.size(); i++) {
-                    vec.at(i) = s1.at(i) - s2.at(i);
-                }
-                m_value = vec;
-                m_internalType = INTEGER;
-                return vec;
-            },
-            [this](auto &s1, const auto &s2) -> Vector {
-                std::vector<double> vec(s1.size());
-                for (int i = 0; i < vec.size(); i++) {
-                    vec.at(i) = s1.at(i) - s2.at(i);
-                }
-                m_value = vec;
-                m_internalType = DOUBLE;
-                return vec;
-            }
-    }, m_value, vec.getValue());
+    std::vector<double> v(m_value.size());
+    for (int i = 0; i < v.size(); i++) {
+        v.at(i) = m_value.at(i) - vec.getValue().at(i);
+    }
+    return v;
+}
+
+Vector Vector::scalarMul(const double &val) {
+    std::vector<double> vec(m_value.size());
+    for (auto &num: m_value) {
+        vec.emplace_back(num * val);
+    }
+    return vec;
+}
+
+double Vector::dot(const Vector &vec) {
+    double sum = 0;
+    std::vector<double> v = vec.getValue();
+    for (int i = 0; i < m_value.size(); i++) {
+        sum += m_value.at(i) * v.at(i);
+    }
+    return sum;
+
 }
 
 
