@@ -10,8 +10,6 @@ int main() {
     printf("Number of operators: %d\nNumber of constants: %d\n", operations.size(), constants.size());
     fflush(stdout);
 
-//    std::cout << derivative("2 * x^3") << std::endl;
-
     std::string command;
     while (command != "exit") {
         std::cout << "Mash > ";
@@ -68,34 +66,21 @@ int main() {
                 exit(1);
             } else if (functionSignature.find('(') == std::string::npos ||
                        functionSignature.find(')') == std::string::npos) {
-                // No-op, just to prevent functions from being read as variables.
+                // prevent functions from being read as variables.
                 std::string expression = command.substr(eqPos + 1);
                 global_variables[var] = evaluate(expression);
             }
+            std::cout << std::endl;
         } else if (global_variables.find(command) != global_variables.end()) {
             // If a command is a global variable.
-            if (const std::vector<double> *vec = std::get_if<std::vector<double>>(&global_variables[command].num)) {
-                std::array<char, 2> brackets = {};
-                if ((global_variables[command].type & VECTOR) == VECTOR) {
-                    brackets = {'[', ']'};
-                } else if ((global_variables[command].type & SET) == SET) {
-                    brackets = {'{', '}'};
-                }
-
-                std::cout << brackets[0];
-                for (int i = vec->size() - 1; i >= 0; i--) {
-                    if (i > 0) {
-                        std::cout << vec->at(i) << ", ";
-                    } else {
-                        std::cout << vec->at(i);
-                    }
-                }
-                std::cout << brackets[1] << std::endl;
-            } else if (const double *dval = std::get_if<double>(&global_variables[command].num)) {
-                printf("Result: %.20f\n", *dval);
-                fflush(stdout);
-            } else if (const int *ival = std::get_if<int>(&global_variables[command].num)) {
-                printf("Result: %d\n", *ival);
+            if (const Vector *vec = std::get_if<Vector>(&global_variables[command].m_num)) {
+                std::cout << *vec << std::endl;
+//                std::cout << vec->getInternalType() << std::endl;
+            } else if (const Set *set = std::get_if<Set>(&global_variables[command].m_num)) {
+                std::cout << *set << std::endl;
+//                std::cout << set->getInternalType() << std::endl;
+            } else if (const double dval = std::get_if<Number>(&global_variables[command].m_num)->getRawDouble()) {
+                printf("Result: %.3f\nType: %d\n", dval, global_variables[command].getType());
                 fflush(stdout);
             }
 
@@ -104,28 +89,14 @@ int main() {
         } else {
             // Otherwise just evaluate expression.
             Value val = evaluate(command);
-            if (const std::vector<double> *vec = std::get_if<std::vector<double>>(&val.num)) {
-                std::array<char, 2> brackets = {};
-                if ((val.type & VECTOR) == VECTOR) {
-                    brackets = {'[', ']'};
-                } else if ((val.type & SET) == SET) {
-                    brackets = {'{', '}'};
-                }
-
-                std::cout << brackets[0];
-                for (int i = vec->size() - 1; i >= 0; i--) {
-                    if (i > 0) {
-                        std::cout << vec->at(i) << ", ";
-                    } else {
-                        std::cout << vec->at(i);
-                    }
-                }
-                std::cout << brackets[1] << std::endl;
-            } else if (const double *dval = std::get_if<double>(&val.num)) {
-                printf("Result: %.20f\n", *dval);
-                fflush(stdout);
-            } else if (const int *ival = std::get_if<int>(&val.num)) {
-                printf("Result: %d\n", *ival);
+            if (const Vector *vec = std::get_if<Vector>(&val.m_num)) {
+                std::cout << *vec << std::endl;
+//                std::cout << vec->getInternalType() << std::endl;
+            } else if (const Set *set = std::get_if<Set>(&val.m_num)) {
+                std::cout << *set << std::endl;
+//                std::cout << set->getInternalType() << std::endl;
+            } else if (const double dval = std::get_if<Number>(&val.m_num)->getRawDouble()) {
+                printf("Result: %.3f\nType: %d\n", dval, val.getType());
                 fflush(stdout);
             }
         }
@@ -145,32 +116,42 @@ Op functionToOp(const Function &function) {
 
 
 void tests() {
-    assert(("`123 + 10` was evaluated incorrectly", std::get<double>(evaluate("123 + 10").num) == 133));
-    assert(("`10 - 10` was evaluated incorrectly", std::get<double>(evaluate("10 - 10").num) == 0));
-    assert(("`(10 * 5) / 5` was evaluated incorrectly", std::get<double>(evaluate("(10 * 5) / 5").num) == 10));
-    assert(("`(12 % 5) * 6` was evaluated incorrectly", std::get<double>(evaluate("(12 % 5) * 6").num) == 12));
-    assert(("`7 / 7 % 3` was evaluated incorrectly", std::get<double>(evaluate("7 / 7 % 3").num) == 1));
-    assert(("`7 / (7 % 3)` was evaluated incorrectly", std::get<double>(evaluate("7 / (7 % 3)").num) == 7));
-    assert(("`7 / mod(7, 3)` was evaluated incorrectly", std::get<double>(evaluate("7 / mod(7,3)").num) == 7));
-    assert(("`exp(2, 3)` was evaluated incorrectly", std::get<double>(evaluate("exp(2, 3)").num) == 8));
-    assert(("`2^3` was evaluated incorrectly", std::get<double>(evaluate("2^3").num) == 8));
-    assert(("`sqrt(mod(12, 5))` was evaluated incorrectly", std::get<double>(evaluate("sqrt(mod(12, 5))").num) ==
-                                                            sqrt(12 % 5)));
-    assert(("`2 | 3 + 1` was evaluated incorrectly", std::get<double>(evaluate("2 | 3 + 1").num) == 6));
-    assert(("`bor(2, 3) + 1` was evaluated incorrectly", std::get<double>(evaluate("bor(2, 3) + 1").num) == 4));
-    assert(("`2 & 3 + 1` was evaluated incorrectly", std::get<double>(evaluate("2 & 3 + 1").num) == 0));
-    assert(("`band(2, 3) + 1` was evaluated incorrectly", std::get<double>(evaluate("band(2, 3) + 1").num) == 3));
-    assert(("`3!` was evaluated incorrectly", std::get<double>(evaluate("3!").num) == 6));
-    assert(("`exp(2, 3!)` was evaluated incorrectly", std::get<double>(evaluate("exp(2, 3!)").num) == 64));
-    assert(("`12!` was evaluated incorrectly", std::get<double>(evaluate("12!").num) == 479001600));
+    assert(("`123 + 10` was evaluated incorrectly", std::get<Number>(evaluate("123 + 10").m_num).getRawDouble() == 133));
+    assert(("`10 - 10` was evaluated incorrectly", std::get<Number>(evaluate("10 - 10").m_num).getRawDouble() == 0));
+    assert(("`(10 * 5) / 5` was evaluated incorrectly", std::get<Number>(evaluate("(10 * 5) / 5").m_num).getRawDouble() ==
+                                                        10));
+    assert(("`(12 % 5) * 6` was evaluated incorrectly", std::get<Number>(evaluate("(12 % 5) * 6").m_num).getRawDouble() ==
+                                                        12));
+    assert(("`7 / 7 % 3` was evaluated incorrectly", std::get<Number>(evaluate("7 / 7 % 3").m_num).getRawDouble() == 1));
+    assert(("`7 / (7 % 3)` was evaluated incorrectly", std::get<Number>(evaluate("7 / (7 % 3)").m_num).getRawDouble() ==
+                                                       7));
+    assert(("`7 / mod(7, 3)` was evaluated incorrectly",
+            std::get<Number>(evaluate("7 / mod(7,3)").m_num).getRawDouble() == 7));
+    assert(("`exp(2, 3)` was evaluated incorrectly", std::get<Number>(evaluate("exp(2, 3)").m_num).getRawDouble() == 8));
+    assert(("`2^3` was evaluated incorrectly", std::get<Number>(evaluate("2^3").m_num).getRawDouble() == 8));
+    assert(("`sqrt(mod(12, 5))` was evaluated incorrectly",
+            std::get<Number>(evaluate("sqrt(mod(12, 5))").m_num).getRawDouble() ==
+            sqrt(12 % 5)));
+    assert(("`2 | 3 + 1` was evaluated incorrectly", std::get<Number>(evaluate("2 | 3 + 1").m_num).getRawDouble() == 6));
+    assert(("`bor(2, 3) + 1` was evaluated incorrectly",
+            std::get<Number>(evaluate("bor(2, 3) + 1").m_num).getRawDouble() == 4));
+    assert(("`2 & 3 + 1` was evaluated incorrectly", std::get<Number>(evaluate("2 & 3 + 1").m_num).getRawDouble() == 0));
+    assert(("`band(2, 3) + 1` was evaluated incorrectly",
+            std::get<Number>(evaluate("band(2, 3) + 1").m_num).getRawDouble() == 3));
+    assert(("`3!` was evaluated incorrectly", std::get<Number>(evaluate("3!").m_num).getRawDouble() == 6));
+    assert(("`exp(2, 3!)` was evaluated incorrectly", std::get<Number>(evaluate("exp(2, 3!)").m_num).getRawDouble() ==
+                                                      64));
+    assert(("`12!` was evaluated incorrectly", std::get<Number>(evaluate("12!").m_num).getRawDouble() == 479001600));
     assert(("`exp(2, mod(12!, 17))` was evaluated incorrectly",
-            std::get<double>(evaluate("exp(2, mod(12!, 17))").num) ==
+            std::get<Number>(evaluate("exp(2, mod(12!, 17))").m_num).getRawDouble() ==
             4096));
-    assert(("`12.3` was evaluated incorrectly", std::get<double>(evaluate("12.3").num) == 12.3));
-    assert(("`11.245 / 1.353` was evaluated incorrectly", std::get<double>(evaluate("11.245 / 1.353").num) ==
-                                                          11.245 / 1.353));
-    assert(("`exp(1.124, 5.5)` was evaluated incorrectly", std::get<double>(evaluate("exp(1.124, 5.5)").num) ==
-                                                           pow(1.124, 5.5)));
+    assert(("`12.3` was evaluated incorrectly", std::get<Number>(evaluate("12.3").m_num).getRawDouble() == 12.3));
+    assert(("`11.245 / 1.353` was evaluated incorrectly",
+            std::get<Number>(evaluate("11.245 / 1.353").m_num).getRawDouble() ==
+            11.245 / 1.353));
+    assert(("`exp(1.124, 5.5)` was evaluated incorrectly",
+            std::get<Number>(evaluate("exp(1.124, 5.5)").m_num).getRawDouble() ==
+            pow(1.124, 5.5)));
 
 
 }
@@ -186,8 +167,8 @@ Value applyOps(std::stack<Op> &ops, std::stack<Value> &values) {
     double result = 0;
     if (operations.count(op.token)) {
         Result res = op.func(ops, values);
-        if (!res.error.empty()) {
-            printf("%s\n", res.error.c_str());
+        if (res.error) {
+            printf("%s\n", res.error->c_str());
         }
         return res.num;
     } else if (functions.find(op.token) != functions.end()) {
@@ -217,6 +198,30 @@ bool hasPrecedence(const Op &op1, const Op &op2) {
     return op1.precedence <= op2.precedence;
 }
 
+std::string oppositeToken(const char &token) {
+    switch (token) {
+        case '[': {
+            return "]";
+        }
+        case ']': {
+            return "[";
+        }
+        case '{': {
+            return "}";
+        }
+        case '}': {
+            return "{";
+        }
+        case '(': {
+            return ")";
+        }
+        case ')': {
+            return "(";
+        }
+    }
+    return {1, token};
+}
+
 /**
  * Evaluate will evaluate the expression with the global variable map.
  * @param expression The expression to evaluate
@@ -234,13 +239,6 @@ Value evaluate(const std::string &expression) {
  */
 Value evaluate(const std::string &expression, std::unordered_map<std::string, Value> &variables) {
     std::stack<Value> values;
-//    std::stack<Value> vals;
-//    std::vector<double> vec = {10.0, 9, 8, 7, 6, 5};
-//    vals.push(vec);
-//    Value v = vals.top();
-//    for (auto &num : *std::get_if<std::vector<double>>(&v)) {
-//        std::cout << num << std::endl;
-//    }
     std::stack<Op> ops;
     for (int i = 0; i < expression.length(); i++) {
         char token = expression[i];
@@ -272,12 +270,12 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
                     number.push_back('.');
                     number.append(decimal);
                 }
-//                if (decimal.empty()) {
-//                    values.push(std::stoi(number));
-//                } else {
-//                    values.push(std::stod(number));
-//                }
-                values.push(std::stod(number));
+                // TODO: If decimal is empty, push the double with a value type of INTEGER.
+                if (decimal.empty()) {
+                    values.push({std::stod(number), NumberType::Integer});
+                } else {
+                    values.push(std::stod(number));
+                }
                 i--;
             }
         } else if (token == '!') {
@@ -292,7 +290,7 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
             ops.push(operations.at(std::string(1, token)));
         } else if (token == ')') {
             int counter = 0;
-            while (ops.top().token != "(") {
+            while (ops.top().token != oppositeToken(token)) {
                 Op op = ops.top();
                 if (op.token == ",") {
                     counter++;
@@ -313,35 +311,45 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
                 }
             }
         } else if (token == ']' || token == '}') {
-//            if ((values.top().type & INTEGER) == INTEGER) {
-//
-//            } else if ((values.top().type & DOUBLE) == DOUBLE) {
-//
-//            }
-            std::vector<double> val;
+            // TODO: Allow collection to emplace a Number type to keep the types.
+            Collection1D collection;
             if (!values.empty()) {
-                val.emplace_back(std::get<double>(values.top().num));
-                values.pop();
+                // Only place doubles in the collection
+                std::visit(overload{
+                        [&collection, &values](Number &num) {
+                            collection.emplace_back(num.getRawDouble());
+                            values.pop();
+                        },
+                        [](auto &num) {
+//                            No op
+                        }
+                }, values.top().m_num);
             }
-            while (ops.top().token != "[" && ops.top().token != "{") {
+            while (ops.top().token != oppositeToken(token)) {
                 Op op = ops.top();
+                // numbers seperated by commas.
                 if (op.token == ",") {
                     ops.pop();
                     if (!values.empty()) {
-                        val.emplace_back(std::get<double>(values.top().num));
-                        values.pop();
+                        // Only place doubles in the collection
+                        std::visit(overload{
+                                [&collection, &values](Number &num) {
+                                    collection.emplace_back(num.getRawDouble());
+                                    values.pop();
+                                },
+                                [](auto &num) {
+//                            No op
+                                }
+                        }, values.top().m_num);
                     }
                 }
             }
             Op top = ops.top();
             ops.pop();
-            if (token == ']' && top.token == "[") {
-                values.push({val, VECTOR});
-            } else if (token == '}' && top.token == "{") {
-                values.push({val, SET});
-            } else {
-                fprintf(stderr, "Syntax Error: missing bracket\n");
-                fflush(stderr);
+            if (token == ']' && top.token == oppositeToken(token)) {
+                values.push(Vector(collection));
+            } else if (token == '}' && top.token == oppositeToken(token)) {
+                values.push(Set(collection));
             }
 
         } else if (token == '+' || token == '-' || token == '*' || token == '/' || token == '%' || token == '^' ||
@@ -397,3 +405,5 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
     return result;
 
 }
+
+

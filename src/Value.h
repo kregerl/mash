@@ -3,26 +3,47 @@
 
 #include <variant>
 #include <vector>
-#include <optional>
 
-#define NONE 0x0
-#define INTEGER 0x01
-#define DOUBLE 0x02
-#define SET 0x04
-#define VECTOR 0x08
-#define MATRIX 0x10
+#include "Number.h"
+#include "Set.h"
+#include "Vector.h"
+
+//#define NONE 0x0
+//#define INTEGER 0x01
+//#define DOUBLE 0x02
+//#define SET 0x04
+//#define VECTOR 0x08
+//#define MATRIX 0x10
+
+template<class... Ts>
+struct overload : Ts ... {
+    using Ts::operator()...;
+};
+template<class... Ts> overload(Ts...) -> overload<Ts...>;
 
 
+// TODO: Store the type in an enum instead of bitmask, use that to determine what the "represented type" of the value will be.
+// TODO: ... values are always stored as doubles, but type will be used to actually determine if it has decimal places or can be used in a function.
 class Value {
 public:
     Value();
-    Value(int n, int valueType = INTEGER);
-    Value(double n, int valueType = DOUBLE);
-    Value(std::vector<double> n, int valueType);
+
+    Value(double n, NumberType type = NumberType::Double);
+
+    Value(Number &n);
+
+    Value(Vector &n);
+
+    Value(Set &n);
+
+    Value(std::vector<double> n, NumberType type);
+
     ~Value() = default;
+
+    NumberType getType() const;
+
 public:
-    std::variant<int, double, std::vector<double>> num;
-    int type;
+    std::variant<Number, Vector, Set> m_num;
 
 };
 
