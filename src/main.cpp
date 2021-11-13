@@ -7,19 +7,8 @@ std::unordered_map<std::string, Function> functions;
 
 int main() {
 //    tests();
-    std::vector<double> l1 = {1.1, 2, 3, 4.2, 5.2532};
-    std::vector<double> l2 = {1.1, 3.2, 5.2532};
-    Set v1 = Set(l1);
-    Set v2 = Set(l2);
-    Set v3 = v1 - v2;
-    std::cout << v3 << std::endl;
-    std::cout << v3.getInternalType() << std::endl;
-
-
     printf("Number of operators: %d\nNumber of constants: %d\n", operations.size(), constants.size());
     fflush(stdout);
-
-//    std::cout << derivative("2 * x^3") << std::endl;
 
     std::string command;
     while (command != "exit") {

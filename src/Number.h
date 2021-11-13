@@ -56,21 +56,21 @@ public:
 
     double getRawDouble() const;
 
-    Number operator+(const Number &num);
+    Number operator+(const Number &num) const;
 
-    Number operator-(const Number &num);
+    Number operator-(const Number &num) const;
 
-    Number operator*(const Number &num);
+    Number operator*(const Number &num) const;
 
-    Number operator/(const Number &num);
+    Number operator/(const Number &num) const;
 
-    Number operator%(const Number &num);
+    Number operator%(const Number &num) const;
 
-    Number operator&(const Number &num);
+    Number operator&(const Number &num) const;
 
-    Number operator|(const Number &num);
+    Number operator|(const Number &num) const;
 
-    Number operator^(const Number &num);
+    Number operator^(const Number &num) const;
 
     NumberType opResultType(const Number &num) const;
 

@@ -12,35 +12,35 @@ double Number::getRawDouble() const {
     return m_value;
 }
 
-Number Number::operator+(const Number &num) {
+Number Number::operator+(const Number &num) const {
     return Number(m_value + num.getRawDouble(), opResultType(num));
 }
 
-Number Number::operator-(const Number &num) {
+Number Number::operator-(const Number &num) const {
     return Number(m_value - num.getRawDouble(), opResultType(num));
 }
 
-Number Number::operator*(const Number &num) {
+Number Number::operator*(const Number &num) const {
     return Number(m_value * num.getRawDouble(), opResultType(num));
 }
 
-Number Number::operator/(const Number &num) {
-    return Number(m_value / num.getRawDouble(), opResultType(num));;
+Number Number::operator/(const Number &num) const {
+    return Number(m_value / num.getRawDouble(), opResultType(num));
 }
 
-Number Number::operator%(const Number &num) {
+Number Number::operator%(const Number &num) const {
     return Number(static_cast<int>(m_value) % static_cast<int>(num.getRawDouble()), opResultType(num));
 }
 
-Number Number::operator&(const Number &num) {
+Number Number::operator&(const Number &num) const {
     return Number(static_cast<int>(m_value) & static_cast<int>(num.getRawDouble()), opResultType(num));
 }
 
-Number Number::operator|(const Number &num) {
+Number Number::operator|(const Number &num) const {
     return Number(static_cast<int>(m_value) | static_cast<int>(num.getRawDouble()), opResultType(num));
 }
 
-Number Number::operator^(const Number &num) {
+Number Number::operator^(const Number &num) const {
     return Number(static_cast<int>(m_value) ^ static_cast<int>(num.getRawDouble()), opResultType(num));
 }
 

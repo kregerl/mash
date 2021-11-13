@@ -48,14 +48,6 @@ Result noOp(std::stack<Op> &ops, std::stack<Value> &values);
 
 Result opAdd(std::stack<Op> &ops, std::stack<Value> &values);
 
-Value addToSet(const double &a, std::vector<double> &b);
-
-Value subtractFromSet(const double &a, std::vector<double> &b);
-
-Value addVectors(std::vector<double> &v1, std::vector<double> &v2);
-
-Value subtractVectors(std::vector<double> &v1, std::vector<double> &v2);
-
 Result opSub(std::stack<Op> &ops, std::stack<Value> &values);
 
 Result opMul(std::stack<Op> &ops, std::stack<Value> &values);

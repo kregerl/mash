@@ -35,8 +35,6 @@ public:
 
     Vector normalize();
 
-    double inner(const Vector &vec);
-
 };
 
 
