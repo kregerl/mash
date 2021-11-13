@@ -10,12 +10,8 @@ Set::Set(std::vector<double> &num, SetLayout layout) : Collection1D(num), m_layo
 
 Set::Set(Collection1D &num, SetLayout layout) : Collection1D(num), m_layout(layout) {}
 
-int Set::getType() const {
-    return SET;
-}
-
-int Set::getInternalType() const {
-    return m_internalType;
+NumberType Set::getType() const {
+    return NumberType::Set;
 }
 
 const SetLayout &Set::getLayout() const {

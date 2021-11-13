@@ -9,6 +9,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
   "C:/Users/kregerl/CLionProjects/mash/src/Collection1D.cpp" "C:/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Collection1D.cpp.obj"
+  "C:/Users/kregerl/CLionProjects/mash/src/Number.cpp" "C:/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Number.cpp.obj"
   "C:/Users/kregerl/CLionProjects/mash/src/Operations.cpp" "C:/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Operations.cpp.obj"
   "C:/Users/kregerl/CLionProjects/mash/src/Set.cpp" "C:/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Set.cpp.obj"
   "C:/Users/kregerl/CLionProjects/mash/src/Value.cpp" "C:/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Value.cpp.obj"

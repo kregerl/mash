@@ -152,6 +152,30 @@ src/Collection1D.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\mash.dir\build.make CMakeFiles/mash.dir/src/Collection1D.cpp.s
 .PHONY : src/Collection1D.cpp.s
 
+src/Number.obj: src/Number.cpp.obj
+.PHONY : src/Number.obj
+
+# target to build an object file
+src/Number.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\mash.dir\build.make CMakeFiles/mash.dir/src/Number.cpp.obj
+.PHONY : src/Number.cpp.obj
+
+src/Number.i: src/Number.cpp.i
+.PHONY : src/Number.i
+
+# target to preprocess a source file
+src/Number.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\mash.dir\build.make CMakeFiles/mash.dir/src/Number.cpp.i
+.PHONY : src/Number.cpp.i
+
+src/Number.s: src/Number.cpp.s
+.PHONY : src/Number.s
+
+# target to generate assembly for a file
+src/Number.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\mash.dir\build.make CMakeFiles/mash.dir/src/Number.cpp.s
+.PHONY : src/Number.cpp.s
+
 src/Operations.obj: src/Operations.cpp.obj
 .PHONY : src/Operations.obj
 
@@ -284,6 +308,9 @@ help:
 	@echo ... src/Collection1D.obj
 	@echo ... src/Collection1D.i
 	@echo ... src/Collection1D.s
+	@echo ... src/Number.obj
+	@echo ... src/Number.i
+	@echo ... src/Number.s
 	@echo ... src/Operations.obj
 	@echo ... src/Operations.i
 	@echo ... src/Operations.s

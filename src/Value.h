@@ -4,16 +4,16 @@
 #include <variant>
 #include <vector>
 
+#include "Number.h"
 #include "Set.h"
 #include "Vector.h"
 
-
-#define NONE 0x0
-#define INTEGER 0x01
-#define DOUBLE 0x02
-#define SET 0x04
-#define VECTOR 0x08
-#define MATRIX 0x10
+//#define NONE 0x0
+//#define INTEGER 0x01
+//#define DOUBLE 0x02
+//#define SET 0x04
+//#define VECTOR 0x08
+//#define MATRIX 0x10
 
 template<class... Ts>
 struct overload : Ts ... {
@@ -28,19 +28,22 @@ class Value {
 public:
     Value();
 
-    Value(double n, int valueType = DOUBLE);
+    Value(double n, NumberType type = NumberType::Double);
+
+    Value(Number n);
 
     Value(Vector n);
 
     Value(Set n);
 
-    Value(std::vector<double> n, int valueType);
+    Value(std::vector<double> n, NumberType type);
 
     ~Value() = default;
 
+    NumberType getType() const;
+
 public:
-    std::variant<double, Vector, Set> num;
-    int type;
+    std::variant<Number, Vector, Set> m_num;
 
 };
 

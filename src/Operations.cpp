@@ -8,48 +8,6 @@ Result noOp(std::stack<Op> &ops, std::stack<Value> &values) {
     return result;
 }
 
-Value addToSet(const double &a, std::vector<double> &b) {
-    if (std::find(b.begin(), b.end(), a) == b.end()) {
-        std::reverse(b.begin(), b.end());
-        b.push_back(a);
-        std::reverse(b.begin(), b.end());
-    }
-    return {b, SET};
-}
-
-Value subtractFromSet(const double &a, std::vector<double> &b) {
-    auto it = std::find(b.begin(), b.end(), a);
-    if (it != b.end()) {
-        b.erase(it);
-    }
-    return {b, SET};
-}
-
-/**
- * Parameters must be vectors of the same size!
- * @param v1
- * @param v2
- * @return
- */
-Value addVectors(std::vector<double> &v1, std::vector<double> &v2) {
-    size_t size = v1.size();
-    std::vector<double> result(size);
-    for (int i = 0; i < size; i++) {
-        result.at(i) = v2.at(i) + v1.at(i);
-    }
-    return {result, VECTOR};
-}
-
-Value subtractVectors(std::vector<double> &v1, std::vector<double> &v2) {
-    size_t size = v1.size();
-    std::vector<double> result(size);
-    for (int i = 0; i < size; i++) {
-        result.at(i) = v2.at(i) - v1.at(i);
-    }
-    return {result, VECTOR};
-}
-
-
 Result opAdd(std::stack<Op> &ops, std::stack<Value> &values) {
     Result result = DEFAULT_RESULT;
     ops.pop();
@@ -59,15 +17,22 @@ Result opAdd(std::stack<Op> &ops, std::stack<Value> &values) {
         Value num2 = values.top();
         values.pop();
 
+        std::cout << num1.getType() << std::endl;
+        std::cout << num2.getType() << std::endl;
+
+//        if ((num1.getType() | num2.getType()) == num1.getType()) {
+//
+//        }
+
         result.num = std::visit(overload{
-                [](double &a, double &b) -> Value { return a + b; },
+                [](Number &a, Number &b) -> Value { return {a + b}; },
                 [](Vector &a, Vector &b) -> Value { return a + b; },
                 [](Set &a, Set &b) -> Value { return a + b; },
                 [&result](auto &a, auto &b) -> Value {
                     result.error = "Unsupported opperation";
                     return 0;
                 }
-        }, num1.num, num2.num);
+        }, num1.m_num, num2.m_num);
     }
     return result;
 }
@@ -83,29 +48,29 @@ Result opSub(std::stack<Op> &ops, std::stack<Value> &values) {
         values.pop();
 
         result.num = std::visit(overload{
-                [](double &a, double &b) -> Value { return b - a; },
+                [](Number &a, Number &b) -> Value { return b - a; },
                 [](Vector &a, Vector &b) -> Value { return b - a; },
                 [](Set &a, Set &b) -> Value { return b - a; },
                 [&result](auto &a, auto &b) -> Value {
                     result.error = "Unsupported opperation";
                     return 0;
                 }
-        }, num1.num, num2.num);
+        }, num1.m_num, num2.m_num);
     } else if (!values.empty()) {
         // TODO: Remove this entirely or find a reason for keeping it
-//        Value num = values.top();
+//        Value m_num = values.top();
 //        values.pop();
-//        result.num = std::visit(overload{
+//        result.m_num = std::visit(overload{
 //                [](int &n) -> Value { return -1 * n; },
 //                [](double &n) -> Value { return -1 * n; },
-//                [&num](std::vector<double> &n) -> Value {
+//                [&m_num](std::vector<double> &n) -> Value {
 //                    std::vector<double> result;
 //                    for (auto &val: n) {
 //                        result.push_back(-1 * val);
 //                    }
-//                    return {result, num.type};
+//                    return {result, m_num.type};
 //                },
-//        }, num.num);
+//        }, m_num.m_num);
     }
     return result;
 }
@@ -120,7 +85,7 @@ Result opMul(std::stack<Op> &ops, std::stack<Value> &values) {
         values.pop();
 
         result.num = std::visit(overload{
-                [](double &a, double &b) -> Value { return b * a; },
+                [](Number &a, Number &b) -> Value { return b * a; },
                 [](double &a, Vector &b) -> Value { return b.scalarMul(a); },
                 [](double &a, Set &b) -> Value { return b.scalarMul(a); },
                 [](Vector &a, double &b) -> Value { return a.scalarMul(b); },
@@ -131,7 +96,7 @@ Result opMul(std::stack<Op> &ops, std::stack<Value> &values) {
                     result.error = "Unsupported opperation";
                     return 0;
                 }
-        }, num1.num, num2.num);
+        }, num1.m_num, num2.m_num);
 
     }
     return result;
@@ -141,29 +106,34 @@ Result opDiv(std::stack<Op> &ops, std::stack<Value> &values) {
     Result result = DEFAULT_RESULT;
     ops.pop();
     if (values.size() >= 2) {
-        double num1 = *std::get_if<double>(&values.top().num);
+        Number num1 = *std::get_if<Number>(&values.top().m_num);
         values.pop();
-        double num2 = *std::get_if<double>(&values.top().num);
+        Number num2 = *std::get_if<Number>(&values.top().m_num);
         values.pop();
-        if (num1 == 0) {
+        if (num1.getRawDouble() == 0) {
             result.error = "Error, division by zero.";
             return result;
         }
-        result.num = num2 / num1;
+        result.num = num2.getRawDouble() / num1.getRawDouble();
     }
     return result;
 }
 
 Result opMod(std::stack<Op> &ops, std::stack<Value> &values) {
     Result result = DEFAULT_RESULT;
+    Op op = ops.top();
     std::string token = ops.top().token;
     ops.pop();
+    for (NumberType &type: op.validValueTypes) {
+
+    }
+
     if (values.size() >= 2) {
-        int num1 = static_cast<int>(*std::get_if<double>(&values.top().num));
+        int num1 = static_cast<int>(std::get_if<Number>(&values.top().m_num)->getRawDouble());
         values.pop();
-        int num2 = static_cast<int>(*std::get_if<double>(&values.top().num));
+        int num2 = static_cast<int>(std::get_if<Number>(&values.top().m_num)->getRawDouble());
         values.pop();
-        result.num = num2 % num1;
+        result.num = {static_cast<double>(num2 % num1), NumberType::Integer};
     }
 //    else if (token == "mod") {
 //        std::cout << "Mod: `mod(a, b)` returns the result of `a mod b`. Can also be represented as `(a % b)`" << std::endl;
@@ -176,11 +146,11 @@ Result opExp(std::stack<Op> &ops, std::stack<Value> &values) {
     Result result = DEFAULT_RESULT;
     ops.pop();
     if (values.size() >= 2) {
-        double num1 = *std::get_if<double>(&values.top().num);
+        Number num1 = *std::get_if<Number>(&values.top().m_num);
         values.pop();
-        double num2 = *std::get_if<double>(&values.top().num);
+        Number num2 = *std::get_if<Number>(&values.top().m_num);
         values.pop();
-        result.num = pow(num2, num1);
+        result.num = {pow(num2.getRawDouble(), num1.getRawDouble()), num1.opResultType(num2)};
     }
     return result;
 }
@@ -189,9 +159,9 @@ Result opSqrt(std::stack<Op> &ops, std::stack<Value> &values) {
     Result result = DEFAULT_RESULT;
     ops.pop();
     if (!values.empty()) {
-        double num = *std::get_if<double>(&values.top().num);
+        Number num = *std::get_if<Number>(&values.top().m_num);
         values.pop();
-        result.num = sqrt(num);
+        result.num = sqrt(num.getRawDouble());
     }
     return result;
 }
@@ -200,9 +170,9 @@ Result opSin(std::stack<Op> &ops, std::stack<Value> &values) {
     Result result = DEFAULT_RESULT;
     ops.pop();
     if (!values.empty()) {
-        double num = *std::get_if<double>(&values.top().num);
+        Number num = *std::get_if<Number>(&values.top().m_num);
         values.pop();
-        result.num = sin(num);
+        result.num = sin(num.getRawDouble());
         std::cout << "**NOTE** Inputs to the sin function interpreted as RADIANS" << std::endl;
     }
     return result;
@@ -212,9 +182,9 @@ Result opCos(std::stack<Op> &ops, std::stack<Value> &values) {
     Result result = DEFAULT_RESULT;
     ops.pop();
     if (!values.empty()) {
-        double num = *std::get_if<double>(&values.top().num);
+        Number num = *std::get_if<Number>(&values.top().m_num);
         values.pop();
-        result.num = cos(num);
+        result.num = cos(num.getRawDouble());
     }
     return result;
 }
@@ -223,11 +193,11 @@ Result opBand(std::stack<Op> &ops, std::stack<Value> &values) {
     Result result = DEFAULT_RESULT;
     ops.pop();
     if (values.size() >= 2) {
-        int num1 = static_cast<int>(*std::get_if<double>(&values.top().num));
+        int num1 = static_cast<int>(std::get_if<Number>(&values.top().m_num)->getRawDouble());
         values.pop();
-        int num2 = static_cast<int>(*std::get_if<double>(&values.top().num));
+        int num2 = static_cast<int>(std::get_if<Number>(&values.top().m_num)->getRawDouble());
         values.pop();
-        result.num = num1 & num2;
+        result.num = {static_cast<double>(num1 & num2), NumberType::Integer};
     }
     return result;
 }
@@ -236,11 +206,11 @@ Result opBor(std::stack<Op> &ops, std::stack<Value> &values) {
     Result result = DEFAULT_RESULT;
     ops.pop();
     if (values.size() >= 2) {
-        int num1 = static_cast<int>(*std::get_if<double>(&values.top().num));
+        int num1 = static_cast<int>(std::get_if<Number>(&values.top().m_num)->getRawDouble());
         values.pop();
-        int num2 = static_cast<int>(*std::get_if<double>(&values.top().num));
+        int num2 = static_cast<int>(std::get_if<Number>(&values.top().m_num)->getRawDouble());
         values.pop();
-        result.num = num1 | num2;
+        result.num = {static_cast<double>(num1 | num2), NumberType::Integer};
     }
     return result;
 }
@@ -249,15 +219,17 @@ Result opBxor(std::stack<Op> &ops, std::stack<Value> &values) {
     Result result = DEFAULT_RESULT;
     ops.pop();
     if (values.size() >= 2) {
-        int num1 = static_cast<int>(*std::get_if<double>(&values.top().num));
+        int num1 = static_cast<int>(std::get_if<Number>(&values.top().m_num)->getRawDouble());
         values.pop();
-        int num2 = static_cast<int>(*std::get_if<double>(&values.top().num));
+        int num2 = static_cast<int>(std::get_if<Number>(&values.top().m_num)->getRawDouble());
         values.pop();
-        result.num = num1 ^ num2;
+        result.num = {static_cast<double>(num1 ^ num2), NumberType::Integer};
     }
     return result;
 }
 
+
+// TODO: Replace this entire function with tgamma so it can return doubles correctly.
 int factorial(int n) {
     int factorial = 1;
     for (int i = 1; i <= n; i++) {
@@ -270,9 +242,9 @@ Result opFactorial(std::stack<Op> &ops, std::stack<Value> &values) {
     Result result = DEFAULT_RESULT;
     ops.pop();
     if (!values.empty()) {
-        if (const double *dnum = std::get_if<double>(&values.top().num)) {
+        if (const Number *dnum = std::get_if<Number>(&values.top().m_num)) {
             values.pop();
-            result.num = std::tgamma(1 + (*dnum));
+            result.num = std::tgamma(1 + (dnum->getRawDouble()));
         }
     }
     return result;
@@ -282,11 +254,12 @@ Result opChoose(std::stack<Op> &ops, std::stack<Value> &values) {
     Result result = DEFAULT_RESULT;
     ops.pop();
     if (values.size() >= 2) {
-        double num1 = *std::get_if<double>(&values.top().num);
+        Number num1 = *std::get_if<Number>(&values.top().m_num);
         values.pop();
-        double num2 = *std::get_if<double>(&values.top().num);
+        Number num2 = *std::get_if<Number>(&values.top().m_num);
         values.pop();
-        result.num = factorial(num2) / (factorial(num1) * factorial(num2 - num1));
+        result.num = factorial(num2.getRawDouble()) /
+                     (factorial(num1.getRawDouble()) * factorial(num2.getRawDouble() - num1.getRawDouble()));
     }
     return result;
 }
@@ -302,11 +275,11 @@ Result opGCD(std::stack<Op> &ops, std::stack<Value> &values) {
     Result result = DEFAULT_RESULT;
     ops.pop();
     if (values.size() >= 2) {
-        int num1 = static_cast<int>(*std::get_if<double>(&values.top().num));
+        int num1 = static_cast<int>(std::get_if<Number>(&values.top().m_num)->getRawDouble());
         values.pop();
-        int num2 = static_cast<int>(*std::get_if<double>(&values.top().num));
+        int num2 = static_cast<int>(std::get_if<Number>(&values.top().m_num)->getRawDouble());
         values.pop();
-        result.num = gcd(num1, num2);
+        result.num = {static_cast<double>(gcd(num1, num2)), NumberType::Integer};
     }
     return result;
 }
@@ -315,11 +288,11 @@ Result opLCM(std::stack<Op> &ops, std::stack<Value> &values) {
     Result result = DEFAULT_RESULT;
     ops.pop();
     if (values.size() >= 2) {
-        int num1 = static_cast<int>(*std::get_if<double>(&values.top().num));
+        int num1 = static_cast<int>(std::get_if<Number>(&values.top().m_num)->getRawDouble());
         values.pop();
-        int num2 = static_cast<int>(*std::get_if<double>(&values.top().num));
+        int num2 = static_cast<int>(std::get_if<Number>(&values.top().m_num)->getRawDouble());
         values.pop();
-        result.num = ((num1 * num2) / gcd(num1, num2));
+        result.num = {static_cast<double>(((num1 * num2) / gcd(num1, num2))), NumberType::Integer};
     }
     return result;
 }
@@ -328,9 +301,9 @@ Result opLn(std::stack<Op> &ops, std::stack<Value> &values) {
     Result result = DEFAULT_RESULT;
     ops.pop();
     if (!values.empty()) {
-        double num = *std::get_if<double>(&values.top().num);
+        Number num = *std::get_if<Number>(&values.top().m_num);
         values.pop();
-        result.num = log(num);
+        result.num = log(num.getRawDouble());
     }
     return result;
 }
@@ -341,12 +314,12 @@ Result opLog(std::stack<Op> &ops, std::stack<Value> &values) {
     double num = 0;
     double base = 0;
     if (values.size() >= 2) {
-        num = *std::get_if<double>(&values.top().num);
+        num = std::get_if<Number>(&values.top().m_num)->getRawDouble();
         values.pop();
-        base = *std::get_if<double>(&values.top().num);
+        base = std::get_if<Number>(&values.top().m_num)->getRawDouble();
         values.pop();
     } else if (!values.empty()) {
-        num = *std::get_if<double>(&values.top().num);
+        num = std::get_if<Number>(&values.top().m_num)->getRawDouble();
         values.pop();
         base = 10.0;
     }
@@ -358,7 +331,7 @@ Result opTan(std::stack<Op> &ops, std::stack<Value> &values) {
     Result result = DEFAULT_RESULT;
     ops.pop();
     if (!values.empty()) {
-        double num = *std::get_if<double>(&values.top().num);
+        double num = std::get_if<Number>(&values.top().m_num)->getRawDouble();
         values.pop();
         result.num = std::tan(num);
         std::cout << "**NOTE** Inputs to the tab function interpreted as RADIANS" << std::endl;
@@ -370,7 +343,7 @@ Result opCot(std::stack<Op> &ops, std::stack<Value> &values) {
     Result result = DEFAULT_RESULT;
     ops.pop();
     if (!values.empty()) {
-        double num = *std::get_if<double>(&values.top().num);
+        double num = std::get_if<Number>(&values.top().m_num)->getRawDouble();
         values.pop();
         result.num = 1 / std::tan(num);
         std::cout << "**NOTE** Inputs to the cot function interpreted as RADIANS" << std::endl;
@@ -382,7 +355,7 @@ Result opSec(std::stack<Op> &ops, std::stack<Value> &values) {
     Result result = DEFAULT_RESULT;
     ops.pop();
     if (!values.empty()) {
-        double num = *std::get_if<double>(&values.top().num);
+        double num = std::get_if<Number>(&values.top().m_num)->getRawDouble();
         values.pop();
         result.num = 1 / std::cos(num);
         std::cout << "**NOTE** Inputs to the sec function interpreted as RADIANS" << std::endl;
@@ -394,7 +367,7 @@ Result opCsc(std::stack<Op> &ops, std::stack<Value> &values) {
     Result result = DEFAULT_RESULT;
     ops.pop();
     if (!values.empty()) {
-        double num = *std::get_if<double>(&values.top().num);
+        double num = std::get_if<Number>(&values.top().m_num)->getRawDouble();
         values.pop();
         result.num = 1 / std::sin(num);
         std::cout << "**NOTE** Inputs to the csc function interpreted as RADIANS" << std::endl;
@@ -407,7 +380,7 @@ Result opArcsin(std::stack<Op> &ops, std::stack<Value> &values) {
     Result result = DEFAULT_RESULT;
     ops.pop();
     if (!values.empty()) {
-        double num = *std::get_if<double>(&values.top().num);
+        double num = std::get_if<Number>(&values.top().m_num)->getRawDouble();
         values.pop();
         result.num = std::asin(num);
         std::cout << "**NOTE** Inputs to the arcsin function interpreted as RADIANS" << std::endl;
@@ -420,7 +393,7 @@ Result opArccos(std::stack<Op> &ops, std::stack<Value> &values) {
     Result result = DEFAULT_RESULT;
     ops.pop();
     if (!values.empty()) {
-        double num = *std::get_if<double>(&values.top().num);
+        double num = std::get_if<Number>(&values.top().m_num)->getRawDouble();
         values.pop();
         result.num = std::acos(num);
         std::cout << "**NOTE** Inputs to the arcos function interpreted as RADIANS" << std::endl;
@@ -433,7 +406,7 @@ Result opArctan(std::stack<Op> &ops, std::stack<Value> &values) {
     Result result = DEFAULT_RESULT;
     ops.pop();
     if (!values.empty()) {
-        double num = *std::get_if<double>(&values.top().num);
+        double num = std::get_if<Number>(&values.top().m_num)->getRawDouble();
         values.pop();
         result.num = std::atan(num);
         std::cout << "**NOTE** Inputs to the arctan function interpreted as RADIANS" << std::endl;

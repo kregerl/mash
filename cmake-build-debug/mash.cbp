@@ -86,6 +86,12 @@
 		<Unit filename="C:/Users/kregerl/CLionProjects/mash/src/Collection1D.h">
 			<Option target="mash"/>
 		</Unit>
+		<Unit filename="C:/Users/kregerl/CLionProjects/mash/src/Number.cpp">
+			<Option target="mash"/>
+		</Unit>
+		<Unit filename="C:/Users/kregerl/CLionProjects/mash/src/Number.h">
+			<Option target="mash"/>
+		</Unit>
 		<Unit filename="C:/Users/kregerl/CLionProjects/mash/src/Operations.cpp">
 			<Option target="mash"/>
 		</Unit>

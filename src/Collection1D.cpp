@@ -6,14 +6,13 @@
 //-- Collection 1D ---
 //--------------------
 
-Collection1D::Collection1D(std::vector<double> &num) : m_value(num), m_internalType(DOUBLE) {
+Collection1D::Collection1D(std::vector<double> &num) : m_value(num), m_internalType(NumberType::Double) {}
+
+NumberType Collection1D::getType() const {
+    return NumberType::None;
 }
 
-int Collection1D::getType() const {
-    return NONE;
-}
-
-int Collection1D::getInternalType() const {
+NumberType Collection1D::getInternalType() const {
     return m_internalType;
 }
 

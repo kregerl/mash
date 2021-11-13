@@ -84,14 +84,14 @@ int main() {
             std::cout << std::endl;
         } else if (global_variables.find(command) != global_variables.end()) {
             // If a command is a global variable.
-            if (const Vector *vec = std::get_if<Vector>(&global_variables[command].num)) {
+            if (const Vector *vec = std::get_if<Vector>(&global_variables[command].m_num)) {
                 std::cout << *vec << std::endl;
 //                std::cout << vec->getInternalType() << std::endl;
-            } else if (const Set *set = std::get_if<Set>(&global_variables[command].num)) {
+            } else if (const Set *set = std::get_if<Set>(&global_variables[command].m_num)) {
                 std::cout << *set << std::endl;
 //                std::cout << set->getInternalType() << std::endl;
-            } else if (const double *dval = std::get_if<double>(&global_variables[command].num)) {
-                printf("Result: %.3f\nType: %d\n", *dval, global_variables[command].type);
+            } else if (const double dval = std::get_if<Number>(&global_variables[command].m_num)->getRawDouble()) {
+                printf("Result: %.3f\nType: %d\n", dval, global_variables[command].getType());
                 fflush(stdout);
             }
 
@@ -100,14 +100,14 @@ int main() {
         } else {
             // Otherwise just evaluate expression.
             Value val = evaluate(command);
-            if (const Vector *vec = std::get_if<Vector>(&val.num)) {
+            if (const Vector *vec = std::get_if<Vector>(&val.m_num)) {
                 std::cout << *vec << std::endl;
 //                std::cout << vec->getInternalType() << std::endl;
-            } else if (const Set *set = std::get_if<Set>(&val.num)) {
+            } else if (const Set *set = std::get_if<Set>(&val.m_num)) {
                 std::cout << *set << std::endl;
 //                std::cout << set->getInternalType() << std::endl;
-            } else if (const double *dval = std::get_if<double>(&val.num)) {
-                printf("Result: %.3f\nType: %d\n", *dval, val.type);
+            } else if (const double dval = std::get_if<Number>(&val.m_num)->getRawDouble()) {
+                printf("Result: %.3f\nType: %d\n", dval, val.getType());
                 fflush(stdout);
             }
         }
@@ -127,32 +127,42 @@ Op functionToOp(const Function &function) {
 
 
 void tests() {
-    assert(("`123 + 10` was evaluated incorrectly", std::get<double>(evaluate("123 + 10").num) == 133));
-    assert(("`10 - 10` was evaluated incorrectly", std::get<double>(evaluate("10 - 10").num) == 0));
-    assert(("`(10 * 5) / 5` was evaluated incorrectly", std::get<double>(evaluate("(10 * 5) / 5").num) == 10));
-    assert(("`(12 % 5) * 6` was evaluated incorrectly", std::get<double>(evaluate("(12 % 5) * 6").num) == 12));
-    assert(("`7 / 7 % 3` was evaluated incorrectly", std::get<double>(evaluate("7 / 7 % 3").num) == 1));
-    assert(("`7 / (7 % 3)` was evaluated incorrectly", std::get<double>(evaluate("7 / (7 % 3)").num) == 7));
-    assert(("`7 / mod(7, 3)` was evaluated incorrectly", std::get<double>(evaluate("7 / mod(7,3)").num) == 7));
-    assert(("`exp(2, 3)` was evaluated incorrectly", std::get<double>(evaluate("exp(2, 3)").num) == 8));
-    assert(("`2^3` was evaluated incorrectly", std::get<double>(evaluate("2^3").num) == 8));
-    assert(("`sqrt(mod(12, 5))` was evaluated incorrectly", std::get<double>(evaluate("sqrt(mod(12, 5))").num) ==
-                                                            sqrt(12 % 5)));
-    assert(("`2 | 3 + 1` was evaluated incorrectly", std::get<double>(evaluate("2 | 3 + 1").num) == 6));
-    assert(("`bor(2, 3) + 1` was evaluated incorrectly", std::get<double>(evaluate("bor(2, 3) + 1").num) == 4));
-    assert(("`2 & 3 + 1` was evaluated incorrectly", std::get<double>(evaluate("2 & 3 + 1").num) == 0));
-    assert(("`band(2, 3) + 1` was evaluated incorrectly", std::get<double>(evaluate("band(2, 3) + 1").num) == 3));
-    assert(("`3!` was evaluated incorrectly", std::get<double>(evaluate("3!").num) == 6));
-    assert(("`exp(2, 3!)` was evaluated incorrectly", std::get<double>(evaluate("exp(2, 3!)").num) == 64));
-    assert(("`12!` was evaluated incorrectly", std::get<double>(evaluate("12!").num) == 479001600));
+    assert(("`123 + 10` was evaluated incorrectly", std::get<Number>(evaluate("123 + 10").m_num).getRawDouble() == 133));
+    assert(("`10 - 10` was evaluated incorrectly", std::get<Number>(evaluate("10 - 10").m_num).getRawDouble() == 0));
+    assert(("`(10 * 5) / 5` was evaluated incorrectly", std::get<Number>(evaluate("(10 * 5) / 5").m_num).getRawDouble() ==
+                                                        10));
+    assert(("`(12 % 5) * 6` was evaluated incorrectly", std::get<Number>(evaluate("(12 % 5) * 6").m_num).getRawDouble() ==
+                                                        12));
+    assert(("`7 / 7 % 3` was evaluated incorrectly", std::get<Number>(evaluate("7 / 7 % 3").m_num).getRawDouble() == 1));
+    assert(("`7 / (7 % 3)` was evaluated incorrectly", std::get<Number>(evaluate("7 / (7 % 3)").m_num).getRawDouble() ==
+                                                       7));
+    assert(("`7 / mod(7, 3)` was evaluated incorrectly",
+            std::get<Number>(evaluate("7 / mod(7,3)").m_num).getRawDouble() == 7));
+    assert(("`exp(2, 3)` was evaluated incorrectly", std::get<Number>(evaluate("exp(2, 3)").m_num).getRawDouble() == 8));
+    assert(("`2^3` was evaluated incorrectly", std::get<Number>(evaluate("2^3").m_num).getRawDouble() == 8));
+    assert(("`sqrt(mod(12, 5))` was evaluated incorrectly",
+            std::get<Number>(evaluate("sqrt(mod(12, 5))").m_num).getRawDouble() ==
+            sqrt(12 % 5)));
+    assert(("`2 | 3 + 1` was evaluated incorrectly", std::get<Number>(evaluate("2 | 3 + 1").m_num).getRawDouble() == 6));
+    assert(("`bor(2, 3) + 1` was evaluated incorrectly",
+            std::get<Number>(evaluate("bor(2, 3) + 1").m_num).getRawDouble() == 4));
+    assert(("`2 & 3 + 1` was evaluated incorrectly", std::get<Number>(evaluate("2 & 3 + 1").m_num).getRawDouble() == 0));
+    assert(("`band(2, 3) + 1` was evaluated incorrectly",
+            std::get<Number>(evaluate("band(2, 3) + 1").m_num).getRawDouble() == 3));
+    assert(("`3!` was evaluated incorrectly", std::get<Number>(evaluate("3!").m_num).getRawDouble() == 6));
+    assert(("`exp(2, 3!)` was evaluated incorrectly", std::get<Number>(evaluate("exp(2, 3!)").m_num).getRawDouble() ==
+                                                      64));
+    assert(("`12!` was evaluated incorrectly", std::get<Number>(evaluate("12!").m_num).getRawDouble() == 479001600));
     assert(("`exp(2, mod(12!, 17))` was evaluated incorrectly",
-            std::get<double>(evaluate("exp(2, mod(12!, 17))").num) ==
+            std::get<Number>(evaluate("exp(2, mod(12!, 17))").m_num).getRawDouble() ==
             4096));
-    assert(("`12.3` was evaluated incorrectly", std::get<double>(evaluate("12.3").num) == 12.3));
-    assert(("`11.245 / 1.353` was evaluated incorrectly", std::get<double>(evaluate("11.245 / 1.353").num) ==
-                                                          11.245 / 1.353));
-    assert(("`exp(1.124, 5.5)` was evaluated incorrectly", std::get<double>(evaluate("exp(1.124, 5.5)").num) ==
-                                                           pow(1.124, 5.5)));
+    assert(("`12.3` was evaluated incorrectly", std::get<Number>(evaluate("12.3").m_num).getRawDouble() == 12.3));
+    assert(("`11.245 / 1.353` was evaluated incorrectly",
+            std::get<Number>(evaluate("11.245 / 1.353").m_num).getRawDouble() ==
+            11.245 / 1.353));
+    assert(("`exp(1.124, 5.5)` was evaluated incorrectly",
+            std::get<Number>(evaluate("exp(1.124, 5.5)").m_num).getRawDouble() ==
+            pow(1.124, 5.5)));
 
 
 }
@@ -272,7 +282,11 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
                     number.append(decimal);
                 }
                 // TODO: If decimal is empty, push the double with a value type of INTEGER.
-                values.push(std::stod(number));
+                if (decimal.empty()) {
+                    values.push({std::stod(number), NumberType::Integer});
+                } else {
+                    values.push(std::stod(number));
+                }
                 i--;
             }
         } else if (token == '!') {
@@ -319,7 +333,7 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
                         [](auto &num) {
 //                            No op
                         }
-                }, values.top().num);
+                }, values.top().m_num);
             }
             while (ops.top().token != oppositeToken(token)) {
                 Op op = ops.top();
@@ -336,7 +350,7 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
                                 [](auto &num) {
 //                            No op
                                 }
-                        }, values.top().num);
+                        }, values.top().m_num);
                     }
                 }
             }

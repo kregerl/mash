@@ -11,9 +11,9 @@ public:
 
     Vector(Collection1D &num);
 
-    int getType() const override;
+    NumberType getType() const override;
 
-    int getInternalType() const override;
+    NumberType getInternalType() const override;
 
     friend std::ostream &operator<<(std::ostream &os, const Vector &vec);
 

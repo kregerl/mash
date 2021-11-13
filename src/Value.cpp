@@ -1,28 +1,35 @@
 #include "Value.h"
 
-Value::Value() : num(0), type(NONE) {
-}
+Value::Value() : m_num(Number()) {}
 
-Value::Value(double n, int valueType) {
-    num = n;
-    type = valueType;
-}
 
-Value::Value(std::vector<double> n, int valueType) {
-    if (valueType == SET) {
-        num = Set(n);
-    } else if (valueType == VECTOR) {
-        num = Vector(n);
-    }
-    type = valueType;
-}
+Value::Value(double n, NumberType type) : m_num(Number(n, type)) {}
+
+Value::Value(Number n) : m_num(n) {}
 
 Value::Value(Vector n) {
-    num = n;
-    type = n.getType();
+    m_num = n;
 }
 
 Value::Value(Set n) {
-    num = n;
-    type = n.getType();
+    m_num = n;
+}
+
+Value::Value(std::vector<double> n, NumberType type) {
+    if (type == NumberType::Set) {
+        m_num = Set(n);
+    } else if (type == NumberType::Vector) {
+        m_num = Vector(n);
+    }
+}
+
+NumberType Value::getType() const {
+    if (const Number *num = std::get_if<Number>(&m_num)) {
+        return num->getType();
+    } else if (const Number *num = std::get_if<Number>(&m_num)) {
+        return num->getType();
+    } else if (const Number *num = std::get_if<Number>(&m_num)) {
+        return num->getType();
+    }
+    return NumberType::None;
 }

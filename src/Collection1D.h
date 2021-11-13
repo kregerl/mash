@@ -4,6 +4,7 @@
 #include <vector>
 #include <variant>
 #include <ostream>
+#include "Number.h"
 
 
 class Collection1D {
@@ -14,9 +15,9 @@ public:
 
     virtual ~Collection1D() = default;
 
-    virtual int getType() const;
+    virtual NumberType getType() const;
 
-    virtual int getInternalType() const;
+    virtual NumberType getInternalType() const;
 
     std::vector<double> &getValue();
 
@@ -25,9 +26,10 @@ public:
     virtual void emplace_back(double n);
 
 protected:
-    int m_internalType;
+    NumberType m_internalType;
     std::vector<double> m_value;
 
 };
+
 
 #endif

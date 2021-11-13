@@ -25,9 +25,7 @@ public:
 
     explicit Set(Collection1D &num, SetLayout layout = SetLayout::Layout::Single);
 
-    int getType() const override;
-
-    int getInternalType() const override;
+    NumberType getType() const override;
 
     const SetLayout &getLayout() const;
 
@@ -48,6 +46,7 @@ public:
 private:
     SetLayout m_layout;
 };
+
 
 
 #endif //MASH_SET_H

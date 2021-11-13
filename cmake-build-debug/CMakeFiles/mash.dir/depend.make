@@ -4,11 +4,16 @@
 CMakeFiles/mash.dir/src/Collection1D.cpp.obj: \
  ../src/Collection1D.cpp \
  ../src/Collection1D.h \
+ ../src/Number.h \
  ../src/Set.h \
  ../src/Value.h \
  ../src/Vector.h
+CMakeFiles/mash.dir/src/Number.cpp.obj: \
+ ../src/Number.cpp \
+ ../src/Number.h
 CMakeFiles/mash.dir/src/Operations.cpp.obj: \
  ../src/Collection1D.h \
+ ../src/Number.h \
  ../src/Operations.cpp \
  ../src/Operations.h \
  ../src/Set.h \
@@ -16,24 +21,28 @@ CMakeFiles/mash.dir/src/Operations.cpp.obj: \
  ../src/Vector.h
 CMakeFiles/mash.dir/src/Set.cpp.obj: \
  ../src/Collection1D.h \
+ ../src/Number.h \
  ../src/Set.cpp \
  ../src/Set.h \
  ../src/Value.h \
  ../src/Vector.h
 CMakeFiles/mash.dir/src/Value.cpp.obj: \
  ../src/Collection1D.h \
+ ../src/Number.h \
  ../src/Set.h \
  ../src/Value.cpp \
  ../src/Value.h \
  ../src/Vector.h
 CMakeFiles/mash.dir/src/Vector.cpp.obj: \
  ../src/Collection1D.h \
+ ../src/Number.h \
  ../src/Set.h \
  ../src/Value.h \
  ../src/Vector.cpp \
  ../src/Vector.h
 CMakeFiles/mash.dir/src/main.cpp.obj: \
  ../src/Collection1D.h \
+ ../src/Number.h \
  ../src/Operations.h \
  ../src/Set.h \
  ../src/Value.h \

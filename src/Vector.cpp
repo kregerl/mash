@@ -5,11 +5,11 @@ Vector::Vector(std::vector<double> &num) : Collection1D(num) {}
 
 Vector::Vector(Collection1D &num) : Collection1D(num) {}
 
-int Vector::getType() const {
-    return VECTOR;
+NumberType Vector::getType() const {
+    return NumberType::Vector;
 }
 
-int Vector::getInternalType() const {
+NumberType Vector::getInternalType() const {
     return m_internalType;
 }
 
