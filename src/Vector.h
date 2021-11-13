@@ -29,6 +29,14 @@ public:
 
     double dot(const Vector &vec);
 
+    Vector cross(const Vector &vec);
+
+    double magnitude();
+
+    Vector normalize();
+
+    double inner(const Vector &vec);
+
 };
 
 

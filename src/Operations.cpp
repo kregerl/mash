@@ -414,6 +414,97 @@ Result opArctan(std::stack<Op> &ops, std::stack<Value> &values) {
     return result;
 }
 
+Result opDot(std::stack<Op> &ops, std::stack<Value> &values) {
+    Result result = DEFAULT_RESULT;
+    ops.pop();
+    if (values.size() >= 2) {
+        Value num1 = values.top();
+        values.pop();
+        Value num2 = values.top();
+        values.pop();
+
+        result.num = std::visit(overload{
+                [](Vector &v1, Vector &v2) -> Value {
+                    return v1.dot(v2);
+                },
+                [&result](auto, auto) -> Value {
+                    result.error = "Unsupported opperation";
+                    return 0;
+                }
+        }, num1.m_num, num2.m_num);
+    }
+    return result;
+}
+
+Result opCross(std::stack<Op> &ops, std::stack<Value> &values) {
+    Result result = DEFAULT_RESULT;
+    ops.pop();
+    if (values.size() >= 2) {
+        Value num1 = values.top();
+        values.pop();
+        Value num2 = values.top();
+        values.pop();
+
+        result.num = std::visit(overload{
+                [&result](Vector &v1, Vector &v2) -> Value {
+                    if (v1.size() == 3 && v2.size() == 3) {
+                        return v1.cross(v2);
+                    } else {
+                        result.error = "Cross product only works for 3 dimensional vectors.";
+                        return 0;
+                    }
+
+                },
+                [&result](auto, auto) -> Value {
+                    result.error = "Unsupported opperation";
+                    return 0;
+                }
+        }, num1.m_num, num2.m_num);
+    }
+    return result;
+}
+
+Result opMag(std::stack<Op> &ops, std::stack<Value> &values) {
+    Result result = DEFAULT_RESULT;
+    ops.pop();
+    if (!values.empty()) {
+        Value num = values.top();
+        values.pop();
+        result.num = std::visit(overload{
+                [](Vector &v1) -> Value {
+                    return v1.magnitude();
+                },
+                [&result](auto) -> Value {
+                    result.error = "Unsupported opperation";
+                    return 0;
+                }
+        }, num.m_num);
+    }
+    return result;
+}
+
+Result opNorm(std::stack<Op> &ops, std::stack<Value> &values) {
+    Result result = DEFAULT_RESULT;
+    ops.pop();
+    if (!values.empty()) {
+        Value num = values.top();
+        values.pop();
+        result.num = std::visit(overload{
+                [](Vector &v1) -> Value {
+                    return v1.normalize();
+                },
+                [&result](auto) -> Value {
+                    result.error = "Unsupported opperation";
+                    return 0;
+                }
+        }, num.m_num);
+    }
+    return result;
+}
+
+
+
+
 //double derivative(const std::string &expression) {
 //    for (int i = 0; i < expression.length(); i++) {
 //        char token = expression[i];

@@ -23,6 +23,8 @@ public:
 
     std::vector<double> getValue() const;
 
+    virtual size_t size() const;
+
     virtual void emplace_back(double n);
 
 protected:

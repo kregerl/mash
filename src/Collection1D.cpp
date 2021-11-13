@@ -28,6 +28,10 @@ void Collection1D::emplace_back(double n) {
     m_value.emplace_back(n);
 }
 
+size_t Collection1D::size() const {
+    return m_value.size();
+}
+
 
 
 

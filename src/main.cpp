@@ -322,12 +322,13 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
                 }
             }
         } else if (token == ']' || token == '}') {
+            // TODO: Allow collection to emplace a Number type to keep the types.
             Collection1D collection;
             if (!values.empty()) {
                 // Only place doubles in the collection
                 std::visit(overload{
-                        [&collection, &values](double &num) {
-                            collection.emplace_back(num);
+                        [&collection, &values](Number &num) {
+                            collection.emplace_back(num.getRawDouble());
                             values.pop();
                         },
                         [](auto &num) {
@@ -343,8 +344,8 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
                     if (!values.empty()) {
                         // Only place doubles in the collection
                         std::visit(overload{
-                                [&collection, &values](double &num) {
-                                    collection.emplace_back(num);
+                                [&collection, &values](Number &num) {
+                                    collection.emplace_back(num.getRawDouble());
                                     values.pop();
                                 },
                                 [](auto &num) {

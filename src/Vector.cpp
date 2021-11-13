@@ -1,5 +1,6 @@
 #include "Vector.h"
 #include "Value.h"
+#include <cmath>
 
 Vector::Vector(std::vector<double> &num) : Collection1D(num) {}
 
@@ -63,6 +64,7 @@ Vector Vector::scalarMul(const double &val) {
     return vec;
 }
 
+// Assumes the vectors are the same size.
 double Vector::dot(const Vector &vec) {
     double sum = 0;
     std::vector<double> v = vec.getValue();
@@ -71,6 +73,32 @@ double Vector::dot(const Vector &vec) {
     }
     return sum;
 
+}
+
+// Assumes the vectors are only 3 dimensional.
+Vector Vector::cross(const Vector &vec) {
+    std::vector<double> v(vec.size());
+    v[0] = m_value[1] * vec.getValue()[2] - m_value[2] * vec.getValue()[1];
+    v[1] = -(m_value[0] * vec.getValue()[2] - m_value[2] * vec.getValue()[0]);
+    v[2] = m_value[0] * vec.getValue()[1] - m_value[1] * vec.getValue()[0];
+    return v;
+}
+
+double Vector::magnitude() {
+    double sum = 0;
+    for (double &num: m_value) {
+        sum += pow(num, 2);
+    }
+    return sqrt(sum);
+}
+
+Vector Vector::normalize() {
+    double mag = magnitude();
+    std::vector<double> v(m_value.size());
+    for (int i = 0; i < m_value.size(); i++) {
+        v.at(i) = m_value.at(i) / mag;
+    }
+    return v;
 }
 
 

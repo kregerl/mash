@@ -108,6 +108,14 @@ Result opArccos(std::stack<Op> &ops, std::stack<Value> &values);
 
 Result opArctan(std::stack<Op> &ops, std::stack<Value> &values);
 
+Result opDot(std::stack<Op> &ops, std::stack<Value> &values);
+
+Result opCross(std::stack<Op> &ops, std::stack<Value> &values);
+
+Result opMag(std::stack<Op> &ops, std::stack<Value> &values);
+
+Result opNorm(std::stack<Op> &ops, std::stack<Value> &values);
+
 //double derivative(const std::string &expression);
 
 const static std::unordered_map<std::string, Op> operations = {
@@ -139,6 +147,8 @@ const static std::unordered_map<std::string, Op> operations = {
         {"arctan", {1, 4,  "arctan", {NumberType::IntegerOrDouble},                              opArctan}},
         {"ln",     {1, 4,  "ln",     {NumberType::IntegerOrDouble},                              opLn}},         // ln(y) or log_e(y)
         {"log",    {1, 4,  "log",    {NumberType::IntegerOrDouble},                              opLog}},      // log_10(y)
+        {"mag",    {1, 4,  "mag",    {NumberType::Vector},                                       opMag}},      // log_10(y)
+        {"norm",   {1, 4,  "norm",   {NumberType::Vector},                                       opNorm}},      // log_10(y)
         {"logb",   {2, 4,  "logb",   {NumberType::IntegerOrDouble, NumberType::IntegerOrDouble}, opLog}},    // log_x(y)
         {"gcd",    {2, 4,  "gcd",    {NumberType::Integer,         NumberType::Integer},         opGCD}},      // Greatest Common Divisor
         {"lcm",    {2, 4,  "lcm",    {NumberType::Integer,         NumberType::Integer},         opLCM}},      // Least Common Multiple
@@ -147,12 +157,15 @@ const static std::unordered_map<std::string, Op> operations = {
         {"band",   {2, 4,  "band",   {NumberType::Integer,         NumberType::Integer},         opBand}},   // band(a, b) treated as (a & b)
         {"mod",    {2, 4,  "mod",    {NumberType::Integer,         NumberType::Integer},         opMod}},      // mod(a, b) treated as (a % b)
         {"exp",    {2, 4,  "exp",    {NumberType::IntegerOrDouble, NumberType::IntegerOrDouble}, opExp}},
-        {"choose", {2, 4,  "choose", {NumberType::IntegerOrDouble, NumberType::IntegerOrDouble}, opChoose}}
+        {"choose", {2, 4,  "choose", {NumberType::IntegerOrDouble, NumberType::IntegerOrDouble}, opChoose}},
+        {"dot",    {2, 4,  "dot",    {NumberType::Vector,          NumberType::Vector},          opDot}},
+        {"cross",  {2, 4,  "cross",  {NumberType::Vector,          NumberType::Vector},          opCross}},
 };
 
 const static std::unordered_map<std::string, double> constants = {
-        {"e",  std::exp(1.0)},
-        {"pi", 2 * std::acos(0.0)},
+        {"e",   std::exp(1.0)},
+        {"pi",  2 * std::acos(0.0)},
+        {"phi", ((1 + sqrt(5)) / 2)},
 
 };
 
