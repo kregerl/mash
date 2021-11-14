@@ -3,13 +3,14 @@
 
 #include "Collection1D.h"
 
+
 class Vector : public Collection1D {
 public:
     Vector() = default;
 
     Vector(std::vector<double> &num);
 
-    Vector(Collection1D &num);
+    Vector(Collection1D num);
 
     NumberType getType() const override;
 
@@ -34,6 +35,8 @@ public:
     double magnitude();
 
     Vector normalize();
+
+    Vector sqrt();
 
 };
 

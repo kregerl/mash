@@ -80,7 +80,7 @@ int main() {
                 std::cout << *set << std::endl;
 //                std::cout << set->getInternalType() << std::endl;
             } else if (const double dval = std::get_if<Number>(&global_variables[command].m_num)->getRawDouble()) {
-                printf("Result: %.3f\nType: %d\n", dval, global_variables[command].getType());
+                printf("Result: %.3f\n", dval);
                 fflush(stdout);
             }
 

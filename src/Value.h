@@ -30,11 +30,11 @@ public:
 
     Value(double n, NumberType type = NumberType::Double);
 
-    Value(Number &n);
+    Value(Number n);
 
-    Value(Vector &n);
+    Value(Vector n);
 
-    Value(Set &n);
+    Value(Set n);
 
     Value(std::vector<double> n, NumberType type);
 

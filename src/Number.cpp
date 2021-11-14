@@ -2,6 +2,8 @@
 
 Number::Number() : m_value(0), m_type(NumberType::Double) {}
 
+Number::Number(int value, NumberType type) : m_value(value), m_type(type) {}
+
 Number::Number(double value, NumberType type) : m_value(value), m_type(type) {}
 
 NumberType Number::getType() const {
@@ -16,12 +18,30 @@ Number Number::operator+(const Number &num) const {
     return Number(m_value + num.getRawDouble(), opResultType(num));
 }
 
+Number Number::operator+(const double &num) const {
+    return Number(m_value + num, NumberType::Double);
+}
+
+Number &Number::operator+=(const Number &num) {
+    m_value += num.getRawDouble();
+    return *this;
+}
+
+Number &Number::operator+=(const double &num) {
+    m_value += num;
+    return *this;
+}
+
 Number Number::operator-(const Number &num) const {
     return Number(m_value - num.getRawDouble(), opResultType(num));
 }
 
 Number Number::operator*(const Number &num) const {
     return Number(m_value * num.getRawDouble(), opResultType(num));
+}
+
+Number Number::operator*(const double &num) const {
+    return Number(m_value * num, NumberType::Double);
 }
 
 Number Number::operator/(const Number &num) const {
@@ -53,6 +73,13 @@ NumberType Number::opResultType(const Number &num) const {
     }
     return NumberType::None;
 }
+
+
+
+
+
+
+
 
 
 

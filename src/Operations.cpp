@@ -1,6 +1,5 @@
 #include "Operations.h"
 
-
 Result noOp(std::stack<Op> &ops, std::stack<Value> &values) {
     ops.pop();
     Result result = DEFAULT_RESULT;
@@ -20,16 +19,14 @@ Result opAdd(std::stack<Op> &ops, std::stack<Value> &values) {
         std::cout << num1.getType() << std::endl;
         std::cout << num2.getType() << std::endl;
 
-//        if ((num1.getType() | num2.getType()) == num1.getType()) {
-//
-//        }
-
         result.num = std::visit(overload{
                 [](Number &a, Number &b) -> Value { return {a + b}; },
                 [](Vector &a, Vector &b) -> Value { return a + b; },
                 [](Set &a, Set &b) -> Value { return a + b; },
-                [&result](auto &a, auto &b) -> Value {
-                    result.error = "Unsupported opperation";
+                [&result, &num1, &num2](auto &a, auto &b) -> Value {
+                    result.error = "Unsupported operation: Cannot add type of " +
+                                   typeStrings[static_cast<int>(num1.getType())] + " to " +
+                                   typeStrings[static_cast<int>(num2.getType())] + ".";
                     return 0;
                 }
         }, num1.m_num, num2.m_num);
@@ -51,26 +48,25 @@ Result opSub(std::stack<Op> &ops, std::stack<Value> &values) {
                 [](Number &a, Number &b) -> Value { return b - a; },
                 [](Vector &a, Vector &b) -> Value { return b - a; },
                 [](Set &a, Set &b) -> Value { return b - a; },
-                [&result](auto &a, auto &b) -> Value {
-                    result.error = "Unsupported opperation";
+                [&result, &num1, &num2](auto &a, auto &b) -> Value {
+                    result.error = "Unsupported operation: Cannot subtract type of " +
+                                   typeStrings[static_cast<int>(num1.getType())] + " to " +
+                                   typeStrings[static_cast<int>(num2.getType())] + ".";
                     return 0;
                 }
         }, num1.m_num, num2.m_num);
     } else if (!values.empty()) {
-        // TODO: Remove this entirely or find a reason for keeping it
-//        Value m_num = values.top();
-//        values.pop();
-//        result.m_num = std::visit(overload{
-//                [](int &n) -> Value { return -1 * n; },
-//                [](double &n) -> Value { return -1 * n; },
-//                [&m_num](std::vector<double> &n) -> Value {
-//                    std::vector<double> result;
-//                    for (auto &val: n) {
-//                        result.push_back(-1 * val);
-//                    }
-//                    return {result, m_num.type};
-//                },
-//        }, m_num.m_num);
+        Value num = values.top();
+        values.pop();
+        result.num = std::visit(overload{
+                [](Number &a) -> Value { return a * Number(-1); },
+                [](Vector &a) -> Value { return a.scalarMul(-1); },
+                [](Set &a) -> Value { return a.scalarMul(-1); },
+                [&result](auto &a) -> Value {
+                    result.error = "Unsupported operation: This should never happen.";
+                    return 0;
+                }
+        }, num.m_num);
     }
     return result;
 }
@@ -86,14 +82,16 @@ Result opMul(std::stack<Op> &ops, std::stack<Value> &values) {
 
         result.num = std::visit(overload{
                 [](Number &a, Number &b) -> Value { return b * a; },
-                [](double &a, Vector &b) -> Value { return b.scalarMul(a); },
-                [](double &a, Set &b) -> Value { return b.scalarMul(a); },
-                [](Vector &a, double &b) -> Value { return a.scalarMul(b); },
+                [](Number &a, Vector &b) -> Value { return b.scalarMul(a.getRawDouble()); },
+                [](Number &a, Set &b) -> Value { return b.scalarMul(a.getRawDouble()); },
+                [](Vector &a, Number &b) -> Value { return a.scalarMul(b.getRawDouble()); },
                 [](Vector &a, Vector &b) -> Value { return a.dot(b); },
-                [](Set &a, double &b) -> Value { return a.scalarMul(b); },
+                [](Set &a, Number &b) -> Value { return a.scalarMul(b.getRawDouble()); },
                 [](Set &a, Set &b) -> Value { return a.cartesianProduct(b); },
-                [&result](auto &a, auto &b) -> Value {
-                    result.error = "Unsupported opperation";
+                [&result, &num1, &num2](auto &a, auto &b) -> Value {
+                    result.error = "Unsupported operation: Cannot multiply type of " +
+                                   typeStrings[static_cast<int>(num1.getType())] + " to " +
+                                   typeStrings[static_cast<int>(num2.getType())] + ".";
                     return 0;
                 }
         }, num1.m_num, num2.m_num);
@@ -124,9 +122,6 @@ Result opMod(std::stack<Op> &ops, std::stack<Value> &values) {
     Op op = ops.top();
     std::string token = ops.top().token;
     ops.pop();
-    for (NumberType &type: op.validValueTypes) {
-
-    }
 
     if (values.size() >= 2) {
         int num1 = static_cast<int>(std::get_if<Number>(&values.top().m_num)->getRawDouble());
@@ -159,9 +154,17 @@ Result opSqrt(std::stack<Op> &ops, std::stack<Value> &values) {
     Result result = DEFAULT_RESULT;
     ops.pop();
     if (!values.empty()) {
-        Number num = *std::get_if<Number>(&values.top().m_num);
+        Value num = values.top();
         values.pop();
-        result.num = sqrt(num.getRawDouble());
+        result.num = std::visit(overload{
+                [](Number &a) -> Value { return sqrt(a.getRawDouble()); },
+                [](Vector &a) -> Value { return a.sqrt(); },
+                [&result, &num](auto &a) -> Value {
+                    result.error = "Unsupported operation: Cannot take the square root of a " +
+                                   typeStrings[static_cast<int>(num.getType())] + ".";
+                    return 0;
+                }
+        }, num.m_num);
     }
     return result;
 }
@@ -492,6 +495,53 @@ Result opNorm(std::stack<Op> &ops, std::stack<Value> &values) {
         result.num = std::visit(overload{
                 [](Vector &v1) -> Value {
                     return v1.normalize();
+                },
+                [&result](auto) -> Value {
+                    result.error = "Unsupported opperation";
+                    return 0;
+                }
+        }, num.m_num);
+    }
+    return result;
+}
+
+// TODO: Uninplemented, return the type of the value
+Result opType(std::stack<Op> &ops, std::stack<Value> &values) {
+    Result result = DEFAULT_RESULT;
+    ops.pop();
+    if (!values.empty()) {
+        Value num = values.top();
+        values.pop();
+        result.num = std::visit(overload{
+                [&result](auto) -> Value {
+                    result.error = "Unsupported opperation";
+                    return 0;
+                }
+        }, num.m_num);
+    }
+    return result;
+}
+
+Result opSum(std::stack<Op> &ops, std::stack<Value> &values) {
+    Result result = DEFAULT_RESULT;
+    ops.pop();
+    if (!values.empty()) {
+        Value num = values.top();
+        values.pop();
+        result.num = std::visit(overload{
+                [](Set &set) -> Value {
+                    Number sum = Number(0, NumberType::Integer);
+                    for (auto &num: set) {
+                        sum += num;
+                    }
+                    return sum;
+                },
+                [](Vector &vec) -> Value {
+                    Number sum = Number(0, NumberType::Integer);
+                    for (auto &num: vec) {
+                        sum += num;
+                    }
+                    return sum;
                 },
                 [&result](auto) -> Value {
                     result.error = "Unsupported opperation";
