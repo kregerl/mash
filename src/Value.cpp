@@ -5,13 +5,13 @@ Value::Value() : m_num(Number()) {}
 
 Value::Value(double n, NumberType type) : m_num(Number(n, type)) {}
 
-Value::Value(Number &n) : m_num(n) {}
+Value::Value(Number n) : m_num(n) {}
 
-Value::Value(Vector &n) {
+Value::Value(Vector n) {
     m_num = n;
 }
 
-Value::Value(Set &n) {
+Value::Value(Set n) {
     m_num = n;
 }
 

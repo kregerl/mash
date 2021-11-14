@@ -15,6 +15,10 @@ public:
 
     virtual ~Collection1D() = default;
 
+    std::vector<double>::iterator begin();
+
+    std::vector<double>::iterator end();
+
     virtual NumberType getType() const;
 
     virtual NumberType getInternalType() const;
@@ -30,6 +34,7 @@ public:
 protected:
     NumberType m_internalType;
     std::vector<double> m_value;
+
 
 };
 

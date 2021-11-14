@@ -2,11 +2,16 @@
 #include "Value.h"
 #include <algorithm>
 
-//--------------------
-//-- Collection 1D ---
-//--------------------
 
 Collection1D::Collection1D(std::vector<double> &num) : m_value(num), m_internalType(NumberType::Double) {}
+
+std::vector<double>::iterator Collection1D::begin() {
+    return m_value.begin();
+}
+
+std::vector<double>::iterator Collection1D::end() {
+    return m_value.end();
+}
 
 NumberType Collection1D::getType() const {
     return NumberType::None;
@@ -31,6 +36,8 @@ void Collection1D::emplace_back(double n) {
 size_t Collection1D::size() const {
     return m_value.size();
 }
+
+
 
 
 

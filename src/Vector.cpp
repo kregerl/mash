@@ -4,7 +4,7 @@
 
 Vector::Vector(std::vector<double> &num) : Collection1D(num) {}
 
-Vector::Vector(Collection1D &num) : Collection1D(num) {}
+Vector::Vector(Collection1D num) : Collection1D(num) {}
 
 NumberType Vector::getType() const {
     return NumberType::Vector;
@@ -58,8 +58,8 @@ Vector Vector::sub(const Vector &vec) {
 
 Vector Vector::scalarMul(const double &val) {
     std::vector<double> vec(m_value.size());
-    for (auto &num: m_value) {
-        vec.emplace_back(num * val);
+    for (int i = 0; i < vec.size(); i++) {
+        vec.at(i) = m_value.at(i) * val;
     }
     return vec;
 }
@@ -89,7 +89,7 @@ double Vector::magnitude() {
     for (double &num: m_value) {
         sum += pow(num, 2);
     }
-    return sqrt(sum);
+    return std::sqrt(sum);
 }
 
 Vector Vector::normalize() {
@@ -99,6 +99,14 @@ Vector Vector::normalize() {
         v.at(i) = m_value.at(i) / mag;
     }
     return v;
+}
+
+Vector Vector::sqrt() {
+    std::vector<double> vec(m_value.size());
+    for (int i = 0; i < vec.size(); i++) {
+        vec.at(i) = std::sqrt(m_value.at(i));
+    }
+    return vec;
 }
 
 
