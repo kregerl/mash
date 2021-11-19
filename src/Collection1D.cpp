@@ -37,6 +37,26 @@ size_t Collection1D::size() const {
     return m_value.size();
 }
 
+double Collection1D::min() {
+    double min = m_value.front();
+    for (auto &num : m_value) {
+        if (min > num) {
+            min = num;
+        }
+    }
+    return min;
+}
+
+double Collection1D::max() {
+    double max = 0;
+    for (auto &num : m_value) {
+        if (max < num) {
+            max = num;
+        }
+    }
+    return max;
+}
+
 
 
 

@@ -68,93 +68,93 @@ include CMakeFiles/mash.dir/flags.make
 CMakeFiles/mash.dir/src/main.cpp.obj: CMakeFiles/mash.dir/flags.make
 CMakeFiles/mash.dir/src/main.cpp.obj: ../src/main.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\kregerl\CLionProjects\mash\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/mash.dir/src/main.cpp.obj"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\mash.dir\src\main.cpp.obj -c C:\Users\kregerl\CLionProjects\mash\src\main.cpp
+	C:\PROGRA~1\MINGW-~1\X86_64~2.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\mash.dir\src\main.cpp.obj -c C:\Users\kregerl\CLionProjects\mash\src\main.cpp
 
 CMakeFiles/mash.dir/src/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/mash.dir/src/main.cpp.i"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\kregerl\CLionProjects\mash\src\main.cpp > CMakeFiles\mash.dir\src\main.cpp.i
+	C:\PROGRA~1\MINGW-~1\X86_64~2.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\kregerl\CLionProjects\mash\src\main.cpp > CMakeFiles\mash.dir\src\main.cpp.i
 
 CMakeFiles/mash.dir/src/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/mash.dir/src/main.cpp.s"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\kregerl\CLionProjects\mash\src\main.cpp -o CMakeFiles\mash.dir\src\main.cpp.s
+	C:\PROGRA~1\MINGW-~1\X86_64~2.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\kregerl\CLionProjects\mash\src\main.cpp -o CMakeFiles\mash.dir\src\main.cpp.s
 
 CMakeFiles/mash.dir/src/Operations.cpp.obj: CMakeFiles/mash.dir/flags.make
 CMakeFiles/mash.dir/src/Operations.cpp.obj: ../src/Operations.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\kregerl\CLionProjects\mash\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/mash.dir/src/Operations.cpp.obj"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\mash.dir\src\Operations.cpp.obj -c C:\Users\kregerl\CLionProjects\mash\src\Operations.cpp
+	C:\PROGRA~1\MINGW-~1\X86_64~2.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\mash.dir\src\Operations.cpp.obj -c C:\Users\kregerl\CLionProjects\mash\src\Operations.cpp
 
 CMakeFiles/mash.dir/src/Operations.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/mash.dir/src/Operations.cpp.i"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\kregerl\CLionProjects\mash\src\Operations.cpp > CMakeFiles\mash.dir\src\Operations.cpp.i
+	C:\PROGRA~1\MINGW-~1\X86_64~2.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\kregerl\CLionProjects\mash\src\Operations.cpp > CMakeFiles\mash.dir\src\Operations.cpp.i
 
 CMakeFiles/mash.dir/src/Operations.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/mash.dir/src/Operations.cpp.s"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\kregerl\CLionProjects\mash\src\Operations.cpp -o CMakeFiles\mash.dir\src\Operations.cpp.s
+	C:\PROGRA~1\MINGW-~1\X86_64~2.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\kregerl\CLionProjects\mash\src\Operations.cpp -o CMakeFiles\mash.dir\src\Operations.cpp.s
 
 CMakeFiles/mash.dir/src/Value.cpp.obj: CMakeFiles/mash.dir/flags.make
 CMakeFiles/mash.dir/src/Value.cpp.obj: ../src/Value.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\kregerl\CLionProjects\mash\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/mash.dir/src/Value.cpp.obj"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\mash.dir\src\Value.cpp.obj -c C:\Users\kregerl\CLionProjects\mash\src\Value.cpp
+	C:\PROGRA~1\MINGW-~1\X86_64~2.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\mash.dir\src\Value.cpp.obj -c C:\Users\kregerl\CLionProjects\mash\src\Value.cpp
 
 CMakeFiles/mash.dir/src/Value.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/mash.dir/src/Value.cpp.i"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\kregerl\CLionProjects\mash\src\Value.cpp > CMakeFiles\mash.dir\src\Value.cpp.i
+	C:\PROGRA~1\MINGW-~1\X86_64~2.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\kregerl\CLionProjects\mash\src\Value.cpp > CMakeFiles\mash.dir\src\Value.cpp.i
 
 CMakeFiles/mash.dir/src/Value.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/mash.dir/src/Value.cpp.s"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\kregerl\CLionProjects\mash\src\Value.cpp -o CMakeFiles\mash.dir\src\Value.cpp.s
+	C:\PROGRA~1\MINGW-~1\X86_64~2.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\kregerl\CLionProjects\mash\src\Value.cpp -o CMakeFiles\mash.dir\src\Value.cpp.s
 
 CMakeFiles/mash.dir/src/Collection1D.cpp.obj: CMakeFiles/mash.dir/flags.make
 CMakeFiles/mash.dir/src/Collection1D.cpp.obj: ../src/Collection1D.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\kregerl\CLionProjects\mash\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/mash.dir/src/Collection1D.cpp.obj"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\mash.dir\src\Collection1D.cpp.obj -c C:\Users\kregerl\CLionProjects\mash\src\Collection1D.cpp
+	C:\PROGRA~1\MINGW-~1\X86_64~2.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\mash.dir\src\Collection1D.cpp.obj -c C:\Users\kregerl\CLionProjects\mash\src\Collection1D.cpp
 
 CMakeFiles/mash.dir/src/Collection1D.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/mash.dir/src/Collection1D.cpp.i"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\kregerl\CLionProjects\mash\src\Collection1D.cpp > CMakeFiles\mash.dir\src\Collection1D.cpp.i
+	C:\PROGRA~1\MINGW-~1\X86_64~2.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\kregerl\CLionProjects\mash\src\Collection1D.cpp > CMakeFiles\mash.dir\src\Collection1D.cpp.i
 
 CMakeFiles/mash.dir/src/Collection1D.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/mash.dir/src/Collection1D.cpp.s"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\kregerl\CLionProjects\mash\src\Collection1D.cpp -o CMakeFiles\mash.dir\src\Collection1D.cpp.s
+	C:\PROGRA~1\MINGW-~1\X86_64~2.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\kregerl\CLionProjects\mash\src\Collection1D.cpp -o CMakeFiles\mash.dir\src\Collection1D.cpp.s
 
 CMakeFiles/mash.dir/src/Vector.cpp.obj: CMakeFiles/mash.dir/flags.make
 CMakeFiles/mash.dir/src/Vector.cpp.obj: ../src/Vector.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\kregerl\CLionProjects\mash\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/mash.dir/src/Vector.cpp.obj"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\mash.dir\src\Vector.cpp.obj -c C:\Users\kregerl\CLionProjects\mash\src\Vector.cpp
+	C:\PROGRA~1\MINGW-~1\X86_64~2.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\mash.dir\src\Vector.cpp.obj -c C:\Users\kregerl\CLionProjects\mash\src\Vector.cpp
 
 CMakeFiles/mash.dir/src/Vector.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/mash.dir/src/Vector.cpp.i"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\kregerl\CLionProjects\mash\src\Vector.cpp > CMakeFiles\mash.dir\src\Vector.cpp.i
+	C:\PROGRA~1\MINGW-~1\X86_64~2.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\kregerl\CLionProjects\mash\src\Vector.cpp > CMakeFiles\mash.dir\src\Vector.cpp.i
 
 CMakeFiles/mash.dir/src/Vector.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/mash.dir/src/Vector.cpp.s"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\kregerl\CLionProjects\mash\src\Vector.cpp -o CMakeFiles\mash.dir\src\Vector.cpp.s
+	C:\PROGRA~1\MINGW-~1\X86_64~2.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\kregerl\CLionProjects\mash\src\Vector.cpp -o CMakeFiles\mash.dir\src\Vector.cpp.s
 
 CMakeFiles/mash.dir/src/Set.cpp.obj: CMakeFiles/mash.dir/flags.make
 CMakeFiles/mash.dir/src/Set.cpp.obj: ../src/Set.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\kregerl\CLionProjects\mash\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/mash.dir/src/Set.cpp.obj"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\mash.dir\src\Set.cpp.obj -c C:\Users\kregerl\CLionProjects\mash\src\Set.cpp
+	C:\PROGRA~1\MINGW-~1\X86_64~2.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\mash.dir\src\Set.cpp.obj -c C:\Users\kregerl\CLionProjects\mash\src\Set.cpp
 
 CMakeFiles/mash.dir/src/Set.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/mash.dir/src/Set.cpp.i"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\kregerl\CLionProjects\mash\src\Set.cpp > CMakeFiles\mash.dir\src\Set.cpp.i
+	C:\PROGRA~1\MINGW-~1\X86_64~2.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\kregerl\CLionProjects\mash\src\Set.cpp > CMakeFiles\mash.dir\src\Set.cpp.i
 
 CMakeFiles/mash.dir/src/Set.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/mash.dir/src/Set.cpp.s"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\kregerl\CLionProjects\mash\src\Set.cpp -o CMakeFiles\mash.dir\src\Set.cpp.s
+	C:\PROGRA~1\MINGW-~1\X86_64~2.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\kregerl\CLionProjects\mash\src\Set.cpp -o CMakeFiles\mash.dir\src\Set.cpp.s
 
 CMakeFiles/mash.dir/src/Number.cpp.obj: CMakeFiles/mash.dir/flags.make
 CMakeFiles/mash.dir/src/Number.cpp.obj: ../src/Number.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\kregerl\CLionProjects\mash\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/mash.dir/src/Number.cpp.obj"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\mash.dir\src\Number.cpp.obj -c C:\Users\kregerl\CLionProjects\mash\src\Number.cpp
+	C:\PROGRA~1\MINGW-~1\X86_64~2.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\mash.dir\src\Number.cpp.obj -c C:\Users\kregerl\CLionProjects\mash\src\Number.cpp
 
 CMakeFiles/mash.dir/src/Number.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/mash.dir/src/Number.cpp.i"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\kregerl\CLionProjects\mash\src\Number.cpp > CMakeFiles\mash.dir\src\Number.cpp.i
+	C:\PROGRA~1\MINGW-~1\X86_64~2.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\kregerl\CLionProjects\mash\src\Number.cpp > CMakeFiles\mash.dir\src\Number.cpp.i
 
 CMakeFiles/mash.dir/src/Number.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/mash.dir/src/Number.cpp.s"
-	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\kregerl\CLionProjects\mash\src\Number.cpp -o CMakeFiles\mash.dir\src\Number.cpp.s
+	C:\PROGRA~1\MINGW-~1\X86_64~2.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\kregerl\CLionProjects\mash\src\Number.cpp -o CMakeFiles\mash.dir\src\Number.cpp.s
 
 # Object files for target mash
 mash_OBJECTS = \

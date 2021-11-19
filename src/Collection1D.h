@@ -31,6 +31,10 @@ public:
 
     virtual void emplace_back(double n);
 
+    virtual double min();
+
+    virtual double max();
+
 protected:
     NumberType m_internalType;
     std::vector<double> m_value;

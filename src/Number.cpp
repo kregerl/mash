@@ -14,6 +14,12 @@ double Number::getRawDouble() const {
     return m_value;
 }
 
+std::ostream &operator<<(std::ostream &os, const Number &n) {
+    os << n.getRawDouble() << std::endl;
+    os << n.getType();
+    return os;
+}
+
 Number Number::operator+(const Number &num) const {
     return Number(m_value + num.getRawDouble(), opResultType(num));
 }
@@ -73,6 +79,8 @@ NumberType Number::opResultType(const Number &num) const {
     }
     return NumberType::None;
 }
+
+
 
 
 

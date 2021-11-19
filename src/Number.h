@@ -26,6 +26,8 @@ public:
 
     double getRawDouble() const;
 
+    friend std::ostream &operator<<(std::ostream &os, const Number &n);
+
     Number operator+(const Number &num) const;
 
     Number operator+(const double &num) const;
