@@ -74,3 +74,5 @@ double Collection1D::max() {
 
 
 
+
+
