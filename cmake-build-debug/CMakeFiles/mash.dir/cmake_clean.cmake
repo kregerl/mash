@@ -6,9 +6,9 @@ file(REMOVE_RECURSE
   "CMakeFiles/mash.dir/src/Value.cpp.obj"
   "CMakeFiles/mash.dir/src/Vector.cpp.obj"
   "CMakeFiles/mash.dir/src/main.cpp.obj"
-  "libmash.dll.a"
   "mash.exe"
   "mash.exe.manifest"
+  "mash.lib"
   "mash.pdb"
 )
 

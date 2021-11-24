@@ -16,7 +16,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "C:/Users/kregerl/CLionProjects/mash/src/Vector.cpp" "C:/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Vector.cpp.obj"
   "C:/Users/kregerl/CLionProjects/mash/src/main.cpp" "C:/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/main.cpp.obj"
   )
-set(CMAKE_CXX_COMPILER_ID "GNU")
+set(CMAKE_CXX_COMPILER_ID "MSVC")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
