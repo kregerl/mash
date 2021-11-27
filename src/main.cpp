@@ -1,6 +1,10 @@
 #include "main.h"
 #include <sstream>
 
+#include "Lexer.h"
+#include "Parser.h"
+#include "Interpreter.h"
+
 // TODO: Convert double vectors in Vector and Set to Number vector.
 // TODO: Allow colon syntax for vectors and sets: [1:6] -> {1, 2, 3, 4, 5, 6} | [:2] -> {0, 1, 2}
 // TODO: Allow |x| syntax for absolute value, also add `abs(x)`
@@ -11,6 +15,18 @@ std::unordered_map<std::string, Value> global_variables;
 std::unordered_map<std::string, Function> functions;
 
 int main() {
+// f(x) = 2x
+//    auto lexer = Lexer("(12.3 + 2.2) * 3");
+    auto lexer = Lexer("-(-1.25 *- 2.25)");
+    std::vector<Token> tokens = lexer.tokenize();
+    auto parser = Parser(tokens);
+    Node *node = parser.parse();
+    auto interpreter = Interpreter();
+    std::cout << interpreter.visit(node)->token << std::endl;
+//    Node parser.parse();
+//    for (auto &token : tokens) {
+//        std::cout << token << std::endl;
+//    }
 //    tests();
     printf("Number of operators: %d\nNumber of constants: %d\n", operations.size(), constants.size());
     fflush(stdout);
@@ -315,14 +331,14 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
             if (!values.empty()) {
                 // Only place doubles in the collection
                 std::visit(overload{
-                        [&collection, &values](Number &num) {
-                            collection.emplace_back(num.getRawDouble());
-                            values.pop();
+                    [&collection, &values](Number &num) {
+                        collection.emplace_back(num.getRawDouble());
+                        values.pop();
                         },
                         [](auto &num) {
-//                            No op
-                        }
-                }, values.top().getNum());
+                        //                            No op
+                    }
+                    }, values.top().getNum());
             }
             while (ops.top().token != oppositeToken(token)) {
                 Op op = ops.top();
@@ -332,14 +348,14 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
                     if (!values.empty()) {
                         // Only place doubles in the collection
                         std::visit(overload{
-                                [&collection, &values](Number &num) {
-                                    collection.emplace_back(num.getRawDouble());
-                                    values.pop();
+                            [&collection, &values](Number &num) {
+                                collection.emplace_back(num.getRawDouble());
+                                values.pop();
                                 },
                                 [](auto &num) {
-//                            No op
-                                }
-                        }, values.top().getNum());
+                                //                            No op
+                            }
+                            }, values.top().getNum());
                     }
                 }
             }
@@ -352,7 +368,7 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
             }
 
         } else if (token == '+' || token == '-' || token == '*' || token == '/' || token == '%' || token == '^' ||
-                   token == '&' || token == '|' || token == '!') {
+        token == '&' || token == '|' || token == '!') {
             while (!ops.empty() && hasPrecedence(operations.at(std::string(1, token)), ops.top())) {
                 values.push(applyOps(ops, values));
             }
@@ -371,7 +387,7 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
             } else if (functions.find(str) != functions.end()) {
                 ops.push(functionToOp(functions.at(str)));
                 if (expression[i] != '(') {
-//                    std::cout << "Function Error" << std::endl;
+                    //                    std::cout << "Function Error" << std::endl;
                     Value v;
                     v.setError("Function Error");
                     return v;
@@ -379,7 +395,7 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
             } else if (variables.find(str) == variables.end() && operations.find(str) != operations.end()) {
                 ops.push(operations.at(str));
                 if (expression[i] != '(') {
-//                    std::cout << "Operation Error" << std::endl;
+                    //                    std::cout << "Operation Error" << std::endl;
                     Value v;
                     v.setError("Operation Error");
                     return v;
@@ -409,8 +425,8 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
     while (!ops.empty()) {
         values.push(applyOps(ops, values));
     }
-//    Result result = DEFAULT_RESULT;
-//    result.error = false;
+    //    Result result = DEFAULT_RESULT;
+    //    result.error = false;
     Value result = values.top();
     values.pop();
     return result;
