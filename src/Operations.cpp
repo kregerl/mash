@@ -208,7 +208,7 @@ Value opSqrt(std::stack<Op> &ops, std::stack<Value> &values) {
                 [](Number &a) -> Value { return sqrt(a.getRawDouble()); },
                 [](Vector &a) -> Value { return a.sqrt(); },
                 [&result, &num](auto &a) -> Value {
-                    result.setError("Unsupported operation: Cannot take the square root of a " +
+                    result.setError("Unsupported operation: Cannot take the square m_root of a " +
                                     typeStrings[static_cast<int>(num.getType())] + ".");
                     return 0;
                 }
