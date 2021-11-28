@@ -21,7 +21,7 @@ Node *Interpreter::visit(Node *ast) {
             case TokenType::Multiplication:
                 return visitMul(ast);
             case TokenType::Division:
-                break;
+                return visitDiv(ast);
             case TokenType::Modulus:
                 break;
             case TokenType::Exp:
@@ -63,5 +63,15 @@ Node *Interpreter::visitSub(Node *node) {
 
 Node *Interpreter::visitMul(Node *node) {
     double result = stod(visit(node->left)->token.getValue()) * stod(visit(node->right)->token.getValue());
+    return new Node(Token(std::to_string(result), TokenType::Number));
+}
+
+Node *Interpreter::visitDiv(Node *node) {
+    if (stod(node->right->token.getValue()) == 0) {
+        // TODO: Change this to an error node.
+        std::cout << "Division by 0!" << std::endl;
+        exit(1);
+    }
+    double result = stod(visit(node->left)->token.getValue()) / stod(visit(node->right)->token.getValue());
     return new Node(Token(std::to_string(result), TokenType::Number));
 }

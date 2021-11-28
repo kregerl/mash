@@ -17,7 +17,8 @@ std::unordered_map<std::string, Function> functions;
 int main() {
 // f(x) = 2x
 //    auto lexer = Lexer("(12.3 + 2.2) * 3");
-    auto lexer = Lexer("-(-1.25 *- 2.25)");
+//    auto lexer = Lexer("-(-1.25 *- 2.25)");
+    auto lexer = Lexer("10 / 0.0");
     std::vector<Token> tokens = lexer.tokenize();
     auto parser = Parser(tokens);
     Node *node = parser.parse();
@@ -331,14 +332,14 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
             if (!values.empty()) {
                 // Only place doubles in the collection
                 std::visit(overload{
-                    [&collection, &values](Number &num) {
-                        collection.emplace_back(num.getRawDouble());
-                        values.pop();
+                        [&collection, &values](Number &num) {
+                            collection.emplace_back(num.getRawDouble());
+                            values.pop();
                         },
                         [](auto &num) {
-                        //                            No op
-                    }
-                    }, values.top().getNum());
+                            //                            No op
+                        }
+                }, values.top().getNum());
             }
             while (ops.top().token != oppositeToken(token)) {
                 Op op = ops.top();
@@ -348,14 +349,14 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
                     if (!values.empty()) {
                         // Only place doubles in the collection
                         std::visit(overload{
-                            [&collection, &values](Number &num) {
-                                collection.emplace_back(num.getRawDouble());
-                                values.pop();
+                                [&collection, &values](Number &num) {
+                                    collection.emplace_back(num.getRawDouble());
+                                    values.pop();
                                 },
                                 [](auto &num) {
-                                //                            No op
-                            }
-                            }, values.top().getNum());
+                                    //                            No op
+                                }
+                        }, values.top().getNum());
                     }
                 }
             }
@@ -368,7 +369,7 @@ Value evaluate(const std::string &expression, std::unordered_map<std::string, Va
             }
 
         } else if (token == '+' || token == '-' || token == '*' || token == '/' || token == '%' || token == '^' ||
-        token == '&' || token == '|' || token == '!') {
+                   token == '&' || token == '|' || token == '!') {
             while (!ops.empty() && hasPrecedence(operations.at(std::string(1, token)), ops.top())) {
                 values.push(applyOps(ops, values));
             }

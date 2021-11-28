@@ -3,6 +3,8 @@
 
 #include "Lexer.h"
 
+
+// TODO: Refactor Node to contain a list of children. Also make subclasses of Node that can hold errors.
 class Node {
 public:
     explicit Node(const Token &token);

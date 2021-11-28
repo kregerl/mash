@@ -20,6 +20,8 @@ public:
 
     Node *visitMul(Node *node);
 
+    Node *visitDiv(Node *node);
+
 private:
 
 };
