@@ -1,23 +1,25 @@
 #include "Parser.h"
+#include "Nodes.h"
+
 #include <iostream>
 
-Node::Node(const Token &token) : token(token), left(nullptr), right(nullptr) {}
-
-Node::Node(const Token &token, Node *left, Node *right) : token(token), left(left), right(right) {}
-
-Node::~Node() {
-    delete left;
-    delete right;
-}
-
-std::ostream &operator<<(std::ostream &os, const Node &node) {
-    os << "Token: " << node.token;
-    if (node.left)
-        os << ", " << "Children: " << *node.left;
-    if (node.right)
-        os << ", " << *node.right;
-    return os;
-}
+//Node::Node(const Token &token) : token(token), left(nullptr), right(nullptr) {}
+//
+//Node::Node(const Token &token, Node *left, Node *right) : token(token), left(left), right(right) {}
+//
+//Node::~Node() {
+//    delete left;
+//    delete right;
+//}
+//
+//std::ostream &operator<<(std::ostream &os, const Node &node) {
+//    os << "Token: " << node.token;
+//    if (node.left)
+//        os << ", " << "Children: " << *node.left;
+//    if (node.right)
+//        os << ", " << *node.right;
+//    return os;
+//}
 
 Parser::Parser(const std::vector<Token> &tokens) : m_tokens(tokens), m_currentIndex(0) {
     m_currentToken = m_tokens.at(m_currentIndex);
@@ -38,7 +40,7 @@ Node *Parser::factor() {
     Token token = m_currentToken;
     if (token.getType() == TokenType::Number) {
         next();
-        return new Node(token);
+        return new NumberNode(token);
     } else if (token.getType() == TokenType::LParen) {
         // Remove "LParen" from the list
         next();
@@ -48,7 +50,7 @@ Node *Parser::factor() {
         return node;
     } else if (token.getType() == TokenType::Subtraction) {
         next();
-        Node *node = new Node(token, nullptr, factor());
+        Node *node = new UnaryOpNode(token, factor());
         return node;
     }
     return nullptr;
@@ -64,7 +66,7 @@ Node *Parser::term() {
         } else if (token.getType() == TokenType::Division) {
             next();
         }
-        node = new Node(token, node, factor());
+        node = new BinaryOpNode(token, node, factor());
     }
 
     return node;
@@ -80,15 +82,11 @@ Node *Parser::expression() {
         } else if (token.getType() == TokenType::Subtraction) {
             next();
         }
-        node = new Node(token, node, term());
+        node = new BinaryOpNode(token, node, term());
     }
 
     return node;
 }
-
-
-
-
 
 
 

@@ -8,16 +8,17 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/loucas/CLionProjects/mash/src/Collection1D.cpp" "/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Collection1D.cpp.o"
-  "/home/loucas/CLionProjects/mash/src/Interpreter.cpp" "/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Interpreter.cpp.o"
-  "/home/loucas/CLionProjects/mash/src/Lexer.cpp" "/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Lexer.cpp.o"
-  "/home/loucas/CLionProjects/mash/src/Number.cpp" "/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Number.cpp.o"
-  "/home/loucas/CLionProjects/mash/src/Operations.cpp" "/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Operations.cpp.o"
-  "/home/loucas/CLionProjects/mash/src/Parser.cpp" "/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Parser.cpp.o"
-  "/home/loucas/CLionProjects/mash/src/Set.cpp" "/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Set.cpp.o"
-  "/home/loucas/CLionProjects/mash/src/Value.cpp" "/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Value.cpp.o"
-  "/home/loucas/CLionProjects/mash/src/Vector.cpp" "/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Vector.cpp.o"
-  "/home/loucas/CLionProjects/mash/src/main.cpp" "/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/main.cpp.o"
+  "C:/Users/kregerl/CLionProjects/mash/src/Collection1D.cpp" "C:/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Collection1D.cpp.obj"
+  "C:/Users/kregerl/CLionProjects/mash/src/Interpreter.cpp" "C:/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Interpreter.cpp.obj"
+  "C:/Users/kregerl/CLionProjects/mash/src/Lexer.cpp" "C:/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Lexer.cpp.obj"
+  "C:/Users/kregerl/CLionProjects/mash/src/Nodes.cpp" "C:/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Nodes.cpp.obj"
+  "C:/Users/kregerl/CLionProjects/mash/src/Number.cpp" "C:/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Number.cpp.obj"
+  "C:/Users/kregerl/CLionProjects/mash/src/Operations.cpp" "C:/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Operations.cpp.obj"
+  "C:/Users/kregerl/CLionProjects/mash/src/Parser.cpp" "C:/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Parser.cpp.obj"
+  "C:/Users/kregerl/CLionProjects/mash/src/Set.cpp" "C:/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Set.cpp.obj"
+  "C:/Users/kregerl/CLionProjects/mash/src/Value.cpp" "C:/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Value.cpp.obj"
+  "C:/Users/kregerl/CLionProjects/mash/src/Vector.cpp" "C:/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/Vector.cpp.obj"
+  "C:/Users/kregerl/CLionProjects/mash/src/main.cpp" "C:/Users/kregerl/CLionProjects/mash/cmake-build-debug/CMakeFiles/mash.dir/src/main.cpp.obj"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

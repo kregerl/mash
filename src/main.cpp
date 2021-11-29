@@ -18,12 +18,15 @@ int main() {
 // f(x) = 2x
 //    auto lexer = Lexer("(12.3 + 2.2) * 3");
 //    auto lexer = Lexer("-(-1.25 *- 2.25)");
-    auto lexer = Lexer("10 / 0.0");
-    std::vector<Token> tokens = lexer.tokenize();
-    auto parser = Parser(tokens);
-    Node *node = parser.parse();
-    auto interpreter = Interpreter();
-    std::cout << interpreter.visit(node)->token << std::endl;
+//    auto lexer = Lexer("10 / 0.0");
+//    std::vector<Token> tokens = lexer.tokenize();
+//    auto parser = Parser(tokens);
+//    Node *node = parser.parse();
+//    auto interpreter = Interpreter();
+    Node *node = new BinaryOpNode(Token("+", TokenType::Addition), new NumberNode(Token("10", TokenType::Number)),
+                                  new NumberNode(Token("7", TokenType::Number)));
+    std::cout << "Here: " << node->calculate()->token << std::endl;
+//    std::cout << interpreter.visit(node)->token << std::endl;
 //    Node parser.parse();
 //    for (auto &token : tokens) {
 //        std::cout << token << std::endl;
