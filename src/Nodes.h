@@ -20,7 +20,9 @@ public:
 
     explicit NumberNode(const std::string &str);
 
-    virtual NumberNode *calculate() override;
+    NumberNode *calculate() override;
+
+    friend std::ostream &operator<<(std::ostream &os, const NumberNode &node);
 
 public:
     Token token;

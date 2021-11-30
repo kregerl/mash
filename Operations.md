@@ -9,7 +9,7 @@
 - Subtraction: <b> x - y </b>
 - Multiplication: <b> x * y </b>
 - Division: <b> x / y </b>
-- Modulus: <b> x % y or mod(x, y) </b>
+- Modulo: <b> x % y or mod(x, y) </b>
 - Exponents: <b> x^y or exp(x, y) </b>
 - Factorial: <b> x! </b>
 - Square Root: <b> sqrt(x) </b>

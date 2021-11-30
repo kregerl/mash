@@ -17,7 +17,7 @@ const std::string &Token::getValue() {
 
 std::ostream &operator<<(std::ostream &os, const Token &token) {
     std::string sep = ": ";
-    os << typeStrings2[static_cast<int>(token.m_type)] << sep << token.m_value;
+    os << "<" << typeStrings2[static_cast<int>(token.m_type)] << ">" << sep << token.m_value;
     return os;
 }
 
@@ -40,7 +40,7 @@ Token Lexer::getTokenFromChar(const char &c) {
         case ')':
             return {str, TokenType::RParen};
         case '%':
-            return {str, TokenType::Modulus};
+            return {str, TokenType::Modulo};
         case '^':
             return {str, TokenType::Exp};
         case '&':

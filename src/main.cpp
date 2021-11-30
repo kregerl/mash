@@ -23,9 +23,10 @@ int main() {
 //    auto parser = Parser(tokens);
 //    Node *node = parser.parse();
 //    auto interpreter = Interpreter();
-    Node *node = new BinaryOpNode(Token("+", TokenType::Addition), new NumberNode(Token("10", TokenType::Number)),
-                                  new NumberNode(Token("7", TokenType::Number)));
-    std::cout << "Here: " << node->calculate()->token << std::endl;
+    Node *node = new BinaryOpNode(Token("/", TokenType::Division), new NumberNode(Token("10", TokenType::Number)),
+                                  new NumberNode(Token("0", TokenType::Number)));
+    std::cout << *node->calculate() << std::endl;
+    exit(1);
 //    std::cout << interpreter.visit(node)->token << std::endl;
 //    Node parser.parse();
 //    for (auto &token : tokens) {

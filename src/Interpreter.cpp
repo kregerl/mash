@@ -22,7 +22,7 @@ Interpreter::~Interpreter() {}
 //                return visitMul(ast);
 //            case TokenType::Division:
 //                return visitDiv(ast);
-//            case TokenType::Modulus:
+//            case TokenType::Modulo:
 //                break;
 //            case TokenType::Exp:
 //                break;

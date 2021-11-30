@@ -1,5 +1,6 @@
 #include "Nodes.h"
 #include <sstream>
+#include <cmath>
 
 NumberNode::NumberNode(const Token &token) : token(token) {}
 
@@ -7,8 +8,17 @@ NumberNode *NumberNode::calculate() {
     return this;
 }
 
-NumberNode::NumberNode(const std::string &str) : errorMessage(str) {}
+NumberNode::NumberNode(const std::string &str) : token(Token("Error:", TokenType::Error)), errorMessage(str) {}
 
+
+std::ostream &operator<<(std::ostream &os, const NumberNode &node) {
+    if (node.errorMessage) {
+        os << node.errorMessage.value();
+    } else {
+        os << node.token;
+    }
+    return os;
+}
 
 UnaryOpNode::UnaryOpNode(const Token &token, Node *child) : token(token), child(child) {}
 
@@ -53,6 +63,26 @@ NumberNode *BinaryOpNode::calculate() {
             double result = std::stod(leftResult->token.getValue()) - std::stod(rightResult->token.getValue());
             return new NumberNode(Token(std::to_string(result), TokenType::Number));
         }
+        case TokenType::Multiplication: {
+            double result = std::stod(leftResult->token.getValue()) * std::stod(rightResult->token.getValue());
+            return new NumberNode(Token(std::to_string(result), TokenType::Number));
+        }
+        case TokenType::Division: {
+            if (std::stod(rightResult->token.getValue()) == 0) {
+                return new NumberNode("Division by zero!");
+            }
+            double result = std::stod(leftResult->token.getValue()) / std::stod(rightResult->token.getValue());
+            return new NumberNode(Token(std::to_string(result), TokenType::Number));
+        }
+        case TokenType::Modulo: {
+            // TODO: Check if Modulo works on negative numbers.
+            if (std::stod(rightResult->token.getValue()) == 0) {
+                return new NumberNode("Modulo by zero!");
+            }
+            double result = fmod(std::stod(leftResult->token.getValue()), std::stod(rightResult->token.getValue()));
+            return new NumberNode(Token(std::to_string(result), TokenType::Number));
+        }
+
     }
 
     return new NumberNode(Token());
