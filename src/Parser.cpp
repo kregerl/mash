@@ -32,6 +32,7 @@ void Parser::next() {
 
 }
 
+// TODO: Assert that the expression is at the end.
 Node *Parser::parse() {
     return expression();
 }
@@ -46,11 +47,19 @@ Node *Parser::factor() {
         next();
         Node *node = expression();
         // Remove RParen from the list after parsing the expression inside
-        next();
+        if (m_currentToken.getType() == TokenType::RParen) {
+            next();
+        } else {
+            node = new NumberNode("Missing closing parenthesis!");
+        }
         return node;
     } else if (token.getType() == TokenType::Subtraction) {
         next();
         Node *node = new UnaryOpNode(token, factor());
+        return node;
+    } else if (token.getType() == TokenType::Identifier) {
+        next();
+        Node *node = new IdentifierNode(token);
         return node;
     }
     return nullptr;
@@ -59,16 +68,26 @@ Node *Parser::factor() {
 Node *Parser::term() {
     Node *node = factor();
 
-    while (m_currentToken.getType() == TokenType::Multiplication || m_currentToken.getType() == TokenType::Division) {
+    // Unary, right places operators.
+    if (m_currentToken.getType() == TokenType::Factorial) {
+        Token token = m_currentToken;
+        next();
+        node = new UnaryOpNode(token, node);
+    }
+    while (m_currentToken.getType() == TokenType::Multiplication || m_currentToken.getType() == TokenType::Division ||
+           m_currentToken.getType() == TokenType::Modulo || m_currentToken.getType() == TokenType::Equals) {
         Token token = m_currentToken;
         if (token.getType() == TokenType::Multiplication) {
             next();
         } else if (token.getType() == TokenType::Division) {
             next();
+        } else if (token.getType() == TokenType::Modulo) {
+            next();
+        } else if (token.getType() == TokenType::Equals) {
+            next();
         }
         node = new BinaryOpNode(token, node, factor());
     }
-
     return node;
 }
 

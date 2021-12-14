@@ -16,16 +16,18 @@ std::unordered_map<std::string, Function> functions;
 
 int main() {
 // f(x) = 2x
-//    auto lexer = Lexer("(12.3 + 2.2) * 3");
+    auto lexer = Lexer("xyz = 5");
 //    auto lexer = Lexer("-(-1.25 *- 2.25)");
 //    auto lexer = Lexer("10 / 0.0");
-//    std::vector<Token> tokens = lexer.tokenize();
-//    auto parser = Parser(tokens);
-//    Node *node = parser.parse();
+    std::vector<Token> tokens = lexer.tokenize();
+    auto parser = Parser(tokens);
+    Node *node = parser.parse();
+    std::unordered_map<std::string, Node*> map;
+    std::cout << *node->calculate(map) << std::endl;
 //    auto interpreter = Interpreter();
-    Node *node = new BinaryOpNode(Token("/", TokenType::Division), new NumberNode(Token("10", TokenType::Number)),
-                                  new NumberNode(Token("0", TokenType::Number)));
-    std::cout << *node->calculate() << std::endl;
+//    Node *node = new BinaryOpNode(Token("/", TokenType::Division), new NumberNode(Token("10", TokenType::Number)),
+//                                  new NumberNode(Token("0", TokenType::Number)));
+//    std::cout << *node->calculate() << std::endl;
     exit(1);
 //    std::cout << interpreter.visit(node)->token << std::endl;
 //    Node parser.parse();

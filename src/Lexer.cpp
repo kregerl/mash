@@ -23,7 +23,6 @@ std::ostream &operator<<(std::ostream &os, const Token &token) {
 
 Lexer::Lexer(const std::string &expression) : m_expression(expression) {}
 
-
 Token Lexer::getTokenFromChar(const char &c) {
     std::string str = std::string(1, c);
     switch (c) {
@@ -49,11 +48,23 @@ Token Lexer::getTokenFromChar(const char &c) {
             return {str, TokenType::Bitwiseor};
         case '!':
             return {str, TokenType::Factorial};
+        case '=':
+            return {str, TokenType::Equals};
         case ',':
             return {str, TokenType::Comma};
         default:
             return {};
     }
+}
+
+Token Lexer::readIdentifierToken(int *i) {
+    int index = *i;
+    std::string var;
+    while (index < m_expression.length() && std::isalpha((m_expression[index]))) {
+        var.push_back(m_expression[index++]);
+    }
+    *i = index - 1;
+    return {var, TokenType::Identifier};
 }
 
 Token Lexer::readNumberToken(int *i) {
@@ -84,8 +95,10 @@ std::vector<Token> Lexer::tokenize() {
         } else if (std::isdigit(c) || c == '.') {
             tokens.emplace_back(readNumberToken(&i));
         } else if (c == '+' || c == '-' || c == '*' || c == '/' || c == '%' || c == '^' || c == '&' || c == '|' ||
-                   c == '!' || c == '(' || c == ')' || c == ',') {
+                   c == '=' || c == '!' || c == '(' || c == ')' || c == ',') {
             tokens.emplace_back(getTokenFromChar(c));
+        } else if (std::isalpha(c)) {
+            tokens.emplace_back(readIdentifierToken(&i));
         } else {
             std::cout << "Unknown Token: " << c << std::endl;
         }

@@ -8,7 +8,7 @@
 const static std::string typeStrings2[] = {"Error", "Number", "Bitwiseand", "Bitwiseor", "Addition", "Subtraction",
                                            "Multiplication",
                                            "Division", "Modulo", "Exp", "Factorial", "LParen",
-                                           "RParen", "Comma"};
+                                           "RParen", "Equals", "Identifier", "Comma"};
 
 enum class TokenType {
     Error = 0,
@@ -24,6 +24,8 @@ enum class TokenType {
     Factorial,
     LParen,
     RParen,
+    Equals,
+    Identifier,
     Comma
 };
 
@@ -54,6 +56,8 @@ public:
     ~Lexer() = default;
 
     static Token getTokenFromChar(const char &c);
+
+    Token readIdentifierToken(int *i);
 
     Token readNumberToken(int *i);
 

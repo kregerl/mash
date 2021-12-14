@@ -1,7 +1,7 @@
 #ifndef MASH_INTERPRETER_H
 #define MASH_INTERPRETER_H
 
-
+#include <unordered_map>
 #include "Parser.h"
 
 class Interpreter {
@@ -10,19 +10,11 @@ public:
 
     ~Interpreter();
 
-    Node *visit(Node *ast);
-
-    Node *visitNumber(Node *node);
-
-    Node *visitAdd(Node *node);
-
-    Node *visitSub(Node *node);
-
-    Node *visitMul(Node *node);
-
-    Node *visitDiv(Node *node);
+    double evaluate();
 
 private:
+    std::unordered_map<std::string, Node *> variables;
+    std::unordered_map<std::string, Node *> functions;
 
 };
 

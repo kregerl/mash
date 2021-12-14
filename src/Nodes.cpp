@@ -4,7 +4,7 @@
 
 NumberNode::NumberNode(const Token &token) : token(token) {}
 
-NumberNode *NumberNode::calculate() {
+NumberNode *NumberNode::calculate(std::unordered_map<std::string, Node *> &variables) {
     return this;
 }
 
@@ -20,16 +20,28 @@ std::ostream &operator<<(std::ostream &os, const NumberNode &node) {
     return os;
 }
 
+IdentifierNode::IdentifierNode(const Token &token) : NumberNode(token) {}
+
+IdentifierNode::~IdentifierNode() {}
+
+NumberNode *IdentifierNode::calculate(std::unordered_map<std::string, Node *> &variables) {
+    return this;
+}
+
 UnaryOpNode::UnaryOpNode(const Token &token, Node *child) : token(token), child(child) {}
 
-NumberNode *UnaryOpNode::calculate() {
-    NumberNode *childResult = child->calculate();
+NumberNode *UnaryOpNode::calculate(std::unordered_map<std::string, Node *> &variables) {
+    NumberNode *childResult = child->calculate(variables);
     if (childResult->errorMessage) {
         return childResult;
     }
     switch (token.getType()) {
         case TokenType::Subtraction: {
             double result = std::stod(childResult->token.getValue()) * -1.0;
+            return new NumberNode(Token(std::to_string(result), TokenType::Number));
+        }
+        case TokenType::Factorial: {
+            double result = std::tgamma(1.0 + (stod(childResult->token.getValue())));
             return new NumberNode(Token(std::to_string(result), TokenType::Number));
         }
         default: {
@@ -46,9 +58,9 @@ UnaryOpNode::~UnaryOpNode() {
 
 BinaryOpNode::BinaryOpNode(const Token &token, Node *left, Node *right) : token(token), left(left), right(right) {}
 
-NumberNode *BinaryOpNode::calculate() {
-    NumberNode *leftResult = left->calculate();
-    NumberNode *rightResult = right->calculate();
+NumberNode *BinaryOpNode::calculate(std::unordered_map<std::string, Node *> &variables) {
+    NumberNode *leftResult = left->calculate(variables);
+    NumberNode *rightResult = right->calculate(variables);
     if (leftResult->errorMessage) {
         return leftResult;
     } else if (rightResult->errorMessage) {
@@ -82,14 +94,41 @@ NumberNode *BinaryOpNode::calculate() {
             double result = fmod(std::stod(leftResult->token.getValue()), std::stod(rightResult->token.getValue()));
             return new NumberNode(Token(std::to_string(result), TokenType::Number));
         }
-
+        case TokenType::Bitwiseand: {
+            double result = std::stoi(leftResult->token.getValue()) & std::stoi(rightResult->token.getValue());
+            return new NumberNode(Token(std::to_string(result), TokenType::Number));
+        }
+        case TokenType::Bitwiseor: {
+            double result = std::stoi(leftResult->token.getValue()) | std::stoi(rightResult->token.getValue());
+            return new NumberNode(Token(std::to_string(result), TokenType::Number));
+        }
+        case TokenType::Exp: {
+            double result = std::pow(std::stod(leftResult->token.getValue()), std::stod(rightResult->token.getValue()));
+            return new NumberNode(Token(std::to_string(result), TokenType::Number));
+        }
+        case TokenType::Equals: {
+            if (leftResult->token.getType() == TokenType::Identifier) {
+                variables.insert({leftResult->token.getValue(), (Node*)rightResult});
+                std::stringstream ss;
+                ss << leftResult->token.getValue();
+                ss << " = ";
+                ss<< rightResult->token.getValue();
+                return new NumberNode(ss.str());
+            } else {
+                return new NumberNode("Cant assign numerics to different values.");
+            }
+        }
+        default: {
+            std::stringstream stream;
+            stream << "Unknown Binary Operator type: " << token;
+            return new NumberNode(stream.str());
+        }
     }
-
-    return new NumberNode(Token());
 }
 
 BinaryOpNode::~BinaryOpNode() {
     delete left;
     delete right;
 }
+
 
