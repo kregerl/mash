@@ -59,7 +59,7 @@ Node *Parser::factor() {
         return node;
     } else if (token.getType() == TokenType::Identifier) {
         next();
-        Node *node = new IdentifierNode(token);
+        Node *node = new NumberNode(token);
         return node;
     }
     return nullptr;

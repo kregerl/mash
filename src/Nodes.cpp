@@ -1,11 +1,27 @@
 #include "Nodes.h"
 #include <sstream>
 #include <cmath>
+#include <iostream>
 
 NumberNode::NumberNode(const Token &token) : token(token) {}
 
-NumberNode *NumberNode::calculate(std::unordered_map<std::string, Node *> &variables) {
-    return this;
+NumberNode *NumberNode::calculate(std::unordered_map<std::string, NumberNode *> &variables) {
+    switch (token.getType()) {
+        case TokenType::Identifier: {
+            if (variables.find(token.getValue()) != variables.end()) {
+                return variables.at(token.getValue());
+            }
+        }
+        case TokenType::Number: {
+            return this;
+        }
+        default: {
+            std::stringstream stream;
+            stream << "Unknown number: " << token;
+            return new NumberNode(stream.str());
+        }
+    }
+
 }
 
 NumberNode::NumberNode(const std::string &str) : token(Token("Error:", TokenType::Error)), errorMessage(str) {}
@@ -20,17 +36,9 @@ std::ostream &operator<<(std::ostream &os, const NumberNode &node) {
     return os;
 }
 
-IdentifierNode::IdentifierNode(const Token &token) : NumberNode(token) {}
-
-IdentifierNode::~IdentifierNode() {}
-
-NumberNode *IdentifierNode::calculate(std::unordered_map<std::string, Node *> &variables) {
-    return this;
-}
-
 UnaryOpNode::UnaryOpNode(const Token &token, Node *child) : token(token), child(child) {}
 
-NumberNode *UnaryOpNode::calculate(std::unordered_map<std::string, Node *> &variables) {
+NumberNode *UnaryOpNode::calculate(std::unordered_map<std::string, NumberNode *> &variables) {
     NumberNode *childResult = child->calculate(variables);
     if (childResult->errorMessage) {
         return childResult;
@@ -58,7 +66,7 @@ UnaryOpNode::~UnaryOpNode() {
 
 BinaryOpNode::BinaryOpNode(const Token &token, Node *left, Node *right) : token(token), left(left), right(right) {}
 
-NumberNode *BinaryOpNode::calculate(std::unordered_map<std::string, Node *> &variables) {
+NumberNode *BinaryOpNode::calculate(std::unordered_map<std::string, NumberNode *> &variables) {
     NumberNode *leftResult = left->calculate(variables);
     NumberNode *rightResult = right->calculate(variables);
     if (leftResult->errorMessage) {
@@ -108,11 +116,11 @@ NumberNode *BinaryOpNode::calculate(std::unordered_map<std::string, Node *> &var
         }
         case TokenType::Equals: {
             if (leftResult->token.getType() == TokenType::Identifier) {
-                variables.insert({leftResult->token.getValue(), (Node*)rightResult});
+                variables.insert({leftResult->token.getValue(), rightResult});
                 std::stringstream ss;
                 ss << leftResult->token.getValue();
                 ss << " = ";
-                ss<< rightResult->token.getValue();
+                ss << rightResult->token.getValue();
                 return new NumberNode(ss.str());
             } else {
                 return new NumberNode("Cant assign numerics to different values.");
