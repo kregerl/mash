@@ -79,87 +79,9 @@ CMakeFiles/mash.dir/src/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/mash.dir/src/main.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/loucas/CLionProjects/mash/src/main.cpp -o CMakeFiles/mash.dir/src/main.cpp.s
 
-CMakeFiles/mash.dir/src/Operations.cpp.o: CMakeFiles/mash.dir/flags.make
-CMakeFiles/mash.dir/src/Operations.cpp.o: ../src/Operations.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/mash.dir/src/Operations.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/mash.dir/src/Operations.cpp.o -c /home/loucas/CLionProjects/mash/src/Operations.cpp
-
-CMakeFiles/mash.dir/src/Operations.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/mash.dir/src/Operations.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/loucas/CLionProjects/mash/src/Operations.cpp > CMakeFiles/mash.dir/src/Operations.cpp.i
-
-CMakeFiles/mash.dir/src/Operations.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/mash.dir/src/Operations.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/loucas/CLionProjects/mash/src/Operations.cpp -o CMakeFiles/mash.dir/src/Operations.cpp.s
-
-CMakeFiles/mash.dir/src/Value.cpp.o: CMakeFiles/mash.dir/flags.make
-CMakeFiles/mash.dir/src/Value.cpp.o: ../src/Value.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/mash.dir/src/Value.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/mash.dir/src/Value.cpp.o -c /home/loucas/CLionProjects/mash/src/Value.cpp
-
-CMakeFiles/mash.dir/src/Value.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/mash.dir/src/Value.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/loucas/CLionProjects/mash/src/Value.cpp > CMakeFiles/mash.dir/src/Value.cpp.i
-
-CMakeFiles/mash.dir/src/Value.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/mash.dir/src/Value.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/loucas/CLionProjects/mash/src/Value.cpp -o CMakeFiles/mash.dir/src/Value.cpp.s
-
-CMakeFiles/mash.dir/src/Collection1D.cpp.o: CMakeFiles/mash.dir/flags.make
-CMakeFiles/mash.dir/src/Collection1D.cpp.o: ../src/Collection1D.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/mash.dir/src/Collection1D.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/mash.dir/src/Collection1D.cpp.o -c /home/loucas/CLionProjects/mash/src/Collection1D.cpp
-
-CMakeFiles/mash.dir/src/Collection1D.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/mash.dir/src/Collection1D.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/loucas/CLionProjects/mash/src/Collection1D.cpp > CMakeFiles/mash.dir/src/Collection1D.cpp.i
-
-CMakeFiles/mash.dir/src/Collection1D.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/mash.dir/src/Collection1D.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/loucas/CLionProjects/mash/src/Collection1D.cpp -o CMakeFiles/mash.dir/src/Collection1D.cpp.s
-
-CMakeFiles/mash.dir/src/Vector.cpp.o: CMakeFiles/mash.dir/flags.make
-CMakeFiles/mash.dir/src/Vector.cpp.o: ../src/Vector.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/mash.dir/src/Vector.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/mash.dir/src/Vector.cpp.o -c /home/loucas/CLionProjects/mash/src/Vector.cpp
-
-CMakeFiles/mash.dir/src/Vector.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/mash.dir/src/Vector.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/loucas/CLionProjects/mash/src/Vector.cpp > CMakeFiles/mash.dir/src/Vector.cpp.i
-
-CMakeFiles/mash.dir/src/Vector.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/mash.dir/src/Vector.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/loucas/CLionProjects/mash/src/Vector.cpp -o CMakeFiles/mash.dir/src/Vector.cpp.s
-
-CMakeFiles/mash.dir/src/Set.cpp.o: CMakeFiles/mash.dir/flags.make
-CMakeFiles/mash.dir/src/Set.cpp.o: ../src/Set.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/mash.dir/src/Set.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/mash.dir/src/Set.cpp.o -c /home/loucas/CLionProjects/mash/src/Set.cpp
-
-CMakeFiles/mash.dir/src/Set.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/mash.dir/src/Set.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/loucas/CLionProjects/mash/src/Set.cpp > CMakeFiles/mash.dir/src/Set.cpp.i
-
-CMakeFiles/mash.dir/src/Set.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/mash.dir/src/Set.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/loucas/CLionProjects/mash/src/Set.cpp -o CMakeFiles/mash.dir/src/Set.cpp.s
-
-CMakeFiles/mash.dir/src/Number.cpp.o: CMakeFiles/mash.dir/flags.make
-CMakeFiles/mash.dir/src/Number.cpp.o: ../src/Number.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/mash.dir/src/Number.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/mash.dir/src/Number.cpp.o -c /home/loucas/CLionProjects/mash/src/Number.cpp
-
-CMakeFiles/mash.dir/src/Number.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/mash.dir/src/Number.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/loucas/CLionProjects/mash/src/Number.cpp > CMakeFiles/mash.dir/src/Number.cpp.i
-
-CMakeFiles/mash.dir/src/Number.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/mash.dir/src/Number.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/loucas/CLionProjects/mash/src/Number.cpp -o CMakeFiles/mash.dir/src/Number.cpp.s
-
 CMakeFiles/mash.dir/src/Lexer.cpp.o: CMakeFiles/mash.dir/flags.make
 CMakeFiles/mash.dir/src/Lexer.cpp.o: ../src/Lexer.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/mash.dir/src/Lexer.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/mash.dir/src/Lexer.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/mash.dir/src/Lexer.cpp.o -c /home/loucas/CLionProjects/mash/src/Lexer.cpp
 
 CMakeFiles/mash.dir/src/Lexer.cpp.i: cmake_force
@@ -172,7 +94,7 @@ CMakeFiles/mash.dir/src/Lexer.cpp.s: cmake_force
 
 CMakeFiles/mash.dir/src/Parser.cpp.o: CMakeFiles/mash.dir/flags.make
 CMakeFiles/mash.dir/src/Parser.cpp.o: ../src/Parser.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/mash.dir/src/Parser.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/mash.dir/src/Parser.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/mash.dir/src/Parser.cpp.o -c /home/loucas/CLionProjects/mash/src/Parser.cpp
 
 CMakeFiles/mash.dir/src/Parser.cpp.i: cmake_force
@@ -185,7 +107,7 @@ CMakeFiles/mash.dir/src/Parser.cpp.s: cmake_force
 
 CMakeFiles/mash.dir/src/Interpreter.cpp.o: CMakeFiles/mash.dir/flags.make
 CMakeFiles/mash.dir/src/Interpreter.cpp.o: ../src/Interpreter.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/mash.dir/src/Interpreter.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/mash.dir/src/Interpreter.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/mash.dir/src/Interpreter.cpp.o -c /home/loucas/CLionProjects/mash/src/Interpreter.cpp
 
 CMakeFiles/mash.dir/src/Interpreter.cpp.i: cmake_force
@@ -198,7 +120,7 @@ CMakeFiles/mash.dir/src/Interpreter.cpp.s: cmake_force
 
 CMakeFiles/mash.dir/src/Nodes.cpp.o: CMakeFiles/mash.dir/flags.make
 CMakeFiles/mash.dir/src/Nodes.cpp.o: ../src/Nodes.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/mash.dir/src/Nodes.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/mash.dir/src/Nodes.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/mash.dir/src/Nodes.cpp.o -c /home/loucas/CLionProjects/mash/src/Nodes.cpp
 
 CMakeFiles/mash.dir/src/Nodes.cpp.i: cmake_force
@@ -212,12 +134,6 @@ CMakeFiles/mash.dir/src/Nodes.cpp.s: cmake_force
 # Object files for target mash
 mash_OBJECTS = \
 "CMakeFiles/mash.dir/src/main.cpp.o" \
-"CMakeFiles/mash.dir/src/Operations.cpp.o" \
-"CMakeFiles/mash.dir/src/Value.cpp.o" \
-"CMakeFiles/mash.dir/src/Collection1D.cpp.o" \
-"CMakeFiles/mash.dir/src/Vector.cpp.o" \
-"CMakeFiles/mash.dir/src/Set.cpp.o" \
-"CMakeFiles/mash.dir/src/Number.cpp.o" \
 "CMakeFiles/mash.dir/src/Lexer.cpp.o" \
 "CMakeFiles/mash.dir/src/Parser.cpp.o" \
 "CMakeFiles/mash.dir/src/Interpreter.cpp.o" \
@@ -227,19 +143,13 @@ mash_OBJECTS = \
 mash_EXTERNAL_OBJECTS =
 
 mash: CMakeFiles/mash.dir/src/main.cpp.o
-mash: CMakeFiles/mash.dir/src/Operations.cpp.o
-mash: CMakeFiles/mash.dir/src/Value.cpp.o
-mash: CMakeFiles/mash.dir/src/Collection1D.cpp.o
-mash: CMakeFiles/mash.dir/src/Vector.cpp.o
-mash: CMakeFiles/mash.dir/src/Set.cpp.o
-mash: CMakeFiles/mash.dir/src/Number.cpp.o
 mash: CMakeFiles/mash.dir/src/Lexer.cpp.o
 mash: CMakeFiles/mash.dir/src/Parser.cpp.o
 mash: CMakeFiles/mash.dir/src/Interpreter.cpp.o
 mash: CMakeFiles/mash.dir/src/Nodes.cpp.o
 mash: CMakeFiles/mash.dir/build.make
 mash: CMakeFiles/mash.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Linking CXX executable mash"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable mash"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/mash.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

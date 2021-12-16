@@ -82,12 +82,6 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/loucas/CLionProjects/mash/src/Collection1D.cpp">
-			<Option target="mash"/>
-		</Unit>
-		<Unit filename="/home/loucas/CLionProjects/mash/src/Collection1D.h">
-			<Option target="mash"/>
-		</Unit>
 		<Unit filename="/home/loucas/CLionProjects/mash/src/Interpreter.cpp">
 			<Option target="mash"/>
 		</Unit>
@@ -106,40 +100,10 @@
 		<Unit filename="/home/loucas/CLionProjects/mash/src/Nodes.h">
 			<Option target="mash"/>
 		</Unit>
-		<Unit filename="/home/loucas/CLionProjects/mash/src/Number.cpp">
-			<Option target="mash"/>
-		</Unit>
-		<Unit filename="/home/loucas/CLionProjects/mash/src/Number.h">
-			<Option target="mash"/>
-		</Unit>
-		<Unit filename="/home/loucas/CLionProjects/mash/src/Operations.cpp">
-			<Option target="mash"/>
-		</Unit>
-		<Unit filename="/home/loucas/CLionProjects/mash/src/Operations.h">
-			<Option target="mash"/>
-		</Unit>
 		<Unit filename="/home/loucas/CLionProjects/mash/src/Parser.cpp">
 			<Option target="mash"/>
 		</Unit>
 		<Unit filename="/home/loucas/CLionProjects/mash/src/Parser.h">
-			<Option target="mash"/>
-		</Unit>
-		<Unit filename="/home/loucas/CLionProjects/mash/src/Set.cpp">
-			<Option target="mash"/>
-		</Unit>
-		<Unit filename="/home/loucas/CLionProjects/mash/src/Set.h">
-			<Option target="mash"/>
-		</Unit>
-		<Unit filename="/home/loucas/CLionProjects/mash/src/Value.cpp">
-			<Option target="mash"/>
-		</Unit>
-		<Unit filename="/home/loucas/CLionProjects/mash/src/Value.h">
-			<Option target="mash"/>
-		</Unit>
-		<Unit filename="/home/loucas/CLionProjects/mash/src/Vector.cpp">
-			<Option target="mash"/>
-		</Unit>
-		<Unit filename="/home/loucas/CLionProjects/mash/src/Vector.h">
 			<Option target="mash"/>
 		</Unit>
 		<Unit filename="/home/loucas/CLionProjects/mash/src/main.cpp">

@@ -129,30 +129,6 @@ mash/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/build
 .PHONY : mash/fast
 
-src/Collection1D.o: src/Collection1D.cpp.o
-.PHONY : src/Collection1D.o
-
-# target to build an object file
-src/Collection1D.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Collection1D.cpp.o
-.PHONY : src/Collection1D.cpp.o
-
-src/Collection1D.i: src/Collection1D.cpp.i
-.PHONY : src/Collection1D.i
-
-# target to preprocess a source file
-src/Collection1D.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Collection1D.cpp.i
-.PHONY : src/Collection1D.cpp.i
-
-src/Collection1D.s: src/Collection1D.cpp.s
-.PHONY : src/Collection1D.s
-
-# target to generate assembly for a file
-src/Collection1D.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Collection1D.cpp.s
-.PHONY : src/Collection1D.cpp.s
-
 src/Interpreter.o: src/Interpreter.cpp.o
 .PHONY : src/Interpreter.o
 
@@ -225,54 +201,6 @@ src/Nodes.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Nodes.cpp.s
 .PHONY : src/Nodes.cpp.s
 
-src/Number.o: src/Number.cpp.o
-.PHONY : src/Number.o
-
-# target to build an object file
-src/Number.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Number.cpp.o
-.PHONY : src/Number.cpp.o
-
-src/Number.i: src/Number.cpp.i
-.PHONY : src/Number.i
-
-# target to preprocess a source file
-src/Number.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Number.cpp.i
-.PHONY : src/Number.cpp.i
-
-src/Number.s: src/Number.cpp.s
-.PHONY : src/Number.s
-
-# target to generate assembly for a file
-src/Number.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Number.cpp.s
-.PHONY : src/Number.cpp.s
-
-src/Operations.o: src/Operations.cpp.o
-.PHONY : src/Operations.o
-
-# target to build an object file
-src/Operations.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Operations.cpp.o
-.PHONY : src/Operations.cpp.o
-
-src/Operations.i: src/Operations.cpp.i
-.PHONY : src/Operations.i
-
-# target to preprocess a source file
-src/Operations.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Operations.cpp.i
-.PHONY : src/Operations.cpp.i
-
-src/Operations.s: src/Operations.cpp.s
-.PHONY : src/Operations.s
-
-# target to generate assembly for a file
-src/Operations.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Operations.cpp.s
-.PHONY : src/Operations.cpp.s
-
 src/Parser.o: src/Parser.cpp.o
 .PHONY : src/Parser.o
 
@@ -296,78 +224,6 @@ src/Parser.s: src/Parser.cpp.s
 src/Parser.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Parser.cpp.s
 .PHONY : src/Parser.cpp.s
-
-src/Set.o: src/Set.cpp.o
-.PHONY : src/Set.o
-
-# target to build an object file
-src/Set.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Set.cpp.o
-.PHONY : src/Set.cpp.o
-
-src/Set.i: src/Set.cpp.i
-.PHONY : src/Set.i
-
-# target to preprocess a source file
-src/Set.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Set.cpp.i
-.PHONY : src/Set.cpp.i
-
-src/Set.s: src/Set.cpp.s
-.PHONY : src/Set.s
-
-# target to generate assembly for a file
-src/Set.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Set.cpp.s
-.PHONY : src/Set.cpp.s
-
-src/Value.o: src/Value.cpp.o
-.PHONY : src/Value.o
-
-# target to build an object file
-src/Value.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Value.cpp.o
-.PHONY : src/Value.cpp.o
-
-src/Value.i: src/Value.cpp.i
-.PHONY : src/Value.i
-
-# target to preprocess a source file
-src/Value.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Value.cpp.i
-.PHONY : src/Value.cpp.i
-
-src/Value.s: src/Value.cpp.s
-.PHONY : src/Value.s
-
-# target to generate assembly for a file
-src/Value.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Value.cpp.s
-.PHONY : src/Value.cpp.s
-
-src/Vector.o: src/Vector.cpp.o
-.PHONY : src/Vector.o
-
-# target to build an object file
-src/Vector.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Vector.cpp.o
-.PHONY : src/Vector.cpp.o
-
-src/Vector.i: src/Vector.cpp.i
-.PHONY : src/Vector.i
-
-# target to preprocess a source file
-src/Vector.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Vector.cpp.i
-.PHONY : src/Vector.cpp.i
-
-src/Vector.s: src/Vector.cpp.s
-.PHONY : src/Vector.s
-
-# target to generate assembly for a file
-src/Vector.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Vector.cpp.s
-.PHONY : src/Vector.cpp.s
 
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
@@ -402,9 +258,6 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... mash"
-	@echo "... src/Collection1D.o"
-	@echo "... src/Collection1D.i"
-	@echo "... src/Collection1D.s"
 	@echo "... src/Interpreter.o"
 	@echo "... src/Interpreter.i"
 	@echo "... src/Interpreter.s"
@@ -414,24 +267,9 @@ help:
 	@echo "... src/Nodes.o"
 	@echo "... src/Nodes.i"
 	@echo "... src/Nodes.s"
-	@echo "... src/Number.o"
-	@echo "... src/Number.i"
-	@echo "... src/Number.s"
-	@echo "... src/Operations.o"
-	@echo "... src/Operations.i"
-	@echo "... src/Operations.s"
 	@echo "... src/Parser.o"
 	@echo "... src/Parser.i"
 	@echo "... src/Parser.s"
-	@echo "... src/Set.o"
-	@echo "... src/Set.i"
-	@echo "... src/Set.s"
-	@echo "... src/Value.o"
-	@echo "... src/Value.i"
-	@echo "... src/Value.s"
-	@echo "... src/Vector.o"
-	@echo "... src/Vector.i"
-	@echo "... src/Vector.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
