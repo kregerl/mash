@@ -43,6 +43,8 @@ public:
 
     friend std::ostream &operator<<(std::ostream &os, const Token &token);
 
+    friend bool operator==(const Token &t1, const Token &t2);
+
 private:
     TokenType m_type;
     std::string m_value;

@@ -121,7 +121,7 @@ NumberNode *BinaryOpNode::calculate(std::unordered_map<std::string, NumberNode *
                 ss << leftResult->token.getValue();
                 ss << " = ";
                 ss << rightResult->token.getValue();
-                return new NumberNode(ss.str());
+                return new NumberNode(Token(ss.str(), TokenType::Identifier));
             } else {
                 return new NumberNode("Cant assign numerics to different values.");
             }

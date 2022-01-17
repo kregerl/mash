@@ -10,16 +10,21 @@
 // TODO: Allow |x| syntax for absolute value, also add `abs(x)`
 
 
+std::unordered_map<std::string, NumberNode *> globalVariables;
 
 int main() {
-    auto lexer = Lexer("-xyz + 3");
-    std::vector<Token> tokens = lexer.tokenize();
-    auto parser = Parser(tokens);
-    Node *node = parser.parse();
-    std::unordered_map<std::string, NumberNode *> map;
-    map.insert({"xyz", new NumberNode(Token("5", TokenType::Number))});
-    std::cout << *node->calculate(map) << std::endl;
-    exit(1);
+    std::string expression;
+    auto interpreter = Interpreter();
+    while (expression != "exit") {
+        std::cout << "Mash > ";
+        getline(std::cin, expression);
+        if (expression == "exit") {
+            break;
+        } else {
+            Token tok = interpreter.interpret(expression);
+            std::cout << tok << std::endl;
+        }
+    }
 }
 
 

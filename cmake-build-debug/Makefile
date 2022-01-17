@@ -65,15 +65,50 @@ CMAKE_BINARY_DIR = /home/loucas/CLionProjects/mash/cmake-build-debug
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/home/loucas/AppImage/clion-2021.1/bin/cmake/linux/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
+# Special rule for the target install/strip
+install/strip: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/home/loucas/AppImage/clion-2021.1/bin/cmake/linux/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip
 
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
-.PHONY : rebuild_cache/fast
+# Special rule for the target install/strip
+install/strip/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/home/loucas/AppImage/clion-2021.1/bin/cmake/linux/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip/fast
+
+# Special rule for the target install/local
+install/local: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/home/loucas/AppImage/clion-2021.1/bin/cmake/linux/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local
+
+# Special rule for the target install/local
+install/local/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/home/loucas/AppImage/clion-2021.1/bin/cmake/linux/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local/fast
+
+# Special rule for the target install
+install: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/home/loucas/AppImage/clion-2021.1/bin/cmake/linux/bin/cmake -P cmake_install.cmake
+.PHONY : install
+
+# Special rule for the target install
+install/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/home/loucas/AppImage/clion-2021.1/bin/cmake/linux/bin/cmake -P cmake_install.cmake
+.PHONY : install/fast
+
+# Special rule for the target list_install_components
+list_install_components:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
+.PHONY : list_install_components
+
+# Special rule for the target list_install_components
+list_install_components/fast: list_install_components
+.PHONY : list_install_components/fast
 
 # Special rule for the target edit_cache
 edit_cache:
@@ -84,6 +119,16 @@ edit_cache:
 # Special rule for the target edit_cache
 edit_cache/fast: edit_cache
 .PHONY : edit_cache/fast
+
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	/home/loucas/AppImage/clion-2021.1/bin/cmake/linux/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+.PHONY : rebuild_cache/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -129,12 +174,78 @@ mash/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/build
 .PHONY : mash/fast
 
+#=============================================================================
+# Target rules for targets named test
+
+# Build rule for target.
+test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test
+.PHONY : test
+
+# fast build rule for target.
+test/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/build
+.PHONY : test/fast
+
+#=============================================================================
+# Target rules for targets named gmock_main
+
+# Build rule for target.
+gmock_main: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gmock_main
+.PHONY : gmock_main
+
+# fast build rule for target.
+gmock_main/fast:
+	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/build.make _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/build
+.PHONY : gmock_main/fast
+
+#=============================================================================
+# Target rules for targets named gmock
+
+# Build rule for target.
+gmock: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gmock
+.PHONY : gmock
+
+# fast build rule for target.
+gmock/fast:
+	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googlemock/CMakeFiles/gmock.dir/build.make _deps/googletest-build/googlemock/CMakeFiles/gmock.dir/build
+.PHONY : gmock/fast
+
+#=============================================================================
+# Target rules for targets named gtest_main
+
+# Build rule for target.
+gtest_main: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gtest_main
+.PHONY : gtest_main
+
+# fast build rule for target.
+gtest_main/fast:
+	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/build.make _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/build
+.PHONY : gtest_main/fast
+
+#=============================================================================
+# Target rules for targets named gtest
+
+# Build rule for target.
+gtest: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gtest
+.PHONY : gtest
+
+# fast build rule for target.
+gtest/fast:
+	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/gtest.dir/build.make _deps/googletest-build/googletest/CMakeFiles/gtest.dir/build
+.PHONY : gtest/fast
+
 src/Interpreter.o: src/Interpreter.cpp.o
 .PHONY : src/Interpreter.o
 
 # target to build an object file
 src/Interpreter.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Interpreter.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/src/Interpreter.cpp.o
 .PHONY : src/Interpreter.cpp.o
 
 src/Interpreter.i: src/Interpreter.cpp.i
@@ -143,6 +254,7 @@ src/Interpreter.i: src/Interpreter.cpp.i
 # target to preprocess a source file
 src/Interpreter.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Interpreter.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/src/Interpreter.cpp.i
 .PHONY : src/Interpreter.cpp.i
 
 src/Interpreter.s: src/Interpreter.cpp.s
@@ -151,6 +263,7 @@ src/Interpreter.s: src/Interpreter.cpp.s
 # target to generate assembly for a file
 src/Interpreter.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Interpreter.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/src/Interpreter.cpp.s
 .PHONY : src/Interpreter.cpp.s
 
 src/Lexer.o: src/Lexer.cpp.o
@@ -159,6 +272,7 @@ src/Lexer.o: src/Lexer.cpp.o
 # target to build an object file
 src/Lexer.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Lexer.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/src/Lexer.cpp.o
 .PHONY : src/Lexer.cpp.o
 
 src/Lexer.i: src/Lexer.cpp.i
@@ -167,6 +281,7 @@ src/Lexer.i: src/Lexer.cpp.i
 # target to preprocess a source file
 src/Lexer.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Lexer.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/src/Lexer.cpp.i
 .PHONY : src/Lexer.cpp.i
 
 src/Lexer.s: src/Lexer.cpp.s
@@ -175,6 +290,7 @@ src/Lexer.s: src/Lexer.cpp.s
 # target to generate assembly for a file
 src/Lexer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Lexer.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/src/Lexer.cpp.s
 .PHONY : src/Lexer.cpp.s
 
 src/Nodes.o: src/Nodes.cpp.o
@@ -183,6 +299,7 @@ src/Nodes.o: src/Nodes.cpp.o
 # target to build an object file
 src/Nodes.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Nodes.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/src/Nodes.cpp.o
 .PHONY : src/Nodes.cpp.o
 
 src/Nodes.i: src/Nodes.cpp.i
@@ -191,6 +308,7 @@ src/Nodes.i: src/Nodes.cpp.i
 # target to preprocess a source file
 src/Nodes.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Nodes.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/src/Nodes.cpp.i
 .PHONY : src/Nodes.cpp.i
 
 src/Nodes.s: src/Nodes.cpp.s
@@ -199,6 +317,7 @@ src/Nodes.s: src/Nodes.cpp.s
 # target to generate assembly for a file
 src/Nodes.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Nodes.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/src/Nodes.cpp.s
 .PHONY : src/Nodes.cpp.s
 
 src/Parser.o: src/Parser.cpp.o
@@ -207,6 +326,7 @@ src/Parser.o: src/Parser.cpp.o
 # target to build an object file
 src/Parser.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Parser.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/src/Parser.cpp.o
 .PHONY : src/Parser.cpp.o
 
 src/Parser.i: src/Parser.cpp.i
@@ -215,6 +335,7 @@ src/Parser.i: src/Parser.cpp.i
 # target to preprocess a source file
 src/Parser.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Parser.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/src/Parser.cpp.i
 .PHONY : src/Parser.cpp.i
 
 src/Parser.s: src/Parser.cpp.s
@@ -223,6 +344,7 @@ src/Parser.s: src/Parser.cpp.s
 # target to generate assembly for a file
 src/Parser.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/Parser.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/src/Parser.cpp.s
 .PHONY : src/Parser.cpp.s
 
 src/main.o: src/main.cpp.o
@@ -249,6 +371,54 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mash.dir/build.make CMakeFiles/mash.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+tests/TestMain.o: tests/TestMain.cpp.o
+.PHONY : tests/TestMain.o
+
+# target to build an object file
+tests/TestMain.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/tests/TestMain.cpp.o
+.PHONY : tests/TestMain.cpp.o
+
+tests/TestMain.i: tests/TestMain.cpp.i
+.PHONY : tests/TestMain.i
+
+# target to preprocess a source file
+tests/TestMain.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/tests/TestMain.cpp.i
+.PHONY : tests/TestMain.cpp.i
+
+tests/TestMain.s: tests/TestMain.cpp.s
+.PHONY : tests/TestMain.s
+
+# target to generate assembly for a file
+tests/TestMain.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/tests/TestMain.cpp.s
+.PHONY : tests/TestMain.cpp.s
+
+tests/TestOperators.o: tests/TestOperators.cpp.o
+.PHONY : tests/TestOperators.o
+
+# target to build an object file
+tests/TestOperators.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/tests/TestOperators.cpp.o
+.PHONY : tests/TestOperators.cpp.o
+
+tests/TestOperators.i: tests/TestOperators.cpp.i
+.PHONY : tests/TestOperators.i
+
+# target to preprocess a source file
+tests/TestOperators.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/tests/TestOperators.cpp.i
+.PHONY : tests/TestOperators.cpp.i
+
+tests/TestOperators.s: tests/TestOperators.cpp.s
+.PHONY : tests/TestOperators.s
+
+# target to generate assembly for a file
+tests/TestOperators.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/tests/TestOperators.cpp.s
+.PHONY : tests/TestOperators.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -256,8 +426,17 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
+	@echo "... install"
+	@echo "... install/local"
+	@echo "... install/strip"
+	@echo "... list_install_components"
 	@echo "... rebuild_cache"
+	@echo "... gmock"
+	@echo "... gmock_main"
+	@echo "... gtest"
+	@echo "... gtest_main"
 	@echo "... mash"
+	@echo "... test"
 	@echo "... src/Interpreter.o"
 	@echo "... src/Interpreter.i"
 	@echo "... src/Interpreter.s"
@@ -273,6 +452,12 @@ help:
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... tests/TestMain.o"
+	@echo "... tests/TestMain.i"
+	@echo "... tests/TestMain.s"
+	@echo "... tests/TestOperators.o"
+	@echo "... tests/TestOperators.i"
+	@echo "... tests/TestOperators.s"
 .PHONY : help
 
 

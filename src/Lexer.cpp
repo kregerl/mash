@@ -21,6 +21,10 @@ std::ostream &operator<<(std::ostream &os, const Token &token) {
     return os;
 }
 
+bool operator==(const Token &t1, const Token &t2) {
+    return t1.m_type == t2.m_type && t1.m_value == t2.m_value;
+}
+
 Lexer::Lexer(const std::string &expression) : m_expression(expression) {}
 
 Token Lexer::getTokenFromChar(const char &c) {

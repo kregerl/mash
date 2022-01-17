@@ -12,23 +12,42 @@
 - Modulo: <b> x % y or mod(x, y) </b>
 - Exponents: <b> x^y or exp(x, y) </b>
 - Factorial: <b> x! </b>
-- Square Root: <b> sqrt(x) </b>
-- Sine: <b> sin(x) </b>
-- Cosine: <b> cos(x) </b>
-- Tangent: <b> tan(x) </b>
-- Cotangent: <b> cot(x) </b>
-- Secant: <b> sec(x) </b>
-- Cosecant: <b> csc(x) </b>
-- arcsin: <b> arcsin(x) </b>
-- arccos: <b> arccos(x) </b>
-- arctan: <b> arctan(x) </b>
-- Natural Log: <b> ln(x) </b>
-- Log base 10: <b> log(x) </b>
-- Log base x: <b> logb(x, y) </b>
-- Greatest Common Divisor (GCD): <b> gcd(x, y) </b>
-- Least Common Multiple: <b> lcm(x, y) </b>
-- Combination (Read x choose y): <b> choose(x, y) </b>
-- [ ] Permutation
+
+[comment]: <> (Not implemented yet)
+
+[comment]: <> (- Square Root: <b> sqrt&#40;x&#41; </b>)
+
+[comment]: <> (- Sine: <b> sin&#40;x&#41; </b>)
+
+[comment]: <> (- Cosine: <b> cos&#40;x&#41; </b>)
+
+[comment]: <> (- Tangent: <b> tan&#40;x&#41; </b>)
+
+[comment]: <> (- Cotangent: <b> cot&#40;x&#41; </b>)
+
+[comment]: <> (- Secant: <b> sec&#40;x&#41; </b>)
+
+[comment]: <> (- Cosecant: <b> csc&#40;x&#41; </b>)
+
+[comment]: <> (- arcsin: <b> arcsin&#40;x&#41; </b>)
+
+[comment]: <> (- arccos: <b> arccos&#40;x&#41; </b>)
+
+[comment]: <> (- arctan: <b> arctan&#40;x&#41; </b>)
+
+[comment]: <> (- Natural Log: <b> ln&#40;x&#41; </b>)
+
+[comment]: <> (- Log base 10: <b> log&#40;x&#41; </b>)
+
+[comment]: <> (- Log base x: <b> logb&#40;x, y&#41; </b>)
+
+[comment]: <> (- Greatest Common Divisor &#40;GCD&#41;: <b> gcd&#40;x, y&#41; </b>)
+
+[comment]: <> (- Least Common Multiple: <b> lcm&#40;x, y&#41; </b>)
+
+[comment]: <> (- Combination &#40;Read x choose y&#41;: <b> choose&#40;x, y&#41; </b>)
+
+[comment]: <> (- [ ] Permutation)
 
 ## Bitwise Operators
 

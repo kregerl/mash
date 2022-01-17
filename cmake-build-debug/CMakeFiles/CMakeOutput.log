@@ -439,3 +439,31 @@ Parsed CXX implicit link information from above output:
   implicit fwks: []
 
 
+Determining if the include file pthread.h exists passed with the following output:
+Change Dir: /home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make -f Makefile cmTC_82cdc/fast && /usr/bin/make  -f CMakeFiles/cmTC_82cdc.dir/build.make CMakeFiles/cmTC_82cdc.dir/build
+make[1]: Entering directory '/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_82cdc.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_82cdc.dir/CheckIncludeFile.c.o -c /home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_82cdc
+/home/loucas/AppImage/clion-2021.1/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_82cdc.dir/link.txt --verbose=1
+/usr/bin/cc -rdynamic CMakeFiles/cmTC_82cdc.dir/CheckIncludeFile.c.o -o cmTC_82cdc 
+make[1]: Leaving directory '/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function pthread_create exists in the pthread passed with the following output:
+Change Dir: /home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make -f Makefile cmTC_ff32c/fast && /usr/bin/make  -f CMakeFiles/cmTC_ff32c.dir/build.make CMakeFiles/cmTC_ff32c.dir/build
+make[1]: Entering directory '/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_ff32c.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create -o CMakeFiles/cmTC_ff32c.dir/CheckFunctionExists.c.o -c /home/loucas/AppImage/clion-2021.1/bin/cmake/linux/share/cmake-3.20/Modules/CheckFunctionExists.c
+Linking C executable cmTC_ff32c
+/home/loucas/AppImage/clion-2021.1/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ff32c.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create -rdynamic CMakeFiles/cmTC_ff32c.dir/CheckFunctionExists.c.o -o cmTC_ff32c  -lpthread 
+make[1]: Leaving directory '/home/loucas/CLionProjects/mash/cmake-build-debug/CMakeFiles/CMakeTmp'
+
+
+

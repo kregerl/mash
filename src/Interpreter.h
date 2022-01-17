@@ -10,11 +10,11 @@ public:
 
     ~Interpreter();
 
-    double evaluate();
+    Token interpret(const std::string &expression);
 
 private:
-    std::unordered_map<std::string, Node *> variables;
-    std::unordered_map<std::string, Node *> functions;
+    std::unordered_map<std::string, NumberNode *> variables;
+    std::unordered_map<std::string, NumberNode *> functions;
 
 };
 
