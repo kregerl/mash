@@ -10,6 +10,7 @@
 // TODO: Allow |x| syntax for absolute value, also add `abs(x)`
 
 
+
 //std::unordered_map<std::string, NumberNode *> globalVariables;
 
 int main() {
