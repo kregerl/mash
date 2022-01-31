@@ -103,7 +103,6 @@ AbstractNode *Parser::term() {
             next();
             node = new BinaryOpNode(BinaryOpType::Equals, node, exponent());
         }
-
     }
     return node;
 }
