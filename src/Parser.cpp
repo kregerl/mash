@@ -2,6 +2,7 @@
 #include "Nodes.h"
 
 #include <iostream>
+#include <cassert>
 
 //Node::Node(const Token &token) : token(token), left(nullptr), right(nullptr) {}
 //
@@ -33,75 +34,113 @@ void Parser::next() {
 }
 
 // TODO: Assert that the expression is at the end.
-Node *Parser::parse() {
-    return expression();
+AbstractNode *Parser::parse() {
+    auto n = bitwiseExpression();
+    assert(("Remaining token is not EOF!", m_currentToken.getType() == TokenType::EndOfLine));
+    return n;
 }
 
-Node *Parser::factor() {
+AbstractNode *Parser::factor() {
     Token token = m_currentToken;
     if (token.getType() == TokenType::Number) {
         next();
-        return new NumberNode(token);
+        return new NumberNode(std::stod(token.getValue()));
     } else if (token.getType() == TokenType::LParen) {
         // Remove "LParen" from the list
         next();
-        Node *node = expression();
+        // The expression used here needs to be updated whenever an operator with lower precedence is added
+        AbstractNode *node = bitwiseExpression();
         // Remove RParen from the list after parsing the expression inside
         if (m_currentToken.getType() == TokenType::RParen) {
             next();
         } else {
-            node = new NumberNode("Missing closing parenthesis!");
+//            node = new NumberNode("Missing closing parenthesis!");
         }
         return node;
     } else if (token.getType() == TokenType::Subtraction) {
         next();
-        Node *node = new UnaryOpNode(token, factor());
+        AbstractNode *node = new UnaryOpNode(UnaryOpType::Negation, factor());
         return node;
     } else if (token.getType() == TokenType::Identifier) {
         next();
-        Node *node = new NumberNode(token);
+        AbstractNode *node = new NumberNode(std::stod(token.getValue()));
         return node;
     }
     return nullptr;
 }
 
-Node *Parser::term() {
-    Node *node = factor();
+AbstractNode *Parser::exponent() {
+    AbstractNode *node = factor();
+    if (m_currentToken.getType() == TokenType::Exp) {
+        next();
+        node = new BinaryOpNode(BinaryOpType::Exp, node, bitwiseExpression());
+    }
+    return node;
+}
 
-    // Unary, right places operators.
+AbstractNode *Parser::term() {
+    AbstractNode *node = exponent();
+
+    // Unary, right placed operators.
     if (m_currentToken.getType() == TokenType::Factorial) {
         Token token = m_currentToken;
         next();
-        node = new UnaryOpNode(token, node);
+        node = new UnaryOpNode(UnaryOpType::Factorial, node);
     }
     while (m_currentToken.getType() == TokenType::Multiplication || m_currentToken.getType() == TokenType::Division ||
            m_currentToken.getType() == TokenType::Modulo || m_currentToken.getType() == TokenType::Equals) {
         Token token = m_currentToken;
         if (token.getType() == TokenType::Multiplication) {
             next();
+            node = new BinaryOpNode(BinaryOpType::Multiply, node, exponent());
         } else if (token.getType() == TokenType::Division) {
             next();
+            node = new BinaryOpNode(BinaryOpType::Divide, node, exponent());
         } else if (token.getType() == TokenType::Modulo) {
             next();
+            node = new BinaryOpNode(BinaryOpType::Modulo, node, exponent());
         } else if (token.getType() == TokenType::Equals) {
             next();
+            node = new BinaryOpNode(BinaryOpType::Equals, node, exponent());
         }
-        node = new BinaryOpNode(token, node, factor());
+
     }
     return node;
 }
 
-Node *Parser::expression() {
-    Node *node = term();
+AbstractNode *Parser::expression() {
+    AbstractNode *node = term();
 
     while (m_currentToken.getType() == TokenType::Addition || m_currentToken.getType() == TokenType::Subtraction) {
         Token token = m_currentToken;
         if (token.getType() == TokenType::Addition) {
             next();
+            node = new BinaryOpNode(BinaryOpType::Plus, node, term());
         } else if (token.getType() == TokenType::Subtraction) {
             next();
+            node = new BinaryOpNode(BinaryOpType::Minus, node, term());
         }
-        node = new BinaryOpNode(token, node, term());
+    }
+
+    return node;
+}
+
+AbstractNode *Parser::bitwiseExpression() {
+    AbstractNode *node = expression();
+
+    while (m_currentToken.getType() == TokenType::Bitwiseand || m_currentToken.getType() == TokenType::Bitwiseor ||
+           m_currentToken.getType() == TokenType::Bitwisexor) {
+        Token token = m_currentToken;
+        if (token.getType() == TokenType::Bitwiseand) {
+            next();
+            node = new BinaryOpNode(BinaryOpType::BW_And, node, bitwiseExpression());
+        } else if (token.getType() == TokenType::Bitwiseor) {
+            next();
+            node = new BinaryOpNode(BinaryOpType::BW_Or, node, bitwiseExpression());
+        } else if (token.getType() == TokenType::Bitwisexor) {
+            next();
+            node = new BinaryOpNode(BinaryOpType::BW_Xor, node, bitwiseExpression());
+        }
     }
 
     return node;

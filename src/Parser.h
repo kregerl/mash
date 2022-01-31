@@ -31,13 +31,17 @@ public:
 
     void next();
 
-    Node *parse();
+    AbstractNode *parse();
 
-    Node *factor();
+    AbstractNode *factor();
 
-    Node *term();
+    AbstractNode *exponent();
 
-    Node *expression();
+    AbstractNode *term();
+
+    AbstractNode *expression();
+
+    AbstractNode *bitwiseExpression();
 
 private:
     const std::vector<Token> m_tokens;

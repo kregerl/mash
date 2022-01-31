@@ -10,7 +10,7 @@
 // TODO: Allow |x| syntax for absolute value, also add `abs(x)`
 
 
-std::unordered_map<std::string, NumberNode *> globalVariables;
+//std::unordered_map<std::string, NumberNode *> globalVariables;
 
 int main() {
     std::string expression;
@@ -21,8 +21,10 @@ int main() {
         if (expression == "exit") {
             break;
         } else {
-            Token tok = interpreter.interpret(expression);
-            std::cout << tok << std::endl;
+            auto lexer = Lexer(expression);
+            auto parser = Parser(lexer.tokenize());
+            AbstractNode *n = parser.parse();
+            std::cout << Evaluator::getValue(n) << std::endl;
         }
     }
 }

@@ -11,7 +11,15 @@ const TokenType &Token::getType() {
     return m_type;
 }
 
+const TokenType &Token::getType() const {
+    return m_type;
+}
+
 const std::string &Token::getValue() {
+    return m_value;
+}
+
+const std::string &Token::getValue() const {
     return m_value;
 }
 
@@ -45,7 +53,7 @@ Token Lexer::getTokenFromChar(const char &c) {
         case '%':
             return {str, TokenType::Modulo};
         case '^':
-            return {str, TokenType::Exp};
+            return {str, TokenType::Bitwisexor};
         case '&':
             return {str, TokenType::Bitwiseand};
         case '|':
@@ -100,14 +108,20 @@ std::vector<Token> Lexer::tokenize() {
             tokens.emplace_back(readNumberToken(&i));
         } else if (c == '+' || c == '-' || c == '*' || c == '/' || c == '%' || c == '^' || c == '&' || c == '|' ||
                    c == '=' || c == '!' || c == '(' || c == ')' || c == ',') {
-            tokens.emplace_back(getTokenFromChar(c));
+            int next = i + 1;
+            if (c == '*' && next < m_expression.size() && m_expression[next] == '*') {
+                tokens.emplace_back(Token("**", TokenType::Exp));
+                i++;
+            } else {
+                tokens.emplace_back(getTokenFromChar(c));
+            }
         } else if (std::isalpha(c)) {
             tokens.emplace_back(readIdentifierToken(&i));
         } else {
             std::cout << "Unknown Token: " << c << std::endl;
         }
     }
-
+    tokens.emplace_back(Token("", TokenType::EndOfLine));
 
     return tokens;
 }
