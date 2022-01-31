@@ -5,16 +5,18 @@
 #include <vector>
 
 
-const static std::string typeStrings2[] = {"Error", "Number", "Bitwiseand", "Bitwiseor", "Addition", "Subtraction",
+const static std::string typeStrings2[] = {"Error", "Number", "Bitwiseand", "Bitwiseor", "Bitwisexor", "Addition",
+                                           "Subtraction",
                                            "Multiplication",
                                            "Division", "Modulo", "Exp", "Factorial", "LParen",
-                                           "RParen", "Equals", "Identifier", "Comma"};
+                                           "RParen", "Equals", "Identifier", "Comma", "End of Line"};
 
 enum class TokenType {
     Error = 0,
     Number,
     Bitwiseand,
     Bitwiseor,
+    Bitwisexor,
     Addition,
     Subtraction,
     Multiplication,
@@ -26,7 +28,8 @@ enum class TokenType {
     RParen,
     Equals,
     Identifier,
-    Comma
+    Comma,
+    EndOfLine
 };
 
 class Token {
@@ -39,7 +42,11 @@ public:
 
     const TokenType &getType();
 
+    const TokenType &getType() const;
+
     const std::string &getValue();
+
+    const std::string &getValue() const;
 
     friend std::ostream &operator<<(std::ostream &os, const Token &token);
 

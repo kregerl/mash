@@ -1,142 +1,113 @@
 #include "Nodes.h"
-#include <sstream>
-#include <cmath>
-#include <iostream>
+#include "cmath"
 
-NumberNode::NumberNode(const Token &token) : token(token) {}
+NumberNode::NumberNode(const double &value) : m_value(value) {}
 
-NumberNode *NumberNode::calculate(std::unordered_map<std::string, NumberNode *> &variables) {
-    switch (token.getType()) {
-        case TokenType::Identifier: {
-            if (variables.find(token.getValue()) != variables.end()) {
-                return variables.at(token.getValue());
-            }
-        }
-        case TokenType::Number: {
-            return this;
-        }
-        default: {
-            std::stringstream stream;
-            stream << "Unknown number: " << token;
-            return new NumberNode(stream.str());
-        }
-    }
-
+double NumberNode::getValue() const {
+    return m_value;
 }
 
-NumberNode::NumberNode(const std::string &str) : token(Token("Error:", TokenType::Error)), errorMessage(str) {}
+UnaryOpNode::UnaryOpNode(UnaryOpType type, AbstractNode *child) : m_type(type), m_child(child) {}
 
-
-std::ostream &operator<<(std::ostream &os, const NumberNode &node) {
-    if (node.errorMessage) {
-        os << node.errorMessage.value();
-    } else {
-        os << node.token;
-    }
-    return os;
+UnaryOpType UnaryOpNode::getType() const {
+    return m_type;
 }
 
-UnaryOpNode::UnaryOpNode(const Token &token, Node *child) : token(token), child(child) {}
-
-NumberNode *UnaryOpNode::calculate(std::unordered_map<std::string, NumberNode *> &variables) {
-    NumberNode *childResult = child->calculate(variables);
-    if (childResult->errorMessage) {
-        return childResult;
-    }
-    switch (token.getType()) {
-        case TokenType::Subtraction: {
-            double result = std::stod(childResult->token.getValue()) * -1.0;
-            return new NumberNode(Token(std::to_string(result), TokenType::Number));
-        }
-        case TokenType::Factorial: {
-            double result = std::tgamma(1.0 + (stod(childResult->token.getValue())));
-            return new NumberNode(Token(std::to_string(result), TokenType::Number));
-        }
-        default: {
-            std::stringstream stream;
-            stream << "Unknown Unary Operator type: " << token;
-            return new NumberNode(stream.str());
-        }
-    }
+AbstractNode *UnaryOpNode::getChild() const {
+    return m_child;
 }
 
-UnaryOpNode::~UnaryOpNode() {
-    delete child;
+BinaryOpNode::BinaryOpNode(BinaryOpType type, AbstractNode *left, AbstractNode *right) : m_type(type), m_left(left),
+                                                                                         m_right(right) {}
+
+BinaryOpType BinaryOpNode::getType() const {
+    return m_type;
 }
 
-BinaryOpNode::BinaryOpNode(const Token &token, Node *left, Node *right) : token(token), left(left), right(right) {}
+AbstractNode *BinaryOpNode::left() const {
+    return m_left;
+}
 
-NumberNode *BinaryOpNode::calculate(std::unordered_map<std::string, NumberNode *> &variables) {
-    NumberNode *leftResult = left->calculate(variables);
-    NumberNode *rightResult = right->calculate(variables);
-    if (leftResult->errorMessage) {
-        return leftResult;
-    } else if (rightResult->errorMessage) {
-        return rightResult;
-    }
-    switch (token.getType()) {
-        case TokenType::Addition: {
-            double result = std::stod(leftResult->token.getValue()) + std::stod(rightResult->token.getValue());
-            return new NumberNode(Token(std::to_string(result), TokenType::Number));
+AbstractNode *BinaryOpNode::right() const {
+    return m_right;
+}
+
+template<typename Visitor, typename Visitable, typename ResultType>
+ResultType ValueGetter<Visitor, Visitable, ResultType>::getValue(Visitable v) {
+    Visitor visitor;
+    v->accept(visitor);
+    return visitor.value;
+}
+
+template<typename Visitor, typename Visitable, typename ResultType>
+void ValueGetter<Visitor, Visitable, ResultType>::result(ResultType result) {
+    value = result;
+}
+
+void Evaluator::visit(const NumberNode &node) {
+    result(node.getValue());
+}
+
+void Evaluator::visit(const BinaryOpNode &node) {
+    double left = getValue(node.left());
+    double right = getValue(node.right());
+    switch (node.getType()) {
+        case BinaryOpType::Equals:
+            break;
+        case BinaryOpType::Plus: {
+            result(left + right);
+            break;
         }
-        case TokenType::Subtraction: {
-            double result = std::stod(leftResult->token.getValue()) - std::stod(rightResult->token.getValue());
-            return new NumberNode(Token(std::to_string(result), TokenType::Number));
+        case BinaryOpType::Minus: {
+            result(left - right);
+            break;
         }
-        case TokenType::Multiplication: {
-            double result = std::stod(leftResult->token.getValue()) * std::stod(rightResult->token.getValue());
-            return new NumberNode(Token(std::to_string(result), TokenType::Number));
+        case BinaryOpType::Multiply: {
+            result(left * right);
+            break;
         }
-        case TokenType::Division: {
-            if (std::stod(rightResult->token.getValue()) == 0) {
-                return new NumberNode("Division by zero!");
-            }
-            double result = std::stod(leftResult->token.getValue()) / std::stod(rightResult->token.getValue());
-            return new NumberNode(Token(std::to_string(result), TokenType::Number));
+        case BinaryOpType::Divide: {
+            // TODO: Make sure right is not 0
+            result(left / right);
+            break;
         }
-        case TokenType::Modulo: {
-            // TODO: Check if Modulo works on negative numbers.
-            if (std::stod(rightResult->token.getValue()) == 0) {
-                return new NumberNode("Modulo by zero!");
-            }
-            double result = fmod(std::stod(leftResult->token.getValue()), std::stod(rightResult->token.getValue()));
-            return new NumberNode(Token(std::to_string(result), TokenType::Number));
+        case BinaryOpType::Modulo: {
+            // TODO: Look into double modulo
+            result(static_cast<int>(left) % static_cast<int>(right));
+            break;
         }
-        case TokenType::Bitwiseand: {
-            double result = std::stoi(leftResult->token.getValue()) & std::stoi(rightResult->token.getValue());
-            return new NumberNode(Token(std::to_string(result), TokenType::Number));
+        case BinaryOpType::Exp: {
+            result(std::pow(left, right));
+            break;
         }
-        case TokenType::Bitwiseor: {
-            double result = std::stoi(leftResult->token.getValue()) | std::stoi(rightResult->token.getValue());
-            return new NumberNode(Token(std::to_string(result), TokenType::Number));
+        case BinaryOpType::BW_Or: {
+            // TODO: Casting to ints
+            result(static_cast<int>(left) | static_cast<int>(right));
+            break;
         }
-        case TokenType::Exp: {
-            double result = std::pow(std::stod(leftResult->token.getValue()), std::stod(rightResult->token.getValue()));
-            return new NumberNode(Token(std::to_string(result), TokenType::Number));
+        case BinaryOpType::BW_And: {
+            // TODO: Casting to ints
+            result(static_cast<int>(left) & static_cast<int>(right));
+            break;
         }
-        case TokenType::Equals: {
-            if (leftResult->token.getType() == TokenType::Identifier) {
-                variables.insert({leftResult->token.getValue(), rightResult});
-                std::stringstream ss;
-                ss << leftResult->token.getValue();
-                ss << " = ";
-                ss << rightResult->token.getValue();
-                return new NumberNode(Token(ss.str(), TokenType::Identifier));
-            } else {
-                return new NumberNode("Cant assign numerics to different values.");
-            }
-        }
-        default: {
-            std::stringstream stream;
-            stream << "Unknown Binary Operator type: " << token;
-            return new NumberNode(stream.str());
+        case BinaryOpType::BW_Xor: {
+            // TODO: Casting to ints
+            result(static_cast<int>(left) ^ static_cast<int>(right));
+            break;
         }
     }
 }
 
-BinaryOpNode::~BinaryOpNode() {
-    delete left;
-    delete right;
+void Evaluator::visit(const UnaryOpNode &node) {
+    double child = getValue(node.getChild());
+    switch (node.getType()) {
+        case UnaryOpType::Negation: {
+            result(-child);
+            break;
+        }
+        case UnaryOpType::Factorial: {
+            result(std::tgamma(child + 1));
+            break;
+        }
+    }
 }
-
-
