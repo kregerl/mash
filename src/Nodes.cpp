@@ -95,6 +95,16 @@ void Evaluator::visit(const BinaryOpNode &node) {
             result(static_cast<int>(left) ^ static_cast<int>(right));
             break;
         }
+        case BinaryOpType::BW_Shift_Right: {
+            // TODO: Casting to ints
+            result(static_cast<int>(left) >> static_cast<int>(right));
+            break;
+        }
+        case BinaryOpType::BW_Shift_Left: {
+            // TODO: Casting to ints
+            result(static_cast<int>(left) << static_cast<int>(right));
+            break;
+        }
     }
 }
 

@@ -5,7 +5,8 @@
 #include <vector>
 
 
-const static std::string typeStrings2[] = {"Error", "Number", "Bitwiseand", "Bitwiseor", "Bitwisexor", "Addition",
+const static std::string typeStrings2[] = {"Error", "Number", "Bitwiseand", "Bitwiseor", "Bitwisexor",
+                                           "BitwiseShiftLeft", "BitwiseShiftRight", "Addition",
                                            "Subtraction",
                                            "Multiplication",
                                            "Division", "Modulo", "Exp", "Factorial", "LParen",
@@ -17,6 +18,8 @@ enum class TokenType {
     Bitwiseand,
     Bitwiseor,
     Bitwisexor,
+    BitwiseShiftLeft,
+    BitwiseShiftRight,
     Addition,
     Subtraction,
     Multiplication,

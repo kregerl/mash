@@ -12,7 +12,7 @@ enum class UnaryOpType {
     Negation = 0, Factorial
 };
 enum class BinaryOpType {
-    Equals = 0, Plus, Minus, Multiply, Divide, Modulo, Exp, BW_Or, BW_And, BW_Xor
+    Equals = 0, Plus, Minus, Multiply, Divide, Modulo, Exp, BW_Or, BW_And, BW_Xor, BW_Shift_Left, BW_Shift_Right
 };
 
 class NumberNode;

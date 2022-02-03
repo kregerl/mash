@@ -115,6 +115,12 @@ std::vector<Token> Lexer::tokenize() {
             } else {
                 tokens.emplace_back(getTokenFromChar(c));
             }
+        } else if (c == '>') {
+            int next = i + 1;
+            if (next < m_expression.size() && m_expression[next] == '>') {
+                tokens.emplace_back(Token(">>", TokenType::BitwiseShiftRight));
+                i++;
+            }
         } else if (std::isalpha(c)) {
             tokens.emplace_back(readIdentifierToken(&i));
         } else {

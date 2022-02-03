@@ -35,13 +35,21 @@ public:
 
     AbstractNode *factor();
 
-    AbstractNode *exponent();
+    AbstractNode *factorialExpression();
 
-    AbstractNode *term();
+    AbstractNode *exponentialExpression();
 
-    AbstractNode *expression();
+    AbstractNode *multiplicativeExpression();
 
-    AbstractNode *bitwiseExpression();
+    AbstractNode *additiveExpression();
+
+    AbstractNode *shift();
+
+    AbstractNode *bitwiseAnd();
+
+    AbstractNode *bitwiseXor();
+
+    AbstractNode *bitwiseOr();
 
 private:
     const std::vector<Token> m_tokens;

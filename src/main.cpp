@@ -22,7 +22,8 @@ int main() {
             break;
         } else {
             auto lexer = Lexer(expression);
-            auto parser = Parser(lexer.tokenize());
+            auto tokens = lexer.tokenize();
+            auto parser = Parser(tokens);
             AbstractNode *n = parser.parse();
             std::cout << Evaluator::getValue(n) << std::endl;
         }
