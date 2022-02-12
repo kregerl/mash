@@ -30,6 +30,11 @@ class UnaryOpNode;
 
 class AssignmentNode;
 
+class FunctionNode;
+
+class FunctionAssignmentNode;
+
+
 class Visitor {
 public:
     virtual void visit(const NumberNode &node) = 0;
@@ -41,6 +46,10 @@ public:
     virtual void visit(const UnaryOpNode &node) = 0;
 
     virtual void visit(const AssignmentNode &node) = 0;
+
+    virtual void visit(const FunctionNode &node) = 0;
+
+    virtual void visit(const FunctionAssignmentNode &node) = 0;
 
 };
 
@@ -131,6 +140,38 @@ private:
     AbstractNode *m_right;
 };
 
+class FunctionNode : public AbstractNode {
+public:
+    VISITABLE
+
+    FunctionNode(IdentifierNode *name, std::vector<AbstractNode *> parameters);
+
+    IdentifierNode *getIdentifier() const;
+
+    std::string getFunctionName() const;
+
+    std::vector<AbstractNode *> getFunctionParameters() const;
+
+private:
+    IdentifierNode *m_functionName;
+    std::vector<AbstractNode *> m_functionParameters;
+};
+
+class FunctionAssignmentNode : public AbstractNode {
+public:
+    VISITABLE
+
+    FunctionAssignmentNode(FunctionNode *function, AbstractNode *value);
+
+    FunctionNode *getFunctionNode() const;
+
+    AbstractNode *getValue() const;
+
+private:
+    FunctionNode *m_functionNode;
+    AbstractNode *m_value;
+};
+
 
 template<typename Visitor, typename Visitable, typename ResultType>
 class ValueGetter {
@@ -141,6 +182,15 @@ public:
 
 protected:
     ResultType value;
+};
+
+class Function {
+public:
+    Function(std::vector<std::string> parameters, AbstractNode *value) : m_parameters(parameters), m_value(value) {}
+
+public:
+    std::vector<std::string> m_parameters;
+    AbstractNode *m_value;
 };
 
 
@@ -156,8 +206,14 @@ public:
 
     virtual void visit(const AssignmentNode &node) override;
 
+    virtual void visit(const FunctionNode &node) override;
+
+    virtual void visit(const FunctionAssignmentNode &node) override;
+
+
 private:
     static std::unordered_map<std::string, double> s_variables;
+    static std::unordered_map<std::string, Function> s_functions;
 };
 
 
@@ -172,6 +228,10 @@ public:
     virtual void visit(const UnaryOpNode &node) override;
 
     virtual void visit(const AssignmentNode &node) override;
+
+    virtual void visit(const FunctionNode &node) override;
+
+    virtual void visit(const FunctionAssignmentNode &node) override;
 
 protected:
     static int s_indent;

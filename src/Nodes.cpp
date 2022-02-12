@@ -66,6 +66,7 @@ void ValueGetter<Visitor, Visitable, ResultType>::result(ResultType result) {
 }
 
 std::unordered_map<std::string, double> Evaluator::s_variables = {};
+std::unordered_map<std::string, Function> Evaluator::s_functions = {};
 
 void Evaluator::visit(const NumberNode &node) {
     result(node.getValue());
@@ -157,6 +158,42 @@ void Evaluator::visit(const AssignmentNode &node) {
     double value = getValue(node.getValue());
     s_variables.emplace(node.getIdentifierStr(), value);
     result(value);
+}
+
+void Evaluator::visit(const FunctionNode &node) {
+    std::unordered_map<std::string, double> tmp = s_variables;
+    Function f = s_functions.at(node.getFunctionName());
+    if (f.m_parameters.size() != node.getFunctionParameters().size()) {
+        throw EvaluatorException("Too many parameters for function " + node.getFunctionName());
+    }
+    std::vector<std::string> params = f.m_parameters;
+    for (int i = 0; i < params.size(); i++) {
+        s_variables.emplace(params[i], getValue(node.getFunctionParameters()[i]));
+    }
+    double d = getValue(f.m_value);
+    s_variables = tmp;
+    result(d);
+}
+
+void Evaluator::visit(const FunctionAssignmentNode &node) {
+    FunctionNode *fNode = node.getFunctionNode();
+    std::string funcName = fNode->getFunctionName();
+    std::vector<std::string> params;
+    for (auto node : fNode->getFunctionParameters()) {
+        auto *in = dynamic_cast<IdentifierNode *>(node);
+        if (in != nullptr) {
+            params.emplace_back(in->getValue());
+        } else {
+            throw EvaluatorException("You must declare a function with variable parameters!");
+        }
+    }
+
+    if (s_functions.find(funcName) != s_functions.end()) {
+        s_functions.erase(funcName);
+    }
+
+    s_functions.emplace(funcName, Function(params, node.getValue()));
+    result(0);
 }
 
 int PrettyPrinter::s_indent = 0;
@@ -289,5 +326,38 @@ void PrettyPrinter::visit(const AssignmentNode &node) {
     result(ss.str());
 }
 
+void PrettyPrinter::visit(const FunctionNode &node) {
+
+}
+
+void PrettyPrinter::visit(const FunctionAssignmentNode &node) {
+
+}
 
 
+FunctionNode::FunctionNode(IdentifierNode *name, std::vector<AbstractNode *> parameters) : m_functionName(name),
+                                                                                           m_functionParameters(
+                                                                                                   parameters) {}
+
+IdentifierNode *FunctionNode::getIdentifier() const {
+    return m_functionName;
+}
+
+std::string FunctionNode::getFunctionName() const {
+    return m_functionName->getValue();
+}
+
+std::vector<AbstractNode *> FunctionNode::getFunctionParameters() const {
+    return m_functionParameters;
+}
+
+FunctionAssignmentNode::FunctionAssignmentNode(FunctionNode *function, AbstractNode *value) : m_functionNode(function),
+                                                                                              m_value(value) {}
+
+AbstractNode *FunctionAssignmentNode::getValue() const {
+    return m_value;
+}
+
+FunctionNode *FunctionAssignmentNode::getFunctionNode() const {
+    return m_functionNode;
+}

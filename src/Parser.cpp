@@ -45,6 +45,27 @@ AbstractNode *Parser::factor() {
     } else if (token.getType() == TokenType::Identifier) {
         next();
         AbstractNode *node = new IdentifierNode(token.getValue());
+        if (m_currentToken.getType() == TokenType::LParen) {
+            next();
+            std::vector<AbstractNode *> parameters;
+            parameters.emplace_back(bitwiseOr());
+            while (m_currentToken.getType() != TokenType::RParen) {
+                if (m_currentToken.getType() == TokenType::Comma) {
+                    next();
+                    parameters.emplace_back(bitwiseOr());
+                } else {
+                    throw EvaluatorException("Expected token '(' but got '" + m_currentToken.toString() + "'");
+                }
+            }
+            next();
+            auto *n = dynamic_cast<IdentifierNode *>(node);
+            if (n != nullptr) {
+                node = new FunctionNode(n, parameters);
+            } else {
+                throw EvaluatorException("Function");
+            }
+        }
+
         return node;
     }
 
@@ -157,7 +178,12 @@ AbstractNode *Parser::assignment() {
         if (n != nullptr) {
             node = new AssignmentNode(n, bitwiseOr());
         } else {
-            throw EvaluatorException("Assignments must be between an Identifier and a number!");
+            auto *fn = dynamic_cast<FunctionNode *>(node);
+            if (fn != nullptr) {
+                node = new FunctionAssignmentNode(fn, bitwiseOr());
+            } else {
+                throw EvaluatorException("Assignments must be between an Identifier and a number!");
+            }
         }
     }
     return node;

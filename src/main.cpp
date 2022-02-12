@@ -16,11 +16,13 @@ int main(int argc, char **argv) {
     if (argc == 1) {
         std::string expression;
         auto interpreter = Interpreter();
-        while (expression != "exit") {
+        while (true) {
             std::cout << "Mash > ";
             getline(std::cin, expression);
             if (expression == "exit") {
                 break;
+            } else if (expression == "clear") {
+                system("clear");
             } else {
                 try {
                     auto lexer = Lexer(expression);
