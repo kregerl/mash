@@ -4,6 +4,7 @@
 #include "Lexer.h"
 #include "Parser.h"
 #include "Interpreter.h"
+#include "Nodes.h"
 
 // TODO: Convert double vectors in Vector and Set to Number vector.
 // TODO: Allow colon syntax for vectors and sets: [1:6] -> {1, 2, 3, 4, 5, 6} | [:2] -> {0, 1, 2}
@@ -21,11 +22,15 @@ int main() {
         if (expression == "exit") {
             break;
         } else {
-            auto lexer = Lexer(expression);
-            auto tokens = lexer.tokenize();
-            auto parser = Parser(tokens);
-            AbstractNode *n = parser.parse();
-            std::cout << Evaluator::getValue(n) << std::endl;
+            try {
+                auto lexer = Lexer(expression);
+                auto tokens = lexer.tokenize();
+                auto parser = Parser(tokens);
+                AbstractNode *n = parser.parse();
+                std::cout << Evaluator::getValue(n) << std::endl;
+            } catch (EvaluatorException &e) {
+                std::cout << e.what() << std::endl;
+            }
         }
     }
 }

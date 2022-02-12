@@ -5,7 +5,6 @@
 #include "Parser.h"
 
 
-
 class Interpreter {
 public:
     Interpreter();
@@ -19,9 +18,6 @@ private:
 //    std::unordered_map<std::string, NumberNode *> variables;
 //    std::unordered_map<std::string, NumberNode *> functions;
 
-};
-
-class EvaluatorException : public std::exception {
 };
 
 #endif //MASH_INTERPRETER_H

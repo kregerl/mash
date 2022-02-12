@@ -51,6 +51,8 @@ public:
 
     const std::string &getValue() const;
 
+    const std::string toString() const;
+
     friend std::ostream &operator<<(std::ostream &os, const Token &token);
 
     friend bool operator==(const Token &t1, const Token &t2);

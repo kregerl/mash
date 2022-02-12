@@ -1,26 +1,6 @@
 #include "Parser.h"
 #include "Nodes.h"
-
 #include <iostream>
-#include <cassert>
-
-//Node::Node(const Token &token) : token(token), left(nullptr), right(nullptr) {}
-//
-//Node::Node(const Token &token, Node *left, Node *right) : token(token), left(left), right(right) {}
-//
-//Node::~Node() {
-//    delete left;
-//    delete right;
-//}
-//
-//std::ostream &operator<<(std::ostream &os, const Node &node) {
-//    os << "Token: " << node.token;
-//    if (node.left)
-//        os << ", " << "Children: " << *node.left;
-//    if (node.right)
-//        os << ", " << *node.right;
-//    return os;
-//}
 
 Parser::Parser(const std::vector<Token> &tokens) : m_tokens(tokens), m_currentIndex(0) {
     m_currentToken = m_tokens.at(m_currentIndex);
@@ -33,10 +13,11 @@ void Parser::next() {
 
 }
 
-// TODO: Assert that the expression is at the end.
 AbstractNode *Parser::parse() {
-    auto n = bitwiseOr();
-    assert(("Remaining token is not EOF!", m_currentToken.getType() == TokenType::EndOfLine));
+    auto n = assignment();
+    if (m_currentToken.getType() != TokenType::EndOfLine) {
+        throw EvaluatorException("Remaining token is not EOL!");
+    }
     return n;
 }
 
@@ -54,19 +35,18 @@ AbstractNode *Parser::factor() {
         if (m_currentToken.getType() == TokenType::RParen) {
             next();
         } else {
-//            node = new NumberNode("Missing closing parenthesis!");
+            throw EvaluatorException("Expected token '(' but got '" + m_currentToken.toString() + "'");
         }
         return node;
     } else if (token.getType() == TokenType::Subtraction) {
         next();
         AbstractNode *node = new UnaryOpNode(UnaryOpType::Negation, factor());
         return node;
+    } else if (token.getType() == TokenType::Identifier) {
+        next();
+        AbstractNode *node = new IdentifierNode(token.getValue());
+        return node;
     }
-//    else if (token.getType() == TokenType::Identifier) {
-//        next();
-//        AbstractNode *node = new NumberNode(std::stod(token.getValue()));
-//        return node;
-//    }
 
     return nullptr;
 }
@@ -105,10 +85,6 @@ AbstractNode *Parser::multiplicativeExpression() {
             next();
             node = new BinaryOpNode(BinaryOpType::Modulo, node, exponentialExpression());
         }
-//        else if (token.getType() == TokenType::Equals) {
-//            next();
-//            node = new BinaryOpNode(BinaryOpType::Equals, node, exponentialExpression());
-//        }
     }
     return node;
 }
@@ -172,6 +148,21 @@ AbstractNode *Parser::bitwiseOr() {
     }
     return node;
 }
+
+AbstractNode *Parser::assignment() {
+    AbstractNode *node = bitwiseOr();
+    while (m_currentToken.getType() == TokenType::Equals) {
+        next();
+        auto *n = dynamic_cast<IdentifierNode *>(node);
+        if (n != nullptr) {
+            node = new AssignmentNode(n, bitwiseOr());
+        } else {
+            throw EvaluatorException("Assignments must be between an Identifier and a number!");
+        }
+    }
+    return node;
+}
+
 
 
 

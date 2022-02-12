@@ -51,6 +51,8 @@ public:
 
     AbstractNode *bitwiseOr();
 
+    AbstractNode *assignment();
+
 private:
     const std::vector<Token> m_tokens;
     int m_currentIndex;

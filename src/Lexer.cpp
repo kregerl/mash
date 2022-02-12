@@ -33,6 +33,11 @@ bool operator==(const Token &t1, const Token &t2) {
     return t1.m_type == t2.m_type && t1.m_value == t2.m_value;
 }
 
+const std::string Token::toString() const {
+    std::string result = "<" + typeStrings2[static_cast<int>(m_type)] + ">: " + m_value;
+    return result;
+}
+
 Lexer::Lexer(const std::string &expression) : m_expression(expression) {}
 
 Token Lexer::getTokenFromChar(const char &c) {
