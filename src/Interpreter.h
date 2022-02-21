@@ -1,23 +1,20 @@
 #ifndef MASH_INTERPRETER_H
 #define MASH_INTERPRETER_H
 
-#include <unordered_map>
-#include "Parser.h"
-
+#include <string>
 
 class Interpreter {
 public:
-    Interpreter();
+    Interpreter() : m_precision(-1) {}
 
-    ~Interpreter();
+    void interpret(const std::string &expression);
 
-    double interpret(const std::string &expression);
+    void setPrecision(int precision);
 
+    int getPrecision() const;
 
 private:
-//    std::unordered_map<std::string, NumberNode *> variables;
-//    std::unordered_map<std::string, NumberNode *> functions;
-
+    int m_precision;
 };
 
 #endif //MASH_INTERPRETER_H

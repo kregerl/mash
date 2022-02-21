@@ -6,19 +6,57 @@
 #include <unordered_map>
 #include <memory>
 #include <string>
+#include <variant>
 
 #define VISITABLE virtual void accept(Visitor &visitor) override {visitor.visit(*this);}
 
+#define UNORDERED_VISIT(type1, type2, expression) \
+                        [](type1 &a, type2 &b) -> Returnable {\
+                            return std::visit(overload{\
+                                    [&a](double &b) -> Returnable { return expression; },\
+                                    [](auto &b) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }\
+                                }, s_variables.at(b));\
+                            },\
+                        [](type2 &a, type1 &b) -> Returnable {\
+                            return std::visit(overload{\
+                                    [&b](double &a) -> Returnable { return expression; },\
+                                    [](auto &a) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }\
+                                }, s_variables.at(a));\
+                            },                    \
+
+#define UNORDERED_VISIT_FUNCTION(type1, type2, function) \
+                        [](type1 &a, type2 &b) -> Returnable {\
+                            return function(a, b); \
+                        },\
+                        [](type2 &a, type1 &b) -> Returnable {\
+                            return function(a, b);\
+                        },\
+
 enum class UnaryOpType {
-    Negation = 0, Factorial
+    Negation = 0,
+    Factorial,
+    SquareRoot,
+    Sine,
+    Cosine,
+    Tangent,
+    Cotangent,
+    Secant,
+    Cosecant,
+    ArcSine,
+    ArcCosine,
+    ArcTangent,
+    AbsoluteValue,
+    Log,
+    NaturalLog
 };
 enum class BinaryOpType {
-    Plus = 0, Minus, Multiply, Divide, Modulo, Exp, BW_Or, BW_And, BW_Xor, BW_Shift_Left, BW_Shift_Right
+    Plus = 0, Minus, Multiply, Divide, Modulo, Exp, BW_Or, BW_And, BW_Xor, BW_Shift_Left, BW_Shift_Right, LogBase
 };
 
 enum class CollectionType {
     Set = 0, Vector
 };
+
 
 class NumberNode;
 
@@ -34,6 +72,7 @@ class FunctionNode;
 
 class FunctionAssignmentNode;
 
+class VectorNode;
 
 class Visitor {
 public:
@@ -50,6 +89,9 @@ public:
     virtual void visit(const FunctionNode &node) = 0;
 
     virtual void visit(const FunctionAssignmentNode &node) = 0;
+
+    virtual void visit(const VectorNode &node) = 0;
+
 
 };
 
@@ -172,6 +214,18 @@ private:
     AbstractNode *m_value;
 };
 
+class VectorNode : public AbstractNode {
+public:
+    VISITABLE
+
+    VectorNode(const std::vector<AbstractNode *> &children);
+
+    std::vector<AbstractNode *> getChildren() const;
+
+private:
+    std::vector<AbstractNode *> m_children;
+};
+
 
 template<typename Visitor, typename Visitable, typename ResultType>
 class ValueGetter {
@@ -193,45 +247,92 @@ public:
     AbstractNode *m_value;
 };
 
+template<class... Ts>
+struct overload : Ts ... {
+    using Ts::operator()...;
+};
+template<class... Ts> overload(Ts...) -> overload<Ts...>;
 
-class Evaluator : public ValueGetter<Evaluator, AbstractNode *, double>, public Visitor {
+struct Collection;
+using Returnable = std::variant<double, std::string, Collection>;
+
+struct Collection {
+    CollectionType type;
+    std::vector<Returnable> elements;
+
+    friend std::ostream &operator<<(std::ostream &os, const Collection &c) {
+        std::string left, right;
+        switch (c.type) {
+            case CollectionType::Set: {
+                left = "{";
+                right = "}";
+                break;
+            }
+            case CollectionType::Vector: {
+                left = "[";
+                right = "]";
+                break;
+            }
+        }
+        os << left;
+        for (int i = 0; i < c.elements.size(); i++) {
+            auto element = c.elements[i];
+            std::visit(overload{
+                    [&os](double &d) { os << std::to_string(d); },
+                    [&os](auto &a) { os << std::string("Unknown type!"); }
+            }, element);
+            if (i < c.elements.size() - 1) {
+                os << std::string(", ");
+            }
+        }
+        os << right;
+        return os;
+    }
+};
+
+
+class Evaluator : public ValueGetter<Evaluator, AbstractNode *, Returnable>, public Visitor {
 public:
-    virtual void visit(const NumberNode &node) override;
+    void visit(const NumberNode &node) override;
 
-    virtual void visit(const IdentifierNode &node) override;
+    void visit(const IdentifierNode &node) override;
 
-    virtual void visit(const BinaryOpNode &node) override;
+    void visit(const BinaryOpNode &node) override;
 
-    virtual void visit(const UnaryOpNode &node) override;
+    void visit(const UnaryOpNode &node) override;
 
-    virtual void visit(const AssignmentNode &node) override;
+    void visit(const AssignmentNode &node) override;
 
-    virtual void visit(const FunctionNode &node) override;
+    void visit(const FunctionNode &node) override;
 
-    virtual void visit(const FunctionAssignmentNode &node) override;
+    void visit(const FunctionAssignmentNode &node) override;
 
+    void visit(const VectorNode &node) override;
 
-private:
-    static std::unordered_map<std::string, double> s_variables;
+public:
+    static std::unordered_map<std::string, Returnable> s_variables;
     static std::unordered_map<std::string, Function> s_functions;
 };
 
 
 class PrettyPrinter : public ValueGetter<PrettyPrinter, AbstractNode *, std::string>, public Visitor {
 public:
-    virtual void visit(const NumberNode &node) override;
+    void visit(const NumberNode &node) override;
 
-    virtual void visit(const IdentifierNode &node) override;
+    void visit(const IdentifierNode &node) override;
 
-    virtual void visit(const BinaryOpNode &node) override;
+    void visit(const BinaryOpNode &node) override;
 
-    virtual void visit(const UnaryOpNode &node) override;
+    void visit(const UnaryOpNode &node) override;
 
-    virtual void visit(const AssignmentNode &node) override;
+    void visit(const AssignmentNode &node) override;
 
-    virtual void visit(const FunctionNode &node) override;
+    void visit(const FunctionNode &node) override;
 
-    virtual void visit(const FunctionAssignmentNode &node) override;
+    void visit(const FunctionAssignmentNode &node) override;
+
+    void visit(const VectorNode &node) override;
+
 
 protected:
     static int s_indent;
@@ -242,7 +343,7 @@ class EvaluatorException : public std::exception {
 public:
     explicit EvaluatorException(const std::string &message) : msg(message) {}
 
-    virtual ~EvaluatorException() noexcept {}
+    ~EvaluatorException() noexcept override = default;
 
     virtual const char *what() const noexcept {
         return msg.c_str();
@@ -253,4 +354,57 @@ private:
     std::string msg;
 };
 
+namespace Vector {
+    static Collection scalarMultiplication(Collection &c, double scalar) {
+        Collection res = {CollectionType::Vector, {}};
+        for (auto elem : c.elements) {
+            res.elements.emplace_back(std::visit(overload{
+                    [&scalar](double &d) -> Returnable { return scalar * d; },
+                    [](auto &a) -> Returnable {
+                        throw EvaluatorException("Scalar Multiplication not supported on specified types.");
+                    }
+            }, elem));
+        }
+        return res;
+    }
+
+    static Collection scalarMultiplication(double scalar, Collection &c) {
+        return scalarMultiplication(c, scalar);
+    }
+
+    static Collection addition(Collection &c1, Collection &c2) {
+        Collection res = {CollectionType::Vector, {}};
+        if (c1.elements.size() != c2.elements.size())
+            throw EvaluatorException("Cannot add vectors of different dimensions.");
+        for (int i = 0; i < c1.elements.size(); i++) {
+            Returnable e1 = c1.elements[i];
+            Returnable e2 = c2.elements[i];
+            res.elements.emplace_back(std::visit(overload{
+                    [](double &a, double &b) -> Returnable { return a + b; },
+                    [](auto &a, auto &b) -> Returnable {
+                        throw EvaluatorException("Unknown vector operation between types.");
+                    }
+            }, e1, e2));
+        }
+        return res;
+    }
+
+    static Collection subtraction(Collection &c1, Collection &c2) {
+        Collection res = {CollectionType::Vector, {}};
+        if (c1.elements.size() != c2.elements.size())
+            throw EvaluatorException("Cannot add vectors of different dimensions.");
+        for (int i = 0; i < c1.elements.size(); i++) {
+            Returnable e1 = c1.elements[i];
+            Returnable e2 = c2.elements[i];
+            res.elements.emplace_back(std::visit(overload{
+                    [](double &a, double &b) -> Returnable { return a - b; },
+                    [](auto &a, auto &b) -> Returnable {
+                        throw EvaluatorException("Unknown vector operation between types.");
+                    }
+            }, e1, e2));
+        }
+        return res;
+    }
+
+}
 #endif //MASH_NODES_H

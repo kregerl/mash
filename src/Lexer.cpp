@@ -69,6 +69,15 @@ Token Lexer::getTokenFromChar(const char &c) {
             return {str, TokenType::Equals};
         case ',':
             return {str, TokenType::Comma};
+        case '[':
+            return {str, TokenType::LBracket};
+        case ']':
+            return {str, TokenType::RBracket};
+        case '{':
+            return {str, TokenType::LBrace};
+        case '}':
+            return {str, TokenType::RBrace};
+
         default:
             return {};
     }
@@ -112,7 +121,7 @@ std::vector<Token> Lexer::tokenize() {
         } else if (std::isdigit(c) || c == '.') {
             tokens.emplace_back(readNumberToken(&i));
         } else if (c == '+' || c == '-' || c == '*' || c == '/' || c == '%' || c == '^' || c == '&' || c == '|' ||
-                   c == '=' || c == '!' || c == '(' || c == ')' || c == ',') {
+                   c == '=' || c == '!' || c == '(' || c == ')' || c == ',' || c == '[' || c == ']') {
             int next = i + 1;
             if (c == '*' && next < m_expression.size() && m_expression[next] == '*') {
                 tokens.emplace_back(Token("**", TokenType::Exp));
@@ -124,6 +133,12 @@ std::vector<Token> Lexer::tokenize() {
             int next = i + 1;
             if (next < m_expression.size() && m_expression[next] == '>') {
                 tokens.emplace_back(Token(">>", TokenType::BitwiseShiftRight));
+                i++;
+            }
+        } else if (c == '<') {
+            int next = i + 1;
+            if (next < m_expression.size() && m_expression[next] == '<') {
+                tokens.emplace_back(Token("<<", TokenType::BitwiseShiftLeft));
                 i++;
             }
         } else if (std::isalpha(c)) {

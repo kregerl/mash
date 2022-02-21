@@ -62,12 +62,26 @@ AbstractNode *Parser::factor() {
             if (n != nullptr) {
                 node = new FunctionNode(n, parameters);
             } else {
-                throw EvaluatorException("Function");
+                throw EvaluatorException("You can only have identifiers as function parameters");
             }
         }
-
         return node;
+    } else if (token.getType() == TokenType::LBracket) {
+        next();
+        std::vector<AbstractNode *> contents;
+        contents.emplace_back(bitwiseOr());
+        while (m_currentToken.getType() != TokenType::RBracket) {
+            if (m_currentToken.getType() == TokenType::Comma) {
+                next();
+                contents.emplace_back(bitwiseOr());
+            } else {
+                throw EvaluatorException("Expected token '[' but got '" + m_currentToken.toString() + "'");
+            }
+        }
+        next();
+        return new VectorNode(contents);
     }
+
 
     return nullptr;
 }
