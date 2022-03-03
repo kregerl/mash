@@ -28,6 +28,8 @@ void Interpreter::interpret(const std::string &expression) {
         }
     } catch (EvaluatorException &e) {
         std::cout << e.what() << std::endl;
+    } catch (TokenizeException &e) {
+        std::cout << e.what() << std::endl;
     }
 }
 

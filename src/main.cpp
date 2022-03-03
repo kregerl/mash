@@ -1,6 +1,7 @@
 #include "main.h"
 #include <sstream>
 #include <iomanip>
+#include <unistd.h>
 
 #include "Interpreter.h"
 #include "Nodes.h"
@@ -12,13 +13,6 @@
 int main(int argc, char **argv) {
     auto interpreter = Interpreter();
     if (argc == 2) {
-        std::string flag = argv[1];
-        if (flag == "-e") {
-            std::string exp;
-            getline(std::cin, exp);
-            interpreter.interpret(exp);
-            return 0;
-        }
         std::cout << "Unknown arguments" << std::endl;
         return -1;
     }
@@ -32,7 +26,15 @@ int main(int argc, char **argv) {
             interpreter.setPrecision(std::stoi(argv[2]));
         }
     }
+
+
     std::string expression;
+    // If the input is piped in, not typed by the user.
+    if (!isatty(STDIN_FILENO)) {
+        getline(std::cin, expression);
+        interpreter.interpret(expression);
+        return 0;
+    }
     // TODO: Make these tokens that preform this when noticed in the expression. Pretty much like variables with a different use case.
     while (true) {
         std::cout << "Mash > ";

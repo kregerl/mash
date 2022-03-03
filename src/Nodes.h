@@ -50,7 +50,19 @@ enum class UnaryOpType {
     NaturalLog
 };
 enum class BinaryOpType {
-    Plus = 0, Minus, Multiply, Divide, Modulo, Exp, BW_Or, BW_And, BW_Xor, BW_Shift_Left, BW_Shift_Right, LogBase
+    Plus = 0,
+    Minus,
+    Multiply,
+    Divide,
+    Modulo,
+    Exp,
+    BW_Or,
+    BW_And,
+    BW_Xor,
+    BW_Shift_Left,
+    BW_Shift_Right,
+    LogBase,
+    VectorSlice
 };
 
 enum class CollectionType {
@@ -121,6 +133,13 @@ public:
     VISITABLE
 
     explicit NumberNode(double value);
+
+    explicit NumberNode(double value, InternalType type);
+
+    InternalType getInternalType() const;
+
+private:
+    InternalType m_internalType;
 };
 
 class IdentifierNode : public ValueNode<std::string> {
@@ -247,6 +266,51 @@ public:
     AbstractNode *m_value;
 };
 
+template<typename T>
+class Literal {
+public:
+    Literal(T value) : m_value(value) {}
+
+    T getValue() const { return m_value; }
+
+    void setValue(T value) const { m_value = value; }
+
+protected:
+    T m_value;
+};
+
+// TODO: Use subclasses of literal for Strings and Numbers. Number should have an "internal type" either int or double (hex, binary).
+class NumberLiteral : public Literal<double> {
+public:
+    explicit NumberLiteral(double value);
+
+    explicit NumberLiteral(double value, InternalType type);
+
+    InternalType getInternalType() const;
+
+    void setInternalType(InternalType type);
+
+    friend std::ostream &operator<<(std::ostream &os, const NumberLiteral &n);
+
+private:
+    InternalType m_internalType;
+};
+
+class StringLiteral : public Literal<std::string> {
+public:
+    explicit StringLiteral(const std::string &s);
+
+    friend std::ostream &operator<<(std::ostream &os, const StringLiteral &s);
+};
+
+class Identifier : public Literal<std::string> {
+public:
+    explicit Identifier(const std::string &s);
+
+    friend std::ostream &operator<<(std::ostream &os, const Identifier &i);
+};
+
+
 template<class... Ts>
 struct overload : Ts ... {
     using Ts::operator()...;
@@ -279,6 +343,7 @@ struct Collection {
             auto element = c.elements[i];
             std::visit(overload{
                     [&os](double &d) { os << std::to_string(d); },
+                    [&os](Collection &c) { os << c; },
                     [&os](auto &a) { os << std::string("Unknown type!"); }
             }, element);
             if (i < c.elements.size() - 1) {
@@ -372,6 +437,47 @@ namespace Vector {
         return scalarMultiplication(c, scalar);
     }
 
+    static Collection scalarDivision(double scalar, Collection &c) {
+        Collection res = {CollectionType::Vector, {}};
+        if (scalar == 0) {
+            throw EvaluatorException("Error, division by zero!");
+        }
+        for (auto elem : c.elements) {
+            res.elements.emplace_back(std::visit(overload{
+                    [&scalar](double &d) -> Returnable { return d / scalar; },
+                    [](auto &a) -> Returnable {
+                        throw EvaluatorException("Scalar Multiplication not supported on specified types.");
+                    }
+            }, elem));
+        }
+        return res;
+    }
+
+    static Collection scalarDivision(Collection &c, double scalar) {
+        return scalarDivision(scalar, c);
+    }
+
+    static Collection scalarModulo(double scalar, Collection &c) {
+        Collection res = {CollectionType::Vector, {}};
+        if (scalar == 0) {
+            throw EvaluatorException("Error, division by zero!");
+        }
+        for (auto elem : c.elements) {
+            res.elements.emplace_back(std::visit(overload{
+                    [&scalar](double &d) -> Returnable { return static_cast<int>(d) % static_cast<int>(scalar); },
+                    [](auto &a) -> Returnable {
+                        throw EvaluatorException("Scalar Multiplication not supported on specified types.");
+                    }
+            }, elem));
+        }
+        return res;
+    }
+
+    static Collection scalarModulo(Collection &c, double scalar) {
+        return scalarModulo(scalar, c);
+    }
+
+
     static Collection addition(Collection &c1, Collection &c2) {
         Collection res = {CollectionType::Vector, {}};
         if (c1.elements.size() != c2.elements.size())
@@ -405,6 +511,7 @@ namespace Vector {
         }
         return res;
     }
+
 
 }
 #endif //MASH_NODES_H

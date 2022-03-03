@@ -16,7 +16,7 @@ void Parser::next() {
 AbstractNode *Parser::parse() {
     auto n = assignment();
     if (m_currentToken.getType() != TokenType::EndOfLine) {
-        throw EvaluatorException("Remaining token is not EOL!");
+        throw EvaluatorException("Expected token EOL but got token '" + m_currentToken.toString() + "'");
     }
     return n;
 }
@@ -25,7 +25,7 @@ AbstractNode *Parser::factor() {
     Token token = m_currentToken;
     if (token.getType() == TokenType::Number) {
         next();
-        return new NumberNode(std::stod(token.getValue()));
+        return new NumberNode(std::stod(token.getValue()), token.getInternalType());
     } else if (token.getType() == TokenType::LParen) {
         // Remove "LParen" from the list
         next();
@@ -74,6 +74,16 @@ AbstractNode *Parser::factor() {
             if (m_currentToken.getType() == TokenType::Comma) {
                 next();
                 contents.emplace_back(bitwiseOr());
+            } else if (m_currentToken.getType() == TokenType::Colon) {
+                next();
+                int index = contents.size() - 1;
+                AbstractNode *first = contents.at(index);
+                if (first == nullptr) {
+                    first = new NumberNode(0);
+                }
+                AbstractNode *n = new BinaryOpNode(BinaryOpType::VectorSlice, first, bitwiseOr());
+                next();
+                return n;
             } else {
                 throw EvaluatorException("Expected token '[' but got '" + m_currentToken.toString() + "'");
             }

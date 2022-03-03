@@ -1,11 +1,18 @@
 #include "Lexer.h"
 #include <iostream>
+#include <sstream>
 
 // TODO: Change the lexer so it doesn't read all the tokens at once, but as the parser requests them from the lexer.
 // TODO: Have a pop, peek(n) -> where peek(n) will peek n tokens ahead as long as it is doesn't reach EOF. The peek function definition: Token peek(int n = 1);
 // TODO: Add the rest of the tokens into the TokenType enum and add Tokens for each.
 
-Token::Token(const std::string &value, const TokenType &type) : m_value(value), m_type(type) {}
+Token::Token(const std::string &value, const TokenType &type) : m_value(value), m_type(type),
+                                                                m_internalType(InternalType::Double) {}
+
+Token::Token(const std::string &value, const TokenType &type, const InternalType &iType) :
+        m_value(value),
+        m_type(type),
+        m_internalType(iType) {}
 
 const TokenType &Token::getType() {
     return m_type;
@@ -33,10 +40,15 @@ bool operator==(const Token &t1, const Token &t2) {
     return t1.m_type == t2.m_type && t1.m_value == t2.m_value;
 }
 
-const std::string Token::toString() const {
+std::string Token::toString() const {
     std::string result = "<" + typeStrings2[static_cast<int>(m_type)] + ">: " + m_value;
     return result;
 }
+
+InternalType Token::getInternalType() const {
+    return m_internalType;
+}
+
 
 Lexer::Lexer(const std::string &expression) : m_expression(expression) {}
 
@@ -77,7 +89,8 @@ Token Lexer::getTokenFromChar(const char &c) {
             return {str, TokenType::LBrace};
         case '}':
             return {str, TokenType::RBrace};
-
+        case ':':
+            return {str, TokenType::Colon};
         default:
             return {};
     }
@@ -95,20 +108,59 @@ Token Lexer::readIdentifierToken(int *i) {
 
 Token Lexer::readNumberToken(int *i) {
     int index = *i;
-    std::string number;
-    while (index < m_expression.length() && std::isdigit(m_expression[index])) {
-        number.push_back(m_expression[index++]);
-    }
-    std::string decimal;
-    if (m_expression[index] == '.') {
-        while (index < m_expression.length() && std::isdigit(m_expression[++index])) {
-            decimal.push_back(m_expression[index]);
+    // TODO: Make this work with 0b too for binary numbers.
+    if (m_expression[index] == '0' &&
+        (std::tolower(m_expression[index + 1]) == 'x' || std::tolower(m_expression[index + 1]) == 'b')) {
+        char next = std::tolower(m_expression[index + 1]);
+        index += 2;
+        std::string number;
+        while (index < m_expression.length() && std::isalnum(m_expression[index])) {
+            number.push_back(m_expression[index++]);
         }
-        number.push_back('.');
-        number.append(decimal);
+        *i = index - 1;
+        if (next == 'x') {
+            int n;
+            std::stringstream(number) >> std::hex >> n;
+            return {std::to_string(n), TokenType::Number, InternalType::Hex};
+        } else {
+            bool valid = true;
+            for (char numChar : number) {
+                if (numChar == '0' || numChar == '1') {
+                    continue;
+                } else {
+                    valid = false;
+                    break;
+                }
+            }
+
+            if (valid) {
+                int n;
+                n = std::stoi(number, nullptr, 2);
+                return {std::to_string(n), TokenType::Number, InternalType::Binary};
+            } else {
+                throw TokenizeException("Binary numbers must be made up of 1's and 0's.");
+            }
+        }
+    } else {
+        std::string number;
+        while (index < m_expression.length() && std::isdigit(m_expression[index])) {
+            number.push_back(m_expression[index++]);
+        }
+        InternalType type = InternalType::Double;
+        std::string decimal;
+        if (m_expression[index] == '.') {
+            while (index < m_expression.length() && std::isdigit(m_expression[++index])) {
+                decimal.push_back(m_expression[index]);
+            }
+            number.push_back('.');
+            number.append(decimal);
+        } else {
+            type = InternalType::Integer;
+        }
+        *i = index - 1;
+        return {number, TokenType::Number, type};
     }
-    *i = index - 1;
-    return {number, TokenType::Number};
+
 }
 
 
@@ -121,7 +173,7 @@ std::vector<Token> Lexer::tokenize() {
         } else if (std::isdigit(c) || c == '.') {
             tokens.emplace_back(readNumberToken(&i));
         } else if (c == '+' || c == '-' || c == '*' || c == '/' || c == '%' || c == '^' || c == '&' || c == '|' ||
-                   c == '=' || c == '!' || c == '(' || c == ')' || c == ',' || c == '[' || c == ']') {
+                   c == '=' || c == '!' || c == '(' || c == ')' || c == ',' || c == '[' || c == ']' | c == ':') {
             int next = i + 1;
             if (c == '*' && next < m_expression.size() && m_expression[next] == '*') {
                 tokens.emplace_back(Token("**", TokenType::Exp));

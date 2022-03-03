@@ -10,7 +10,8 @@ const static std::string typeStrings2[] = {"Error", "Number", "Bitwiseand", "Bit
                                            "Subtraction",
                                            "Multiplication",
                                            "Division", "Modulo", "Exp", "Factorial", "LParen",
-                                           "RParen", "Equals", "Identifier", "Comma", "End of Line"};
+                                           "RParen", "LBracket", "RBracket", "LBrace", "RBrace", "Equals", "Identifier",
+                                           "Comma", "Colon", "End of Line"};
 
 enum class TokenType {
     Error = 0,
@@ -36,7 +37,12 @@ enum class TokenType {
     Equals,
     Identifier,
     Comma,
+    Colon,
     EndOfLine
+};
+
+enum class InternalType {
+    Double = 0, Integer, Hex, Binary
 };
 
 class Token {
@@ -44,6 +50,8 @@ public:
     Token() = default;
 
     Token(const std::string &value, const TokenType &type);
+
+    Token(const std::string &value, const TokenType &type, const InternalType &internalType);
 
     ~Token() = default;
 
@@ -55,7 +63,9 @@ public:
 
     const std::string &getValue() const;
 
-    const std::string toString() const;
+    std::string toString() const;
+
+    InternalType getInternalType() const;
 
     friend std::ostream &operator<<(std::ostream &os, const Token &token);
 
@@ -64,6 +74,7 @@ public:
 private:
     TokenType m_type;
     std::string m_value;
+    InternalType m_internalType;
 };
 
 
@@ -83,6 +94,21 @@ public:
 
 private:
     std::string m_expression;
+};
+
+class TokenizeException : public std::exception {
+public:
+    explicit TokenizeException(const std::string &message) : msg(message) {}
+
+    ~TokenizeException() noexcept override = default;
+
+    virtual const char *what() const noexcept {
+        return msg.c_str();
+    }
+
+
+private:
+    std::string msg;
 };
 
 

@@ -10,7 +10,13 @@ T ValueNode<T>::getValue() const {
     return m_value;
 }
 
-NumberNode::NumberNode(double value) : ValueNode(value) {}
+NumberNode::NumberNode(double value) : ValueNode(value), m_internalType(InternalType::Double) {}
+
+NumberNode::NumberNode(double value, InternalType type) : ValueNode(value), m_internalType(type) {}
+
+InternalType NumberNode::getInternalType() const {
+    return m_internalType;
+}
 
 IdentifierNode::IdentifierNode(const std::string &value) : ValueNode(value) {}
 
@@ -108,6 +114,9 @@ std::unordered_map<std::string, Function> Evaluator::s_functions = {
 template<typename Visitor, typename Visitable, typename ResultType>
 ResultType ValueGetter<Visitor, Visitable, ResultType>::getValue(Visitable v) {
     Visitor visitor;
+    if (v == nullptr) {
+        throw EvaluatorException("Error evaluating expression, null node in ast.");
+    }
     v->accept(visitor);
     return visitor.value;
 }
@@ -191,6 +200,7 @@ void Evaluator::visit(const BinaryOpNode &node) {
                                 [](auto &a) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
                         }, s_variables.at(a));
                     },
+                    UNORDERED_VISIT_FUNCTION(double, Collection, Vector::scalarDivision)
                     [](auto &a, auto &b) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
             }, left, right));
             break;
@@ -199,6 +209,7 @@ void Evaluator::visit(const BinaryOpNode &node) {
             result(std::visit(overload{
                     [](double &a, double &b) -> Returnable { return static_cast<int>(a) % static_cast<int>(b); },
                     UNORDERED_VISIT(double, std::string, static_cast<int>(a) % static_cast<int>(b))
+                    UNORDERED_VISIT_FUNCTION(double, Collection, Vector::scalarModulo)
                     [](auto &a, auto &b) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
             }, left, right));
             break;
@@ -216,7 +227,6 @@ void Evaluator::visit(const BinaryOpNode &node) {
             result(std::visit(overload{
                     [](double &a, double &b) -> Returnable { return static_cast<int>(a) | static_cast<int>(b); },
                     UNORDERED_VISIT(double, std::string, static_cast<int>(a) | static_cast<int>(b))
-
                     [](auto &a, auto &b) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
             }, left, right));
             break;
@@ -265,6 +275,20 @@ void Evaluator::visit(const BinaryOpNode &node) {
             }, left, right));
             break;
         }
+        case BinaryOpType::VectorSlice: {
+            // TODO: Do something about internal type keeping, slices only work with ints not doubles so theyre casted.
+            result(std::visit(overload{
+                    [](double &a, double &b) -> Returnable {
+                        int second = static_cast<int>(b);
+                        Collection c = {CollectionType::Vector, {}};
+                        for (int i = static_cast<int>(a); i <= second; i++) {
+                            c.elements.emplace_back(i);
+                        }
+                        return c;
+                    },
+                    [](auto &a, auto &b) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
+            }, left, right));
+        }
     }
 }
 
@@ -280,6 +304,7 @@ void Evaluator::visit(const UnaryOpNode &node) {
                                 [](auto &a) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
                         }, s_variables.at(a));
                     },
+                    [](Collection &c) -> Returnable { return Vector::scalarMultiplication(c, -1.0); },
                     [](auto &a) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }}, child));
             break;
         }

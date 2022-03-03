@@ -2,44 +2,34 @@
 
 ***
 
+## Types
 
-## Math Operators
+Mash currently supports numbers and vectors with plans to add sets and strings. Numbers are always doubles and cast to
+integers when preforming integer only operations like bitwise operators, so currently they lose precision.  
+Numbers should hold an internal type in the future to determine whether they are ints or doubles.
+
+## Math Operators & Built-In Functions
 
 - Addition: <b> x + y </b>
 - Subtraction: <b> x - y </b>
 - Multiplication: <b> x * y </b>
 - Division: <b> x / y </b>
-- Modulo: <b> x % y or mod(x, y) </b>
+- Modulo: <b> x % y </b>
 - Exponents: <b> x**y or exp(x, y) </b>
 - Factorial: <b> x! </b>
-
-[comment]: <> (Not implemented yet)
-
-[comment]: <> (- Square Root: <b> sqrt&#40;x&#41; </b>)
-
-[comment]: <> (- Sine: <b> sin&#40;x&#41; </b>)
-
-[comment]: <> (- Cosine: <b> cos&#40;x&#41; </b>)
-
-[comment]: <> (- Tangent: <b> tan&#40;x&#41; </b>)
-
-[comment]: <> (- Cotangent: <b> cot&#40;x&#41; </b>)
-
-[comment]: <> (- Secant: <b> sec&#40;x&#41; </b>)
-
-[comment]: <> (- Cosecant: <b> csc&#40;x&#41; </b>)
-
-[comment]: <> (- arcsin: <b> arcsin&#40;x&#41; </b>)
-
-[comment]: <> (- arccos: <b> arccos&#40;x&#41; </b>)
-
-[comment]: <> (- arctan: <b> arctan&#40;x&#41; </b>)
-
-[comment]: <> (- Natural Log: <b> ln&#40;x&#41; </b>)
-
-[comment]: <> (- Log base 10: <b> log&#40;x&#41; </b>)
-
-[comment]: <> (- Log base x: <b> logb&#40;x, y&#41; </b>)
+- Square Root: <b> sqrt(x) </b>
+- Sine: <b> sin(x) </b>
+- Cosine: <b> cos(x) </b>
+- Tangent: <b> tan(x) </b>
+- Cotangent: <b> cot(x) </b>
+- Secant: <b> sec(x) </b>
+- Cosecant: <b> csc(x) </b>
+- Arcsin: <b> arcsin(x) </b>
+- Arccos: <b> arccos(x) </b>
+- Arctan: <b> arctan(x) </b>
+- Natural Log: <b> ln(x) </b>
+- Log base 10: <b> log(x) </b>
+- Log base x: <b> logb(x, y) </b>
 
 [comment]: <> (- Greatest Common Divisor &#40;GCD&#41;: <b> gcd&#40;x, y&#41; </b>)
 
@@ -53,7 +43,9 @@
 
 - Or: <b> x | y or box(x, y) </b>
 - And: <b> x & y or band(x, y) </b>
-- Xor: <b> bxor(x, y) </b>
+- Xor: <b> x ^ y </b>
+- Bitwise shift left <b> x << y </b>
+- Bitwise shift right <b> x >> y </b>
 
 ## Variables
 
@@ -65,9 +57,17 @@ The value of a variable can be displayed again simply by typing the variable and
 Ex: `x`  
 Will print the value in `x` or `20` if using the previous example.
 
-Variables can be used in operations and other variable assignments.  
-Ex: `x * 5`  
-Ex: `y = x + 5`  
+Variables can be used in operations and other variable assignments.
+
+```shell
+Mash > x
+20
+Mash > y = x + 5
+25
+Mash > z = [1, 2, x]
+[1, 2, 20]
+```
+
 The example above will assign `y` the value contained in `x` + 5. Following the previous examples, `y` would be 25.
 
 ## Functions
@@ -79,18 +79,20 @@ The function above will accept any value, `x` and return the result of `x + 1`.
 Functions can be defined with as many parameters as the user would like, as long as they all have unique names and are
 used after the function declaration.  
 Ex: `f(x, y) = x + 1`  
-The above function is not valid since it does not use its other parameter.  
+The above function is not valid since it does not use its other parameter.
 
 Functions can be used alongside operators:  
-Ex:  
+Ex:
 > `f(x) = x + 1`  
 > `f(1) + 3`  
 > `5`
 
 ## Vectors and Sets
+
 Vectors and sets are defined in a similar way, using outer braces and comma seperated values.  
 A vector is defined by using square brackets, while sets use curley braces.  
-Vector Ex: 
+Vector Ex:
+
 ```shell
 Mash > x = [1, 2, 3]
 Mash > x
@@ -98,8 +100,13 @@ Mash > x
 Mash > y = [2, 2, 2]
 Mash > dot(x, y)
 12
+Mash > z = [1:6]
+Mash > z
+[1, 2, 3, 4, 5, 6]
 ```
-Set Ex: 
+
+Set Ex:
+
 ```shell
 Mash > x = {1, 3, 5}
 Mash > x
