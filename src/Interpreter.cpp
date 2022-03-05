@@ -14,14 +14,14 @@ void Interpreter::interpret(const std::string &expression) {
         Returnable v = Evaluator::getValue(n);
         if (m_precision == -1) {
             std::visit(overload{
-                    [](double &d) { std::cout << d << std::endl; },
+                    [](NumericLiteral &d) { std::cout << d << std::endl; },
                     [](Collection &c) { std::cout << c << std::endl; },
                     [](auto &a) { std::cout << "Not supported yet" << std::endl; }
             }, v);
         } else {
             int p = m_precision;
             std::visit(overload{
-                    [&p](double &d) { std::cout << std::setprecision(p) << d << std::endl;; },
+                    [&p](NumericLiteral &d) { std::cout << std::setprecision(p) << d << std::endl;; },
                     [](auto &a) { std::cout << "Not supported yet" << std::endl; }
             }, v);
 

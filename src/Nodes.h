@@ -2,6 +2,7 @@
 #define MASH_NODES_H
 
 #include "Lexer.h"
+#include "Literal.h"
 #include <optional>
 #include <unordered_map>
 #include <memory>
@@ -13,13 +14,13 @@
 #define UNORDERED_VISIT(type1, type2, expression) \
                         [](type1 &a, type2 &b) -> Returnable {\
                             return std::visit(overload{\
-                                    [&a](double &b) -> Returnable { return expression; },\
+                                    [&a](NumericLiteral &b) -> Returnable { return expression; },\
                                     [](auto &b) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }\
                                 }, s_variables.at(b));\
                             },\
                         [](type2 &a, type1 &b) -> Returnable {\
                             return std::visit(overload{\
-                                    [&b](double &a) -> Returnable { return expression; },\
+                                    [&b](NumericLiteral &a) -> Returnable { return expression; },\
                                     [](auto &a) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }\
                                 }, s_variables.at(a));\
                             },                    \
@@ -119,7 +120,7 @@ template<typename T>
 class ValueNode : public AbstractNode {
 public:
 
-    ValueNode(T value);
+    explicit ValueNode(T value);
 
     virtual T getValue() const;
 
@@ -128,18 +129,11 @@ private:
 };
 
 
-class NumberNode : public ValueNode<double> {
+class NumberNode : public ValueNode<NumericLiteral> {
 public:
     VISITABLE
 
-    explicit NumberNode(double value);
-
-    explicit NumberNode(double value, InternalType type);
-
-    InternalType getInternalType() const;
-
-private:
-    InternalType m_internalType;
+    explicit NumberNode(NumericLiteral value);
 };
 
 class IdentifierNode : public ValueNode<std::string> {
@@ -237,7 +231,7 @@ class VectorNode : public AbstractNode {
 public:
     VISITABLE
 
-    VectorNode(const std::vector<AbstractNode *> &children);
+    explicit VectorNode(const std::vector<AbstractNode *> &children);
 
     std::vector<AbstractNode *> getChildren() const;
 
@@ -249,6 +243,8 @@ private:
 template<typename Visitor, typename Visitable, typename ResultType>
 class ValueGetter {
 public:
+    ValueGetter() = default;
+
     static ResultType getValue(Visitable v);
 
     virtual void result(ResultType result);
@@ -266,50 +262,6 @@ public:
     AbstractNode *m_value;
 };
 
-template<typename T>
-class Literal {
-public:
-    Literal(T value) : m_value(value) {}
-
-    T getValue() const { return m_value; }
-
-    void setValue(T value) const { m_value = value; }
-
-protected:
-    T m_value;
-};
-
-// TODO: Use subclasses of literal for Strings and Numbers. Number should have an "internal type" either int or double (hex, binary).
-class NumberLiteral : public Literal<double> {
-public:
-    explicit NumberLiteral(double value);
-
-    explicit NumberLiteral(double value, InternalType type);
-
-    InternalType getInternalType() const;
-
-    void setInternalType(InternalType type);
-
-    friend std::ostream &operator<<(std::ostream &os, const NumberLiteral &n);
-
-private:
-    InternalType m_internalType;
-};
-
-class StringLiteral : public Literal<std::string> {
-public:
-    explicit StringLiteral(const std::string &s);
-
-    friend std::ostream &operator<<(std::ostream &os, const StringLiteral &s);
-};
-
-class Identifier : public Literal<std::string> {
-public:
-    explicit Identifier(const std::string &s);
-
-    friend std::ostream &operator<<(std::ostream &os, const Identifier &i);
-};
-
 
 template<class... Ts>
 struct overload : Ts ... {
@@ -318,7 +270,8 @@ struct overload : Ts ... {
 template<class... Ts> overload(Ts...) -> overload<Ts...>;
 
 struct Collection;
-using Returnable = std::variant<double, std::string, Collection>;
+// TODO: Replace the double and string with literals, override all the operators.
+using Returnable = std::variant<NumericLiteral, std::string, Collection>;
 
 struct Collection {
     CollectionType type;
@@ -342,7 +295,7 @@ struct Collection {
         for (int i = 0; i < c.elements.size(); i++) {
             auto element = c.elements[i];
             std::visit(overload{
-                    [&os](double &d) { os << std::to_string(d); },
+                    [&os](NumericLiteral &d) { os << std::to_string(d.getValue()); },
                     [&os](Collection &c) { os << c; },
                     [&os](auto &a) { os << std::string("Unknown type!"); }
             }, element);
@@ -358,6 +311,8 @@ struct Collection {
 
 class Evaluator : public ValueGetter<Evaluator, AbstractNode *, Returnable>, public Visitor {
 public:
+    Evaluator() = default;
+
     void visit(const NumberNode &node) override;
 
     void visit(const IdentifierNode &node) override;
@@ -420,11 +375,11 @@ private:
 };
 
 namespace Vector {
-    static Collection scalarMultiplication(Collection &c, double scalar) {
+    static Collection scalarMultiplication(Collection &c, NumericLiteral scalar) {
         Collection res = {CollectionType::Vector, {}};
         for (auto elem : c.elements) {
             res.elements.emplace_back(std::visit(overload{
-                    [&scalar](double &d) -> Returnable { return scalar * d; },
+                    [&scalar](NumericLiteral &d) -> Returnable { return scalar * d; },
                     [](auto &a) -> Returnable {
                         throw EvaluatorException("Scalar Multiplication not supported on specified types.");
                     }
@@ -433,18 +388,18 @@ namespace Vector {
         return res;
     }
 
-    static Collection scalarMultiplication(double scalar, Collection &c) {
+    static Collection scalarMultiplication(NumericLiteral scalar, Collection &c) {
         return scalarMultiplication(c, scalar);
     }
 
-    static Collection scalarDivision(double scalar, Collection &c) {
+    static Collection scalarDivision(NumericLiteral scalar, Collection &c) {
         Collection res = {CollectionType::Vector, {}};
         if (scalar == 0) {
             throw EvaluatorException("Error, division by zero!");
         }
         for (auto elem : c.elements) {
             res.elements.emplace_back(std::visit(overload{
-                    [&scalar](double &d) -> Returnable { return d / scalar; },
+                    [&scalar](NumericLiteral &d) -> Returnable { return d / scalar; },
                     [](auto &a) -> Returnable {
                         throw EvaluatorException("Scalar Multiplication not supported on specified types.");
                     }
@@ -453,18 +408,20 @@ namespace Vector {
         return res;
     }
 
-    static Collection scalarDivision(Collection &c, double scalar) {
+    static Collection scalarDivision(Collection &c, NumericLiteral scalar) {
         return scalarDivision(scalar, c);
     }
 
-    static Collection scalarModulo(double scalar, Collection &c) {
+    static Collection scalarModulo(NumericLiteral scalar, Collection &c) {
         Collection res = {CollectionType::Vector, {}};
         if (scalar == 0) {
             throw EvaluatorException("Error, division by zero!");
         }
         for (auto elem : c.elements) {
             res.elements.emplace_back(std::visit(overload{
-                    [&scalar](double &d) -> Returnable { return static_cast<int>(d) % static_cast<int>(scalar); },
+                    [&scalar](NumericLiteral &d) -> Returnable {
+                        return d % scalar;
+                    },
                     [](auto &a) -> Returnable {
                         throw EvaluatorException("Scalar Multiplication not supported on specified types.");
                     }
@@ -473,7 +430,7 @@ namespace Vector {
         return res;
     }
 
-    static Collection scalarModulo(Collection &c, double scalar) {
+    static Collection scalarModulo(Collection &c, NumericLiteral scalar) {
         return scalarModulo(scalar, c);
     }
 
@@ -486,7 +443,7 @@ namespace Vector {
             Returnable e1 = c1.elements[i];
             Returnable e2 = c2.elements[i];
             res.elements.emplace_back(std::visit(overload{
-                    [](double &a, double &b) -> Returnable { return a + b; },
+                    [](NumericLiteral &a, NumericLiteral &b) -> Returnable { return a + b; },
                     [](auto &a, auto &b) -> Returnable {
                         throw EvaluatorException("Unknown vector operation between types.");
                     }
@@ -503,7 +460,7 @@ namespace Vector {
             Returnable e1 = c1.elements[i];
             Returnable e2 = c2.elements[i];
             res.elements.emplace_back(std::visit(overload{
-                    [](double &a, double &b) -> Returnable { return a - b; },
+                    [](NumericLiteral &a, NumericLiteral &b) -> Returnable { return a - b; },
                     [](auto &a, auto &b) -> Returnable {
                         throw EvaluatorException("Unknown vector operation between types.");
                     }

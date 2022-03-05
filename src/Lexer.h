@@ -13,6 +13,7 @@ const static std::string typeStrings2[] = {"Error", "Number", "Bitwiseand", "Bit
                                            "RParen", "LBracket", "RBracket", "LBrace", "RBrace", "Equals", "Identifier",
                                            "Comma", "Colon", "End of Line"};
 
+
 enum class TokenType {
     Error = 0,
     Number,
@@ -41,9 +42,20 @@ enum class TokenType {
     EndOfLine
 };
 
+/*
+ * The order of the internal types matter here, they are used to determine the next type for a value.
+ * The minimum value is always chosen, so if there is an operation between a double and int the result will be a double
+ * since double(0) < integer(1).
+ */
 enum class InternalType {
     Double = 0, Integer, Hex, Binary
 };
+
+const static std::string internalTypeStrings[] = {"Double", "Integer", "Hex", "Binary"};
+
+static std::string internalTypeToString(InternalType type) {
+    return internalTypeStrings[static_cast<int>(type)];
+}
 
 class Token {
 public:

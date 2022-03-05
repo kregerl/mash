@@ -25,7 +25,7 @@ AbstractNode *Parser::factor() {
     Token token = m_currentToken;
     if (token.getType() == TokenType::Number) {
         next();
-        return new NumberNode(std::stod(token.getValue()), token.getInternalType());
+        return new NumberNode(NumericLiteral(std::stod(token.getValue()), token.getInternalType()));
     } else if (token.getType() == TokenType::LParen) {
         // Remove "LParen" from the list
         next();
@@ -79,7 +79,7 @@ AbstractNode *Parser::factor() {
                 int index = contents.size() - 1;
                 AbstractNode *first = contents.at(index);
                 if (first == nullptr) {
-                    first = new NumberNode(0);
+                    first = new NumberNode(NumericLiteral(0, InternalType::Integer));
                 }
                 AbstractNode *n = new BinaryOpNode(BinaryOpType::VectorSlice, first, bitwiseOr());
                 next();

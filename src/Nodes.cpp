@@ -10,13 +10,7 @@ T ValueNode<T>::getValue() const {
     return m_value;
 }
 
-NumberNode::NumberNode(double value) : ValueNode(value), m_internalType(InternalType::Double) {}
-
-NumberNode::NumberNode(double value, InternalType type) : ValueNode(value), m_internalType(type) {}
-
-InternalType NumberNode::getInternalType() const {
-    return m_internalType;
-}
+NumberNode::NumberNode(NumericLiteral value) : ValueNode(value) {}
 
 IdentifierNode::IdentifierNode(const std::string &value) : ValueNode(value) {}
 
@@ -87,9 +81,9 @@ FunctionNode *FunctionAssignmentNode::getFunctionNode() const {
 }
 
 std::unordered_map<std::string, Returnable> Evaluator::s_variables = {
-        {"pi", M_PI},
-        {"e",   std::exp(1.0)},
-        {"phi", ((1 + sqrt(5)) / 2)}
+        {"pi",  NumericLiteral(M_PI)},
+        {"e",   NumericLiteral(std::exp(1.0))},
+        {"phi", NumericLiteral(((1 + sqrt(5)) / 2))}
 };
 std::unordered_map<std::string, Function> Evaluator::s_functions = {
         {"sin",    Function({"x"}, new UnaryOpNode(UnaryOpType::Sine, new IdentifierNode("x")))},
@@ -145,8 +139,8 @@ void Evaluator::visit(const BinaryOpNode &node) {
     switch (node.getType()) {
         case BinaryOpType::Plus: {
             result(std::visit(overload{
-                    [](double &a, double &b) -> Returnable { return a + b; },
-                    UNORDERED_VISIT(double, std::string, a + b)
+                    [](NumericLiteral &a, NumericLiteral &b) -> Returnable { return a + b; },
+                    UNORDERED_VISIT(NumericLiteral, std::string, a + b)
                     [](Collection &a, Collection &b) -> Returnable { return Vector::addition(a, b); },
                     [](auto &a, auto &b) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
             }, left, right));
@@ -154,8 +148,8 @@ void Evaluator::visit(const BinaryOpNode &node) {
         }
         case BinaryOpType::Minus: {
             result(std::visit(overload{
-                    [](double &a, double &b) -> Returnable { return a - b; },
-                    UNORDERED_VISIT(double, std::string, a - b)
+                    [](NumericLiteral &a, NumericLiteral &b) -> Returnable { return a - b; },
+                    UNORDERED_VISIT(NumericLiteral, std::string, a - b)
                     [](Collection &a, Collection &b) -> Returnable { return Vector::subtraction(a, b); },
                     [](auto &a, auto &b) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
             }, left, right));
@@ -163,24 +157,24 @@ void Evaluator::visit(const BinaryOpNode &node) {
         }
         case BinaryOpType::Multiply: {
             result(std::visit(overload{
-                    [](double &a, double &b) -> Returnable { return a * b; },
-                    UNORDERED_VISIT(double, std::string, a * b)
-                    UNORDERED_VISIT_FUNCTION(double, Collection, Vector::scalarMultiplication)
+                    [](NumericLiteral &a, NumericLiteral &b) -> Returnable { return a * b; },
+                    UNORDERED_VISIT(NumericLiteral, std::string, a * b)
+                    UNORDERED_VISIT_FUNCTION(NumericLiteral, Collection, Vector::scalarMultiplication)
                     [](auto &a, auto &b) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
             }, left, right));
             break;
         }
         case BinaryOpType::Divide: {
             result(std::visit(overload{
-                    [](double &a, double &b) -> Returnable {
+                    [](NumericLiteral &a, NumericLiteral &b) -> Returnable {
                         if (b == 0) {
                             throw EvaluatorException("Division by Zero");
                         }
                         return a / b;
                     },
-                    [](double &a, std::string &b) -> Returnable {
+                    [](NumericLiteral &a, std::string &b) -> Returnable {
                         return std::visit(overload{
-                                [&a](double &b) -> Returnable {
+                                [&a](NumericLiteral &b) -> Returnable {
                                     if (b == 0) {
                                         throw EvaluatorException("Division by Zero");
                                     }
@@ -189,9 +183,9 @@ void Evaluator::visit(const BinaryOpNode &node) {
                                 [](auto &b) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
                         }, s_variables.at(b));
                     },
-                    [](std::string &a, double &b) -> Returnable {
+                    [](std::string &a, NumericLiteral &b) -> Returnable {
                         return std::visit(overload{
-                                [&b](double &a) -> Returnable {
+                                [&b](NumericLiteral &a) -> Returnable {
                                     if (b == 0) {
                                         throw EvaluatorException("Division by Zero");
                                     }
@@ -200,24 +194,26 @@ void Evaluator::visit(const BinaryOpNode &node) {
                                 [](auto &a) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
                         }, s_variables.at(a));
                     },
-                    UNORDERED_VISIT_FUNCTION(double, Collection, Vector::scalarDivision)
+                    UNORDERED_VISIT_FUNCTION(NumericLiteral, Collection, Vector::scalarDivision)
                     [](auto &a, auto &b) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
             }, left, right));
             break;
         }
         case BinaryOpType::Modulo: {
             result(std::visit(overload{
-                    [](double &a, double &b) -> Returnable { return static_cast<int>(a) % static_cast<int>(b); },
-                    UNORDERED_VISIT(double, std::string, static_cast<int>(a) % static_cast<int>(b))
-                    UNORDERED_VISIT_FUNCTION(double, Collection, Vector::scalarModulo)
+                    [](NumericLiteral &a, NumericLiteral &b) -> Returnable { return NumericLiteral(a % b); },
+                    UNORDERED_VISIT(NumericLiteral, std::string, NumericLiteral(a % b))
+                    UNORDERED_VISIT_FUNCTION(NumericLiteral, Collection, Vector::scalarModulo)
                     [](auto &a, auto &b) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
             }, left, right));
             break;
         }
         case BinaryOpType::Exp: {
             result(std::visit(overload{
-                    [](double &a, double &b) -> Returnable { return std::pow(a, b); },
-                    UNORDERED_VISIT(double, std::string, std::pow(a, b))
+                    [](NumericLiteral &a, NumericLiteral &b) -> Returnable {
+                        return NumericLiteral(std::pow(a.getValue(), b.getValue()));
+                    },
+                    UNORDERED_VISIT(NumericLiteral, std::string, NumericLiteral(std::pow(a.getValue(), b.getValue())))
                     [](auto &a, auto &b) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
             }, left, right));
             break;
@@ -225,8 +221,8 @@ void Evaluator::visit(const BinaryOpNode &node) {
         case BinaryOpType::BW_Or: {
             // TODO: Casting to ints
             result(std::visit(overload{
-                    [](double &a, double &b) -> Returnable { return static_cast<int>(a) | static_cast<int>(b); },
-                    UNORDERED_VISIT(double, std::string, static_cast<int>(a) | static_cast<int>(b))
+                    [](NumericLiteral &a, NumericLiteral &b) -> Returnable { return a | b; },
+                    UNORDERED_VISIT(NumericLiteral, std::string, a | b)
                     [](auto &a, auto &b) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
             }, left, right));
             break;
@@ -234,8 +230,8 @@ void Evaluator::visit(const BinaryOpNode &node) {
         case BinaryOpType::BW_And: {
             // TODO: Casting to ints
             result(std::visit(overload{
-                    [](double &a, double &b) -> Returnable { return static_cast<int>(a) & static_cast<int>(b); },
-                    UNORDERED_VISIT(double, std::string, static_cast<int>(a) & static_cast<int>(b))
+                    [](NumericLiteral &a, NumericLiteral &b) -> Returnable { return a & b; },
+                    UNORDERED_VISIT(NumericLiteral, std::string, a & b)
                     [](auto &a, auto &b) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
             }, left, right));
             break;
@@ -243,8 +239,8 @@ void Evaluator::visit(const BinaryOpNode &node) {
         case BinaryOpType::BW_Xor: {
             // TODO: Casting to ints
             result(std::visit(overload{
-                    [](double &a, double &b) -> Returnable { return static_cast<int>(a) ^ static_cast<int>(b); },
-                    UNORDERED_VISIT(double, std::string, static_cast<int>(a) ^ static_cast<int>(b))
+                    [](NumericLiteral &a, NumericLiteral &b) -> Returnable { return a ^ b; },
+                    UNORDERED_VISIT(NumericLiteral, std::string, a ^ b)
                     [](auto &a, auto &b) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
             }, left, right));
             break;
@@ -252,8 +248,8 @@ void Evaluator::visit(const BinaryOpNode &node) {
         case BinaryOpType::BW_Shift_Right: {
             // TODO: Casting to ints
             result(std::visit(overload{
-                    [](double &a, double &b) -> Returnable { return static_cast<int>(a) >> static_cast<int>(b); },
-                    UNORDERED_VISIT(double, std::string, static_cast<int>(a) >> static_cast<int>(b))
+                    [](NumericLiteral &a, NumericLiteral &b) -> Returnable { return a >> b; },
+                    UNORDERED_VISIT(NumericLiteral, std::string, a >> b)
                     [](auto &a, auto &b) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
             }, left, right));
             break;
@@ -261,16 +257,19 @@ void Evaluator::visit(const BinaryOpNode &node) {
         case BinaryOpType::BW_Shift_Left: {
             // TODO: Casting to ints
             result(std::visit(overload{
-                    [](double &a, double &b) -> Returnable { return static_cast<int>(a) << static_cast<int>(b); },
-                    UNORDERED_VISIT(double, std::string, static_cast<int>(a) << static_cast<int>(b))
+                    [](NumericLiteral &a, NumericLiteral &b) -> Returnable { return a << b; },
+                    UNORDERED_VISIT(NumericLiteral, std::string, a << b)
                     [](auto &a, auto &b) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
             }, left, right));
             break;
         }
         case BinaryOpType::LogBase: {
             result(std::visit(overload{
-                    [](double &a, double &b) -> Returnable { return std::log(a) / std::log(b); },
-                    UNORDERED_VISIT(double, std::string, std::log(a) / std::log(b))
+                    [](NumericLiteral &a, NumericLiteral &b) -> Returnable {
+                        return NumericLiteral(std::log(a.getValue()) / std::log(b.getValue()));
+                    },
+                    UNORDERED_VISIT(NumericLiteral, std::string,
+                                    NumericLiteral(std::log(a.getValue()) / std::log(b.getValue())))
                     [](auto &a, auto &b) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
             }, left, right));
             break;
@@ -278,13 +277,20 @@ void Evaluator::visit(const BinaryOpNode &node) {
         case BinaryOpType::VectorSlice: {
             // TODO: Do something about internal type keeping, slices only work with ints not doubles so theyre casted.
             result(std::visit(overload{
-                    [](double &a, double &b) -> Returnable {
-                        int second = static_cast<int>(b);
-                        Collection c = {CollectionType::Vector, {}};
-                        for (int i = static_cast<int>(a); i <= second; i++) {
-                            c.elements.emplace_back(i);
+                    [](NumericLiteral &a, NumericLiteral &b) -> Returnable {
+                        if (a.getInternalType() > InternalType::Double && b.getInternalType() > InternalType::Double) {
+                            int second = static_cast<int>(b.getValue());
+                            Collection c = {CollectionType::Vector, {}};
+                            for (int i = static_cast<int>(a.getValue()); i <= second; i++) {
+                                c.elements.emplace_back(NumericLiteral(i, InternalType::Integer));
+                            }
+                            return c;
+                        } else {
+                            throw EvaluatorException(
+                                    "Cannot perform vector slice operation between numerics of types " +
+                                    internalTypeToString(a.getInternalType()) + " and " +
+                                    internalTypeToString(b.getInternalType()));
                         }
-                        return c;
                     },
                     [](auto &a, auto &b) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
             }, left, right));
@@ -297,23 +303,31 @@ void Evaluator::visit(const UnaryOpNode &node) {
     switch (node.getType()) {
         case UnaryOpType::Negation: {
             result(std::visit(overload{
-                    [](double &a) -> Returnable { return a * -1; },
+                    [](NumericLiteral &a) -> Returnable { return a * NumericLiteral(-1, InternalType::Integer); },
                     [](std::string &a) -> Returnable {
                         return std::visit(overload{
-                                [](double &a) -> Returnable { return a * -1; },
+                                [](NumericLiteral &a) -> Returnable {
+                                    return a * NumericLiteral(-1, InternalType::Integer);
+                                },
                                 [](auto &a) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
                         }, s_variables.at(a));
                     },
-                    [](Collection &c) -> Returnable { return Vector::scalarMultiplication(c, -1.0); },
+                    [](Collection &c) -> Returnable { return Vector::scalarMultiplication(c, NumericLiteral(-1,
+                                                                                                            InternalType::Integer));
+                    },
                     [](auto &a) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }}, child));
             break;
         }
         case UnaryOpType::Factorial: {
             result(std::visit(overload{
-                    [](double &a) -> Returnable { return std::tgamma(a + 1); },
+                    [](NumericLiteral &a) -> Returnable {
+                        return NumericLiteral(std::tgamma(a.getValue() + 1), a.getInternalType());
+                    },
                     [](std::string &a) -> Returnable {
                         return std::visit(overload{
-                                [](double &a) -> Returnable { return std::tgamma(a + 1); },
+                                [](NumericLiteral &a) -> Returnable {
+                                    NumericLiteral(std::tgamma(a.getValue() + 1), a.getInternalType());
+                                },
                                 [](auto &a) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
                         }, s_variables.at(a));
                     },
@@ -322,10 +336,10 @@ void Evaluator::visit(const UnaryOpNode &node) {
         }
         case UnaryOpType::SquareRoot: {
             result(std::visit(overload{
-                    [](double &a) -> Returnable { return std::sqrt(a); },
+                    [](NumericLiteral &a) -> Returnable { return NumericLiteral(std::sqrt(a.getValue())); },
                     [](std::string &a) -> Returnable {
                         return std::visit(overload{
-                                [](double &a) -> Returnable { return std::sqrt(a); },
+                                [](NumericLiteral &a) -> Returnable { return NumericLiteral(std::sqrt(a.getValue())); },
                                 [](auto &a) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
                         }, s_variables.at(a));
                     },
@@ -334,10 +348,10 @@ void Evaluator::visit(const UnaryOpNode &node) {
         }
         case UnaryOpType::Sine: {
             result(std::visit(overload{
-                    [](double &a) -> Returnable { return std::sin(a); },
+                    [](NumericLiteral &a) -> Returnable { return NumericLiteral(std::sin(a.getValue())); },
                     [](std::string &a) -> Returnable {
                         return std::visit(overload{
-                                [](double &a) -> Returnable { return std::sin(a); },
+                                [](NumericLiteral &a) -> Returnable { return NumericLiteral(std::sin(a.getValue())); },
                                 [](auto &a) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
                         }, s_variables.at(a));
                     },
@@ -346,10 +360,10 @@ void Evaluator::visit(const UnaryOpNode &node) {
         }
         case UnaryOpType::Cosine: {
             result(std::visit(overload{
-                    [](double &a) -> Returnable { return std::cos(a); },
+                    [](NumericLiteral &a) -> Returnable { return NumericLiteral(std::cos(a.getValue())); },
                     [](std::string &a) -> Returnable {
                         return std::visit(overload{
-                                [](double &a) -> Returnable { return std::cos(a); },
+                                [](NumericLiteral &a) -> Returnable { return NumericLiteral(std::cos(a.getValue())); },
                                 [](auto &a) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
                         }, s_variables.at(a));
                     },
@@ -358,10 +372,10 @@ void Evaluator::visit(const UnaryOpNode &node) {
         }
         case UnaryOpType::Tangent: {
             result(std::visit(overload{
-                    [](double &a) -> Returnable { return std::tan(a); },
+                    [](NumericLiteral &a) -> Returnable { return NumericLiteral(std::tan(a.getValue())); },
                     [](std::string &a) -> Returnable {
                         return std::visit(overload{
-                                [](double &a) -> Returnable { return std::tan(a); },
+                                [](NumericLiteral &a) -> Returnable { return NumericLiteral(std::tan(a.getValue())); },
                                 [](auto &a) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
                         }, s_variables.at(a));
                     },
@@ -370,10 +384,12 @@ void Evaluator::visit(const UnaryOpNode &node) {
         }
         case UnaryOpType::Cosecant: {
             result(std::visit(overload{
-                    [](double &a) -> Returnable { return 1 / std::sin(a); },
+                    [](NumericLiteral &a) -> Returnable { return NumericLiteral(1 / std::sin(a.getValue())); },
                     [](std::string &a) -> Returnable {
                         return std::visit(overload{
-                                [](double &a) -> Returnable { return 1 / std::sin(a); },
+                                [](NumericLiteral &a) -> Returnable {
+                                    return NumericLiteral(1 / std::sin(a.getValue()));
+                                },
                                 [](auto &a) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
                         }, s_variables.at(a));
                     },
@@ -382,10 +398,12 @@ void Evaluator::visit(const UnaryOpNode &node) {
         }
         case UnaryOpType::Secant: {
             result(std::visit(overload{
-                    [](double &a) -> Returnable { return 1 / std::cos(a); },
+                    [](NumericLiteral &a) -> Returnable { return NumericLiteral(1 / std::cos(a.getValue())); },
                     [](std::string &a) -> Returnable {
                         return std::visit(overload{
-                                [](double &a) -> Returnable { return 1 / std::cos(a); },
+                                [](NumericLiteral &a) -> Returnable {
+                                    return NumericLiteral(1 / std::cos(a.getValue()));
+                                },
                                 [](auto &a) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
                         }, s_variables.at(a));
                     },
@@ -394,10 +412,12 @@ void Evaluator::visit(const UnaryOpNode &node) {
         }
         case UnaryOpType::Cotangent: {
             result(std::visit(overload{
-                    [](double &a) -> Returnable { return 1 / std::tan(a); },
+                    [](NumericLiteral &a) -> Returnable { return NumericLiteral(1 / std::tan(a.getValue())); },
                     [](std::string &a) -> Returnable {
                         return std::visit(overload{
-                                [](double &a) -> Returnable { return 1 / std::tan(a); },
+                                [](NumericLiteral &a) -> Returnable {
+                                    return NumericLiteral(1 / std::tan(a.getValue()));
+                                },
                                 [](auto &a) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
                         }, s_variables.at(a));
                     },
@@ -406,10 +426,10 @@ void Evaluator::visit(const UnaryOpNode &node) {
         }
         case UnaryOpType::ArcSine: {
             result(std::visit(overload{
-                    [](double &a) -> Returnable { return std::asin(a); },
+                    [](NumericLiteral &a) -> Returnable { return NumericLiteral(std::asin(a.getValue())); },
                     [](std::string &a) -> Returnable {
                         return std::visit(overload{
-                                [](double &a) -> Returnable { return std::asin(a); },
+                                [](NumericLiteral &a) -> Returnable { return NumericLiteral(std::asin(a.getValue())); },
                                 [](auto &a) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
                         }, s_variables.at(a));
                     },
@@ -418,10 +438,10 @@ void Evaluator::visit(const UnaryOpNode &node) {
         }
         case UnaryOpType::ArcCosine: {
             result(std::visit(overload{
-                    [](double &a) -> Returnable { return std::acos(a); },
+                    [](NumericLiteral &a) -> Returnable { return NumericLiteral(std::acos(a.getValue())); },
                     [](std::string &a) -> Returnable {
                         return std::visit(overload{
-                                [](double &a) -> Returnable { return std::acos(a); },
+                                [](NumericLiteral &a) -> Returnable { return NumericLiteral(std::acos(a.getValue())); },
                                 [](auto &a) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
                         }, s_variables.at(a));
                     },
@@ -430,10 +450,10 @@ void Evaluator::visit(const UnaryOpNode &node) {
         }
         case UnaryOpType::ArcTangent: {
             result(std::visit(overload{
-                    [](double &a) -> Returnable { return std::atan(a); },
+                    [](NumericLiteral &a) -> Returnable { return NumericLiteral(std::atan(a.getValue())); },
                     [](std::string &a) -> Returnable {
                         return std::visit(overload{
-                                [](double &a) -> Returnable { return std::atan(a); },
+                                [](NumericLiteral &a) -> Returnable { return NumericLiteral(std::atan(a.getValue())); },
                                 [](auto &a) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
                         }, s_variables.at(a));
                     },
@@ -442,10 +462,14 @@ void Evaluator::visit(const UnaryOpNode &node) {
         }
         case UnaryOpType::AbsoluteValue: {
             result(std::visit(overload{
-                    [](double &a) -> Returnable { return std::abs(a); },
+                    [](NumericLiteral &a) -> Returnable {
+                        return NumericLiteral(std::abs(a.getValue()), a.getInternalType());
+                    },
                     [](std::string &a) -> Returnable {
                         return std::visit(overload{
-                                [](double &a) -> Returnable { return std::abs(a); },
+                                [](NumericLiteral &a) -> Returnable {
+                                    return NumericLiteral(std::abs(a.getValue()), a.getInternalType());
+                                },
                                 [](auto &a) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
                         }, s_variables.at(a));
                     },
@@ -454,10 +478,14 @@ void Evaluator::visit(const UnaryOpNode &node) {
         }
         case UnaryOpType::Log: {
             result(std::visit(overload{
-                    [](double &a) -> Returnable { return std::log(a) / std::log(10); },
+                    [](NumericLiteral &a) -> Returnable {
+                        return NumericLiteral(std::log(a.getValue()) / std::log(10));
+                    },
                     [](std::string &a) -> Returnable {
                         return std::visit(overload{
-                                [](double &a) -> Returnable { return std::log(a) / std::log(10); },
+                                [](NumericLiteral &a) -> Returnable {
+                                    return NumericLiteral(std::log(a.getValue()) / std::log(10));
+                                },
                                 [](auto &a) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
                         }, s_variables.at(a));
                     },
@@ -467,10 +495,10 @@ void Evaluator::visit(const UnaryOpNode &node) {
         }
         case UnaryOpType::NaturalLog: {
             result(std::visit(overload{
-                    [](double &a) -> Returnable { return std::log(a); },
+                    [](NumericLiteral &a) -> Returnable { return NumericLiteral(std::log(a.getValue())); },
                     [](std::string &a) -> Returnable {
                         return std::visit(overload{
-                                [](double &a) -> Returnable { return std::log(10); },
+                                [](NumericLiteral &a) -> Returnable { return NumericLiteral(std::log(a.getValue())); },
                                 [](auto &a) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
                         }, s_variables.at(a));
                     },
@@ -520,7 +548,7 @@ void Evaluator::visit(const FunctionAssignmentNode &node) {
     }
 
     s_functions.emplace(funcName, Function(params, node.getValue()));
-    result(0);
+    result(NumericLiteral(0, InternalType::Integer));
 }
 
 void Evaluator::visit(const VectorNode &node) {
@@ -531,6 +559,7 @@ void Evaluator::visit(const VectorNode &node) {
     result(c);
 }
 
+
 int PrettyPrinter::s_indent = 0;
 
 void PrettyPrinter::visit(const NumberNode &node) {
@@ -540,7 +569,7 @@ void PrettyPrinter::visit(const NumberNode &node) {
         ss << " ";
     }
     ss << "|-";
-    ss << '(' << std::to_string(node.getValue()) << ')' << '\n';
+    ss << '(' << std::to_string(node.getValue().getValue()) << ')' << '\n';
     result(ss.str());
 }
 
