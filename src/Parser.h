@@ -4,25 +4,6 @@
 #include "Lexer.h"
 #include "Nodes.h"
 
-
-// TODO: Refactor Node to contain a list of children. Also make subclasses of Node that can hold errors.
-//class Node {
-//public:
-//    explicit Node(const Token &token);
-//
-//    explicit Node(const Token &token, Node *left, Node *right);
-//
-//    ~Node();
-//
-//    friend std::ostream &operator<<(std::ostream &os, const Node &node);
-//
-//public:
-//    Token token;
-//    Node *left;
-//    Node *right;
-//
-//};
-
 class Parser {
 public:
     explicit Parser(const std::vector<Token> &tokens);

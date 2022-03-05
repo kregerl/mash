@@ -35,6 +35,7 @@ enum class TokenType {
     RBracket,
     LBrace,
     RBrace,
+    DoubleQuote,
     Equals,
     Identifier,
     Comma,

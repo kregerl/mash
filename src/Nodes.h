@@ -73,6 +73,8 @@ enum class CollectionType {
 
 class NumberNode;
 
+class StringNode;
+
 class IdentifierNode;
 
 class BinaryOpNode;
@@ -92,6 +94,8 @@ public:
     virtual void visit(const NumberNode &node) = 0;
 
     virtual void visit(const IdentifierNode &node) = 0;
+
+    virtual void visit(const StringNode &node) = 0;
 
     virtual void visit(const BinaryOpNode &node) = 0;
 
@@ -134,6 +138,13 @@ public:
     VISITABLE
 
     explicit NumberNode(NumericLiteral value);
+};
+
+class StringNode : public ValueNode<StringLiteral> {
+public:
+    VISITABLE
+
+    explicit StringNode(StringLiteral value);
 };
 
 class IdentifierNode : public ValueNode<std::string> {
@@ -317,6 +328,8 @@ public:
 
     void visit(const IdentifierNode &node) override;
 
+    virtual void visit(const StringNode &node) override;
+
     void visit(const BinaryOpNode &node) override;
 
     void visit(const UnaryOpNode &node) override;
@@ -340,6 +353,8 @@ public:
     void visit(const NumberNode &node) override;
 
     void visit(const IdentifierNode &node) override;
+
+    virtual void visit(const StringNode &node) override;
 
     void visit(const BinaryOpNode &node) override;
 
@@ -374,6 +389,7 @@ private:
     std::string msg;
 };
 
+// TODO: Implement sets.
 namespace Vector {
     static Collection scalarMultiplication(Collection &c, NumericLiteral scalar) {
         Collection res = {CollectionType::Vector, {}};

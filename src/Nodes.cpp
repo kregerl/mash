@@ -14,6 +14,8 @@ NumberNode::NumberNode(NumericLiteral value) : ValueNode(value) {}
 
 IdentifierNode::IdentifierNode(const std::string &value) : ValueNode(value) {}
 
+StringNode::StringNode(StringLiteral value) : ValueNode(value) {}
+
 UnaryOpNode::UnaryOpNode(UnaryOpType type, AbstractNode *child) : m_type(type), m_child(child) {}
 
 UnaryOpType UnaryOpNode::getType() const {
@@ -33,6 +35,7 @@ AbstractNode *AssignmentNode::getValue() const {
 IdentifierNode *AssignmentNode::getIdentifier() const {
     return var;
 }
+
 
 std::string AssignmentNode::getIdentifierStr() const {
     return var->getValue();
@@ -219,7 +222,6 @@ void Evaluator::visit(const BinaryOpNode &node) {
             break;
         }
         case BinaryOpType::BW_Or: {
-            // TODO: Casting to ints
             result(std::visit(overload{
                     [](NumericLiteral &a, NumericLiteral &b) -> Returnable { return a | b; },
                     UNORDERED_VISIT(NumericLiteral, std::string, a | b)
@@ -228,7 +230,6 @@ void Evaluator::visit(const BinaryOpNode &node) {
             break;
         }
         case BinaryOpType::BW_And: {
-            // TODO: Casting to ints
             result(std::visit(overload{
                     [](NumericLiteral &a, NumericLiteral &b) -> Returnable { return a & b; },
                     UNORDERED_VISIT(NumericLiteral, std::string, a & b)
@@ -237,7 +238,6 @@ void Evaluator::visit(const BinaryOpNode &node) {
             break;
         }
         case BinaryOpType::BW_Xor: {
-            // TODO: Casting to ints
             result(std::visit(overload{
                     [](NumericLiteral &a, NumericLiteral &b) -> Returnable { return a ^ b; },
                     UNORDERED_VISIT(NumericLiteral, std::string, a ^ b)
@@ -246,7 +246,6 @@ void Evaluator::visit(const BinaryOpNode &node) {
             break;
         }
         case BinaryOpType::BW_Shift_Right: {
-            // TODO: Casting to ints
             result(std::visit(overload{
                     [](NumericLiteral &a, NumericLiteral &b) -> Returnable { return a >> b; },
                     UNORDERED_VISIT(NumericLiteral, std::string, a >> b)
@@ -255,7 +254,6 @@ void Evaluator::visit(const BinaryOpNode &node) {
             break;
         }
         case BinaryOpType::BW_Shift_Left: {
-            // TODO: Casting to ints
             result(std::visit(overload{
                     [](NumericLiteral &a, NumericLiteral &b) -> Returnable { return a << b; },
                     UNORDERED_VISIT(NumericLiteral, std::string, a << b)
@@ -275,7 +273,6 @@ void Evaluator::visit(const BinaryOpNode &node) {
             break;
         }
         case BinaryOpType::VectorSlice: {
-            // TODO: Do something about internal type keeping, slices only work with ints not doubles so theyre casted.
             result(std::visit(overload{
                     [](NumericLiteral &a, NumericLiteral &b) -> Returnable {
                         if (a.getInternalType() > InternalType::Double && b.getInternalType() > InternalType::Double) {
@@ -312,8 +309,9 @@ void Evaluator::visit(const UnaryOpNode &node) {
                                 [](auto &a) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
                         }, s_variables.at(a));
                     },
-                    [](Collection &c) -> Returnable { return Vector::scalarMultiplication(c, NumericLiteral(-1,
-                                                                                                            InternalType::Integer));
+                    [](Collection &c) -> Returnable {
+                        return Vector::scalarMultiplication(c, NumericLiteral(-1,
+                                                                              InternalType::Integer));
                     },
                     [](auto &a) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }}, child));
             break;
@@ -559,6 +557,10 @@ void Evaluator::visit(const VectorNode &node) {
     result(c);
 }
 
+void Evaluator::visit(const StringNode &node) {
+
+}
+
 
 int PrettyPrinter::s_indent = 0;
 
@@ -773,8 +775,14 @@ void PrettyPrinter::visit(const VectorNode &node) {
 
 }
 
+void PrettyPrinter::visit(const StringNode &node) {
+
+}
+
 VectorNode::VectorNode(const std::vector<AbstractNode *> &children) : m_children(children) {}
 
 std::vector<AbstractNode *> VectorNode::getChildren() const {
     return m_children;
 }
+
+

@@ -109,3 +109,5 @@ NumericLiteral NumericLiteral::operator>>(const NumericLiteral &n) {
                 internalTypeToString(n.getInternalType()));
     }
 }
+
+StringLiteral::StringLiteral(const std::string &s) : Literal(s) {}

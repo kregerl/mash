@@ -16,7 +16,6 @@ protected:
     T m_value;
 };
 
-// TODO: Use subclasses of literal for Strings and Numbers. Number should have an "internal type" either int or double (hex, binary).
 class NumericLiteral : public Literal<double> {
 public:
     NumericLiteral() : Literal(0), m_internalType(InternalType::Double) {}
@@ -57,6 +56,7 @@ private:
     InternalType m_internalType;
 };
 
+// TODO: Implement StringLiterals and reading strings inside of quotes in the tokenizer
 class StringLiteral : public Literal<std::string> {
 public:
     explicit StringLiteral(const std::string &s);

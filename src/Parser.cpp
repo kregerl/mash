@@ -38,6 +38,20 @@ AbstractNode *Parser::factor() {
             throw EvaluatorException("Expected token '(' but got '" + m_currentToken.toString() + "'");
         }
         return node;
+    } else if (token.getType() == TokenType::DoubleQuote) {
+        next();
+        std::string str;
+        while (m_currentToken.getType() != TokenType::DoubleQuote) {
+            if (m_currentToken.getType() == TokenType::EndOfLine) {
+                throw EvaluatorException("Expected token \"");
+            }
+            str += m_currentToken.getValue() + " ";
+            next();
+        }
+        next();
+        str = str.substr(0, str.size() - 1);
+        AbstractNode *node = new StringNode(StringLiteral(str));
+        return node;
     } else if (token.getType() == TokenType::Subtraction) {
         next();
         AbstractNode *node = new UnaryOpNode(UnaryOpType::Negation, factor());

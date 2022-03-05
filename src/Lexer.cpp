@@ -91,6 +91,8 @@ Token Lexer::getTokenFromChar(const char &c) {
             return {str, TokenType::RBrace};
         case ':':
             return {str, TokenType::Colon};
+        case '\"':
+            return {str, TokenType::DoubleQuote};
         default:
             return {};
     }
@@ -99,7 +101,7 @@ Token Lexer::getTokenFromChar(const char &c) {
 Token Lexer::readIdentifierToken(int *i) {
     int index = *i;
     std::string var;
-    while (index < m_expression.length() && std::isalpha((m_expression[index]))) {
+    while (index < m_expression.length() && (std::isalpha(m_expression[index]) || m_expression[index] == '_')) {
         var.push_back(m_expression[index++]);
     }
     *i = index - 1;
@@ -173,7 +175,8 @@ std::vector<Token> Lexer::tokenize() {
         } else if (std::isdigit(c) || c == '.') {
             tokens.emplace_back(readNumberToken(&i));
         } else if (c == '+' || c == '-' || c == '*' || c == '/' || c == '%' || c == '^' || c == '&' || c == '|' ||
-                   c == '=' || c == '!' || c == '(' || c == ')' || c == ',' || c == '[' || c == ']' | c == ':') {
+                   c == '=' || c == '!' || c == '(' || c == ')' || c == ',' || c == '[' || c == ']' | c == ':' ||
+                   c == '\"') {
             int next = i + 1;
             if (c == '*' && next < m_expression.size() && m_expression[next] == '*') {
                 tokens.emplace_back(Token("**", TokenType::Exp));
