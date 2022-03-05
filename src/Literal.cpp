@@ -110,4 +110,54 @@ NumericLiteral NumericLiteral::operator>>(const NumericLiteral &n) {
     }
 }
 
+StringLiteral::StringLiteral() : Literal("") {};
+
 StringLiteral::StringLiteral(const std::string &s) : Literal(s) {}
+
+StringLiteral::StringLiteral(const char &c) : Literal(std::to_string(c)) {}
+
+
+std::ostream &operator<<(std::ostream &os, const StringLiteral &s) {
+    os << s.getValue();
+    return os;
+}
+
+StringLiteral StringLiteral::operator+(const StringLiteral &n) {
+    return StringLiteral(m_value + n.getValue());
+}
+
+StringLiteral StringLiteral::operator+(const std::string &n) {
+    return StringLiteral(m_value + n);
+}
+
+StringLiteral StringLiteral::operator*(const NumericLiteral &n) {
+    if (n.getInternalType() > InternalType::Double) {
+        StringLiteral s;
+        for (int i = 0; i < n.getValue(); i++) {
+            s = s + m_value;
+        }
+        return s;
+    }
+    throw EvaluatorException("Cannot multiply a string by a decimal value!");
+}
+
+StringLiteral StringLiteral::operator-(const StringLiteral &n) {
+    std::string s = m_value;
+    size_t pos = std::string::npos;
+    while ((pos = s.find(n.getValue())) != std::string::npos) {
+        s.erase(pos, n.getValue().length());
+    }
+    return StringLiteral(s);
+}
+
+StringLiteral StringLiteral::operator[](int i) {
+    if (i > m_value.size()) {
+        throw EvaluatorException("Index out of bounds for StringLiteral of size " + std::to_string(m_value.size()));
+    }
+    return StringLiteral(m_value.at(i));
+}
+
+StringLiteral StringLiteral::operator+(const char &n) {
+    return StringLiteral(m_value + n);
+}
+

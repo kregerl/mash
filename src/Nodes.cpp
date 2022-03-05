@@ -143,6 +143,7 @@ void Evaluator::visit(const BinaryOpNode &node) {
         case BinaryOpType::Plus: {
             result(std::visit(overload{
                     [](NumericLiteral &a, NumericLiteral &b) -> Returnable { return a + b; },
+                    [](StringLiteral &a, StringLiteral &b) -> Returnable { return a + b; },
                     UNORDERED_VISIT(NumericLiteral, std::string, a + b)
                     [](Collection &a, Collection &b) -> Returnable { return Vector::addition(a, b); },
                     [](auto &a, auto &b) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
@@ -152,6 +153,7 @@ void Evaluator::visit(const BinaryOpNode &node) {
         case BinaryOpType::Minus: {
             result(std::visit(overload{
                     [](NumericLiteral &a, NumericLiteral &b) -> Returnable { return a - b; },
+                    [](StringLiteral &a, StringLiteral &b) -> Returnable { return a - b; },
                     UNORDERED_VISIT(NumericLiteral, std::string, a - b)
                     [](Collection &a, Collection &b) -> Returnable { return Vector::subtraction(a, b); },
                     [](auto &a, auto &b) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
@@ -161,6 +163,7 @@ void Evaluator::visit(const BinaryOpNode &node) {
         case BinaryOpType::Multiply: {
             result(std::visit(overload{
                     [](NumericLiteral &a, NumericLiteral &b) -> Returnable { return a * b; },
+                    [](StringLiteral &a, NumericLiteral &b) -> Returnable { return a * b; },
                     UNORDERED_VISIT(NumericLiteral, std::string, a * b)
                     UNORDERED_VISIT_FUNCTION(NumericLiteral, Collection, Vector::scalarMultiplication)
                     [](auto &a, auto &b) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
@@ -558,7 +561,7 @@ void Evaluator::visit(const VectorNode &node) {
 }
 
 void Evaluator::visit(const StringNode &node) {
-
+    result(node.getValue());
 }
 
 

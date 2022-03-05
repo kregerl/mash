@@ -14,7 +14,8 @@ void Interpreter::interpret(const std::string &expression) {
         Returnable v = Evaluator::getValue(n);
         if (m_precision == -1) {
             std::visit(overload{
-                    [](NumericLiteral &d) { std::cout << d << std::endl; },
+                    [](NumericLiteral &n) { std::cout << n << std::endl; },
+                    [](StringLiteral &s) { std::cout << s << std::endl; },
                     [](Collection &c) { std::cout << c << std::endl; },
                     [](auto &a) { std::cout << "Not supported yet" << std::endl; }
             }, v);

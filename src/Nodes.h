@@ -282,7 +282,7 @@ template<class... Ts> overload(Ts...) -> overload<Ts...>;
 
 struct Collection;
 // TODO: Replace the double and string with literals, override all the operators.
-using Returnable = std::variant<NumericLiteral, std::string, Collection>;
+using Returnable = std::variant<NumericLiteral, StringLiteral, std::string, Collection>;
 
 struct Collection {
     CollectionType type;
