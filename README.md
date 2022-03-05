@@ -4,10 +4,26 @@
 
 ## Types
 
-Mash currently supports numbers and vectors with plans to add sets and strings. Numbers are always doubles and cast to
-integers when preforming integer only operations like bitwise operators, so currently they lose precision.  
-Numbers should hold an internal type in the future to determine whether they are ints or doubles.
+Mash currently supports the following types:
 
+- Numerics
+    - Double: Any number with a decimal point.
+    - Integer: Any whole number with no decimal point.
+    - Hex: A number inputted in the format 0x____  `0xA = 10`
+    - Binary: A number inputted in the format 0b____ `0b00000101 = 5`
+
+- Strings: Inputted in by surrounding words with quotation marks "  
+  Ex: `x = "testing"`
+    - Has few supported operations including:
+        - Addition: `"test" + "test" = "testtest"`
+        - Subtraction: `"This is a test" - "This" = " is a test"`
+        - Multiplication: `"test" * 3 = "testtesttest"`
+
+- Vectors: Inputted using square brackets around a comma seperated list of values or with vector slicing.
+  Ex: `x = [1:3] = [1, 2, 3]`
+    - Supports most math operations, see **Vector Operations** below
+
+In the future sets will also be added along with much more operations. 
 ## Math Operators & Built-In Functions
 
 - Addition: <b> x + y </b>

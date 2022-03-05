@@ -165,7 +165,7 @@ Token Lexer::readNumberToken(int *i) {
 
 }
 
-
+// TODO: Make the identifiers "strings" instead and when a " is encountered, read until another " is found in order to read the whitespaces.
 std::vector<Token> Lexer::tokenize() {
     std::vector<Token> tokens;
     for (int i = 0; i < m_expression.size(); i++) {

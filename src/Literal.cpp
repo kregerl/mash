@@ -161,3 +161,25 @@ StringLiteral StringLiteral::operator+(const char &n) {
     return StringLiteral(m_value + n);
 }
 
+StringLiteral StringLiteral::operator<<(const NumericLiteral &n) {
+    if (n.getInternalType() > InternalType::Double) {
+        int val = static_cast<int>(n.getValue());
+        std::string s = m_value.substr(val, m_value.size()) + m_value.substr(0, val);
+        return StringLiteral(s);
+    } else {
+        throw EvaluatorException("String shifts are only supported for integer types!");
+    }
+
+}
+
+StringLiteral StringLiteral::operator>>(const NumericLiteral &n) {
+    if (n.getInternalType() > InternalType::Double) {
+        int val = static_cast<int>(n.getValue());
+        std::string s = m_value.substr(m_value.size() - val, val) +
+                        m_value.substr(0, m_value.size() - val);
+        return StringLiteral(s);
+    } else {
+        throw EvaluatorException("String shifts are only supported for integer types!");
+    }
+}
+

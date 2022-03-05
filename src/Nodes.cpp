@@ -251,6 +251,7 @@ void Evaluator::visit(const BinaryOpNode &node) {
         case BinaryOpType::BW_Shift_Right: {
             result(std::visit(overload{
                     [](NumericLiteral &a, NumericLiteral &b) -> Returnable { return a >> b; },
+                    [](StringLiteral &a, NumericLiteral &b) -> Returnable { return a >> b; },
                     UNORDERED_VISIT(NumericLiteral, std::string, a >> b)
                     [](auto &a, auto &b) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
             }, left, right));
@@ -259,6 +260,7 @@ void Evaluator::visit(const BinaryOpNode &node) {
         case BinaryOpType::BW_Shift_Left: {
             result(std::visit(overload{
                     [](NumericLiteral &a, NumericLiteral &b) -> Returnable { return a << b; },
+                    [](StringLiteral &a, NumericLiteral &b) -> Returnable { return a << b; },
                     UNORDERED_VISIT(NumericLiteral, std::string, a << b)
                     [](auto &a, auto &b) -> Returnable { throw EvaluatorException("Unsupported Operation!"); }
             }, left, right));

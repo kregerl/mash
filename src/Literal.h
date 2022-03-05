@@ -78,6 +78,10 @@ public:
     StringLiteral operator+(const char &n);
 
     StringLiteral operator*(const NumericLiteral &n);
+
+    StringLiteral operator<<(const NumericLiteral &n);
+
+    StringLiteral operator>>(const NumericLiteral &n);
 };
 
 class Identifier : public Literal<std::string> {
