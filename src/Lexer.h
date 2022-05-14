@@ -40,7 +40,18 @@ enum class TokenType {
     Identifier,
     Comma,
     Colon,
-    EndOfLine
+    EndOfLine,
+    kw_int32,
+    kw_int64,
+    kw_real,
+    kw_string,
+    kw_var,
+    kw_print,
+    kw_if,
+    kw_else,
+    kw_elif,
+    LessThan,
+    GreaterThan
 };
 
 /*
@@ -99,9 +110,12 @@ public:
 
     static Token getTokenFromChar(const char &c);
 
-    Token readIdentifierToken(int *i);
+    static Token getTokenFromString(const std::string &s);
 
+    // TODO: clean this up
     Token readNumberToken(int *i);
+
+    std::string readWord(int &i);
 
     std::vector<Token> tokenize();
 

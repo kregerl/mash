@@ -50,6 +50,8 @@ public:
 
     NumericLiteral operator>>(const NumericLiteral &n);
 
+    void operator+=(const NumericLiteral &n);
+
     inline bool operator==(const int &n) { return m_value == n; }
 
 private:

@@ -1,4 +1,5 @@
-#Grammar
+# Grammar
+
 ``` 
 Function ::= (Identifier '(' Identifier ')' '=')* Assignment
 Assignment ::= (Identifier ('-' | '+' | '*' | '/' | '%' | '>>' | '<<' | '&' | '^' | '|')* '=')* Bitwise-OR
@@ -16,4 +17,22 @@ Factorial-Expression ::= Factor ('!')*
 Factor ::= ('+' | '-') Integer | Integer | '(' Bitwise-OR ')'
 Identifier ::= #'[A-Za-z0-9]+_*'
 Integer ::= #'[0-9]+' '.'? #'[0-9]*'
+```
+
+Example program currently being used for testing the interpreter
+
+```asm
+{
+    x = 1+1
+    y = 102
+    z = 103
+    if (x > y) {
+        print("Here")
+    } elif ((z - x) < y) {
+        print("Elif")
+    } else {
+        print("Not here")
+    }
+}
+
 ```

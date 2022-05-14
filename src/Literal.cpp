@@ -110,6 +110,10 @@ NumericLiteral NumericLiteral::operator>>(const NumericLiteral &n) {
     }
 }
 
+void NumericLiteral::operator+=(const NumericLiteral &n) {
+    m_value += n.getValue();
+}
+
 StringLiteral::StringLiteral() : Literal("") {};
 
 StringLiteral::StringLiteral(const std::string &s) : Literal(s) {}

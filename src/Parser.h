@@ -24,6 +24,8 @@ public:
 
     AbstractNode *additiveExpression();
 
+    AbstractNode *conditional();
+
     AbstractNode *shift();
 
     AbstractNode *bitwiseAnd();
@@ -33,6 +35,14 @@ public:
     AbstractNode *bitwiseOr();
 
     AbstractNode *assignment();
+
+    AbstractNode *block();
+
+    AbstractNode *print();
+
+    AbstractNode *ifStatement();
+
+    AbstractNode *statement();
 
 private:
     const std::vector<Token> m_tokens;

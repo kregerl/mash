@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <Lexer.h>
 #include <Interpreter.h>
 
 class OperatorTest : public ::testing::Test {
@@ -16,7 +17,7 @@ Token TOKEN(std::string s) {
 
 TEST_F(OperatorTest, operators) {
     auto i = Interpreter();
-    ASSERT_EQ(i.interpret("1 + 1"), TOKEN("2.000000")) << "1 + 1 Evaluated incorrectly";
+    ASSERT_EQ(i.interpret("1 + 1"), TOKEN("2.000000")), "1 + 1 Evaluated incorrectly";
     ASSERT_EQ(i.interpret("1 - 1"), TOKEN("0.000000")) << "1 - 1 Evaluated incorrectly";
     ASSERT_EQ(i.interpret("10 + 2"), TOKEN("12.000000")) << "10 + 2 Evaluated incorrectly";
     ASSERT_EQ(i.interpret("10 - 1"), TOKEN("9.000000")) << "10 - 1 Evaluated incorrectly";

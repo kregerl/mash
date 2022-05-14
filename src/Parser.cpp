@@ -1,6 +1,7 @@
 #include "Parser.h"
 #include "Nodes.h"
 #include <iostream>
+#include <map>
 
 Parser::Parser(const std::vector<Token> &tokens) : m_tokens(tokens), m_currentIndex(0) {
     m_currentToken = m_tokens.at(m_currentIndex);
@@ -13,12 +14,20 @@ void Parser::next() {
 
 }
 
+// TODO: support multiline programs.
+// TODO: possible restructure the nodes and visitors for functions and variables.
 AbstractNode *Parser::parse() {
-    auto n = assignment();
-    if (m_currentToken.getType() != TokenType::EndOfLine) {
-        throw EvaluatorException("Expected token EOL but got token '" + m_currentToken.toString() + "'");
+    auto statements = std::vector<AbstractNode *>();
+
+    while (m_currentToken.getType() != TokenType::EndOfLine) {
+        statements.push_back(statement());
     }
-    return n;
+
+//    auto n = assignment();
+//    if (m_currentToken.getType() != TokenType::EndOfLine) {
+//        throw EvaluatorException("Expected token EOL but got token '" + m_currentToken.toString() + "'");
+//    }
+    return new ProgramNode(statements);
 }
 
 AbstractNode *Parser::factor() {
@@ -165,17 +174,34 @@ AbstractNode *Parser::additiveExpression() {
     return node;
 }
 
-AbstractNode *Parser::shift() {
+AbstractNode *Parser::conditional() {
     AbstractNode *node = additiveExpression();
+
+    while (m_currentToken.getType() == TokenType::LessThan || m_currentToken.getType() == TokenType::GreaterThan) {
+        Token token = m_currentToken;
+        if (token.getType() == TokenType::LessThan) {
+            next();
+            node = new BinaryOpNode(BinaryOpType::LessThan, node, additiveExpression());
+        }
+        if (token.getType() == TokenType::GreaterThan) {
+            next();
+            node = new BinaryOpNode(BinaryOpType::GreaterThan, node, additiveExpression());
+        }
+    }
+    return node;
+}
+
+AbstractNode *Parser::shift() {
+    AbstractNode *node = conditional();
     while (m_currentToken.getType() == TokenType::BitwiseShiftLeft ||
            m_currentToken.getType() == TokenType::BitwiseShiftRight) {
         Token token = m_currentToken;
         if (token.getType() == TokenType::BitwiseShiftLeft) {
             next();
-            node = new BinaryOpNode(BinaryOpType::BW_Shift_Left, node, additiveExpression());
+            node = new BinaryOpNode(BinaryOpType::BW_Shift_Left, node, conditional());
         } else if (token.getType() == TokenType::BitwiseShiftRight) {
             next();
-            node = new BinaryOpNode(BinaryOpType::BW_Shift_Right, node, additiveExpression());
+            node = new BinaryOpNode(BinaryOpType::BW_Shift_Right, node, conditional());
         }
     }
     return node;
@@ -209,24 +235,130 @@ AbstractNode *Parser::bitwiseOr() {
 }
 
 AbstractNode *Parser::assignment() {
-    AbstractNode *node = bitwiseOr();
-    while (m_currentToken.getType() == TokenType::Equals) {
-        next();
-        auto *n = dynamic_cast<IdentifierNode *>(node);
-        if (n != nullptr) {
-            node = new AssignmentNode(n, bitwiseOr());
-        } else {
-            auto *fn = dynamic_cast<FunctionNode *>(node);
-            if (fn != nullptr) {
-                node = new FunctionAssignmentNode(fn, bitwiseOr());
-            } else {
-                throw EvaluatorException("Assignments must be between an Identifier and a number!");
-            }
-        }
+
+    IdentifierNode *identifier;
+    AbstractNode *expression;
+
+    // TODO: let this determine the var type
+    if (m_currentToken.getType() != TokenType::Identifier) {
+        throw EvaluatorException("Expected identifier after variable declaration keyword.");
     }
-    return node;
+    identifier = new IdentifierNode(m_currentToken.getValue());
+
+    next();
+    if (m_currentToken.getType() != TokenType::Equals) {
+        throw EvaluatorException("Expected equals after identifier.");
+    }
+    next();
+    expression = bitwiseOr();
+
+    return new AssignmentNode(identifier, expression);
+}
+
+AbstractNode *Parser::block() {
+    auto statements = std::vector<AbstractNode *>();
+
+    // Consume '{'
+    next();
+
+    while (m_currentToken.getType() != TokenType::RBrace && m_currentToken.getType() != TokenType::EndOfLine) {
+        statements.push_back(statement());
+    }
+
+    if (m_currentToken.getType() == TokenType::RBrace) {
+        next();
+        return new BlockNode(statements);
+    }
+
+
+}
+
+AbstractNode *Parser::print() {
+    // Consume 'print'
+    next();
+
+    if (m_currentToken.getType() != TokenType::LParen) {
+        throw EvaluatorException("Expected enclosing parenthesis around the contents of print statement.");
+    }
+    // Consume '('
+    next();
+
+    AbstractNode *expression = bitwiseOr();
+
+    if (m_currentToken.getType() != TokenType::RParen) {
+        throw EvaluatorException("Expected enclosing parenthesis around the contents of print statement.");
+    }
+    // Consume ')'
+    next();
+
+    return new PrintNode(expression);
+}
+
+AbstractNode *Parser::ifStatement() {
+
+    AbstractNode *conditional;
+    AbstractNode *ifBlock;
+
+
+    // Consume "if" token
+    next();
+
+    if (m_currentToken.getType() != TokenType::LParen) {
+        throw EvaluatorException("Expected enclosing parenthesis around the condition.");
+    }
+    // Consume '('
+    next();
+
+    conditional = bitwiseOr();
+
+    if (m_currentToken.getType() != TokenType::RParen) {
+        throw EvaluatorException("Expected enclosing parenthesis around the condition.");
+    }
+    // Consume ')'
+    next();
+
+    ifBlock = block();
+
+    std::map<AbstractNode *, AbstractNode *> elifs;
+
+    // TODO: Make this a loop for all elifs
+    while (m_currentToken.getType() == TokenType::kw_elif) {
+        // Consume 'elif'
+        next();
+        AbstractNode *elifConditional = bitwiseOr();
+
+        AbstractNode *elifBlock = block();
+
+        elifs[elifConditional] = elifBlock;
+    }
+
+    if (m_currentToken.getType() != TokenType::kw_else) {
+        return new ConditionalNode(conditional, ifBlock, elifs);
+    }
+
+    // Consume 'else'
+    next();
+
+    AbstractNode *elseBlock = block();
+
+    return new ConditionalNode(conditional, ifBlock, elifs, elseBlock);
+
 }
 
 
+AbstractNode *Parser::statement() {
+    switch (m_currentToken.getType()) {
+        case TokenType::Identifier:
+            return assignment();
+        case TokenType::LBrace:
+            return block();
+        case TokenType::kw_print:
+            return print();
+        case TokenType::kw_if:
+            return ifStatement();
+        default:
+            throw EvaluatorException("TODO: Fix later --- Unknown.");
+    }
+}
 
 

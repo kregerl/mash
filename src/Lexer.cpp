@@ -93,24 +93,17 @@ Token Lexer::getTokenFromChar(const char &c) {
             return {str, TokenType::Colon};
         case '\"':
             return {str, TokenType::DoubleQuote};
+        case '<':
+            return {str, TokenType::LessThan};
+        case '>':
+            return {str, TokenType::GreaterThan};
         default:
             return {};
     }
 }
 
-Token Lexer::readIdentifierToken(int *i) {
-    int index = *i;
-    std::string var;
-    while (index < m_expression.length() && (std::isalpha(m_expression[index]) || m_expression[index] == '_')) {
-        var.push_back(m_expression[index++]);
-    }
-    *i = index - 1;
-    return {var, TokenType::Identifier};
-}
-
 Token Lexer::readNumberToken(int *i) {
     int index = *i;
-    // TODO: Make this work with 0b too for binary numbers.
     if (m_expression[index] == '0' &&
         (std::tolower(m_expression[index + 1]) == 'x' || std::tolower(m_expression[index + 1]) == 'b')) {
         char next = std::tolower(m_expression[index + 1]);
@@ -165,47 +158,152 @@ Token Lexer::readNumberToken(int *i) {
 
 }
 
-// TODO: Make the identifiers "strings" instead and when a " is encountered, read until another " is found in order to read the whitespaces.
+// TODO: Finish this up, new tokenize function thats cleaner and easier to add to.
 std::vector<Token> Lexer::tokenize() {
     std::vector<Token> tokens;
     for (int i = 0; i < m_expression.size(); i++) {
         char c = m_expression[i];
-        if (c == ' ') {
-            continue;
-        } else if (std::isdigit(c) || c == '.') {
-            tokens.emplace_back(readNumberToken(&i));
-        } else if (c == '+' || c == '-' || c == '*' || c == '/' || c == '%' || c == '^' || c == '&' || c == '|' ||
-                   c == '=' || c == '!' || c == '(' || c == ')' || c == ',' || c == '[' || c == ']' | c == ':' ||
-                   c == '\"') {
-            int next = i + 1;
-            if (c == '*' && next < m_expression.size() && m_expression[next] == '*') {
-                tokens.emplace_back(Token("**", TokenType::Exp));
-                i++;
-            } else {
+        switch (c) {
+            case ' ':
+            case '\n':
+                continue;
+            case '+':
+            case '-':
+            case '/':
+            case '%':
+            case '^':
+            case '&':
+            case '|':
+            case '=':
+            case '!':
+            case '(':
+            case ')':
+            case ',':
+            case '[':
+            case ']':
+            case '{':
+            case '}':
+            case ':':
+            case '\"':
                 tokens.emplace_back(getTokenFromChar(c));
-            }
-        } else if (c == '>') {
-            int next = i + 1;
-            if (next < m_expression.size() && m_expression[next] == '>') {
-                tokens.emplace_back(Token(">>", TokenType::BitwiseShiftRight));
-                i++;
-            }
-        } else if (c == '<') {
-            int next = i + 1;
-            if (next < m_expression.size() && m_expression[next] == '<') {
-                tokens.emplace_back(Token("<<", TokenType::BitwiseShiftLeft));
-                i++;
-            }
-        } else if (std::isalpha(c)) {
-            tokens.emplace_back(readIdentifierToken(&i));
-        } else {
-            std::cout << "Unknown Token: " << c << std::endl;
+                break;
+            case '*':
+            case '<':
+            case '>':
+                if (m_expression[i + 1] == c) {
+                    tokens.emplace_back(getTokenFromString(std::string(c, 2)));
+                    i++;
+                } else {
+                    tokens.emplace_back(getTokenFromChar(c));
+                }
+                break;
+            case '.':
+                tokens.emplace_back(readNumberToken(&i));
+                break;
+            default:
+                if (std::isalpha(c)) {
+                    std::string word = readWord(i);
+                    Token token = getTokenFromString(word);
+
+                    tokens.emplace_back(token);
+                } else if (std::isdigit(c)) {
+                    tokens.emplace_back(readNumberToken(&i));
+                }
+                break;
+
         }
     }
     tokens.emplace_back(Token("", TokenType::EndOfLine));
 
     return tokens;
 }
+
+Token Lexer::getTokenFromString(const std::string &string) {
+    TokenType type;
+    if (string == "**") {
+        type = TokenType::Exp;
+    } else if (string == "<<") {
+        type = TokenType::BitwiseShiftLeft;
+    } else if (string == ">>") {
+        type = TokenType::BitwiseShiftLeft;
+    } else if (string == "var") {
+        type = TokenType::kw_var;
+    } else if (string == "print") {
+        type = TokenType::kw_print;
+    } else if (string == "if") {
+        type = TokenType::kw_if;
+    } else if (string == "else") {
+        type = TokenType::kw_else;
+    } else if (string == "elif") {
+        type = TokenType::kw_elif;
+    } else {
+        type = TokenType::Identifier;
+    }
+
+    return {string, type};
+}
+
+std::string Lexer::readWord(int &i) {
+    std::string word;
+    while (i < m_expression.length() && (std::isalpha(m_expression[i]) || m_expression[i] == '_')) {
+        word.push_back(m_expression[i++]);
+    }
+    i--;
+    return word;
+}
+
+
+// TODO: Make the identifiers "strings" instead and when a " is encountered, read until another " is found in order to read the whitespaces.
+//std::vector<Token> Lexer::tokenize() {
+//    std::vector<Token> tokens;
+//    for (int i = 0; i < m_expression.size(); i++) {
+//        char c = m_expression[i];
+//        if (c == ' ') {
+//            continue;
+//        } else if (std::isdigit(c) || c == '.') {
+//            tokens.emplace_back(readNumberToken(&i));
+//        } else if (c == '+' || c == '-' || c == '*' || c == '/' || c == '%' || c == '^' || c == '&' || c == '|' ||
+//                   c == '=' || c == '!' || c == '(' || c == ')' || c == ',' || c == '[' || c == ']' || c == '}' ||
+//                   c == '{' || c == ':' ||
+//                   c == '\"') {
+//            int next = i + 1;
+//            if (c == '*' && next < m_expression.size() && m_expression[next] == '*') {
+//                tokens.emplace_back(Token("**", TokenType::Exp));
+//                i++;
+//            } else {
+//                tokens.emplace_back(getTokenFromChar(c));
+//            }
+//        } else if (c == '>') {
+//            int next = i + 1;
+//            if (next < m_expression.size() && m_expression[next] == '>') {
+//                tokens.emplace_back(Token(">>", TokenType::BitwiseShiftRight));
+//                i++;
+//            }
+//        } else if (c == '<') {
+//            int next = i + 1;
+//            if (next < m_expression.size() && m_expression[next] == '<') {
+//                tokens.emplace_back(Token("<<", TokenType::BitwiseShiftLeft));
+//                i++;
+//            }
+//        } else if (std::isalpha(c)) {
+//            Token id = readIdentifierToken(&i);
+//            if (id.getValue() == "var") {
+//                tokens.emplace_back(Token(id.getValue(), TokenType::kw_var));
+//            } else if (id.getValue() == "print") {
+//                tokens.emplace_back(Token(id.getValue(), TokenType::kw_print));
+//            } else {
+//                tokens.emplace_back(id);
+//            }
+//        } else if (c == '\n') {
+//            continue;
+//        } else {
+//            std::cout << "Unknown Token: " << c << std::endl;
+//        }
+//    }
+//    tokens.emplace_back(Token("", TokenType::EndOfLine));
+//
+//    return tokens;
+//}
 
 
 
