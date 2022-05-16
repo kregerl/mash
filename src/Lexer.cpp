@@ -236,6 +236,10 @@ Token Lexer::getTokenFromString(const std::string &string) {
         type = TokenType::kw_else;
     } else if (string == "elif") {
         type = TokenType::kw_elif;
+    } else if (string == "fn") {
+        type = TokenType::kw_fn;
+    } else if (string == "return") {
+        type = TokenType::kw_return;
     } else {
         type = TokenType::Identifier;
     }

@@ -14,8 +14,6 @@ void Parser::next() {
 
 }
 
-// TODO: support multiline programs.
-// TODO: possible restructure the nodes and visitors for functions and variables.
 AbstractNode *Parser::parse() {
     auto statements = std::vector<AbstractNode *>();
 
@@ -239,7 +237,6 @@ AbstractNode *Parser::assignment() {
     IdentifierNode *identifier;
     AbstractNode *expression;
 
-    // TODO: let this determine the var type
     if (m_currentToken.getType() != TokenType::Identifier) {
         throw EvaluatorException("Expected identifier after variable declaration keyword.");
     }
@@ -265,12 +262,14 @@ AbstractNode *Parser::block() {
         statements.push_back(statement());
     }
 
-    if (m_currentToken.getType() == TokenType::RBrace) {
-        next();
-        return new BlockNode(statements);
+    if (m_currentToken.getType() != TokenType::RBrace) {
+        throw EvaluatorException("Expected enclosing right brace.");
     }
 
+    // Consume '}'
+    next();
 
+    return new BlockNode(statements);
 }
 
 AbstractNode *Parser::print() {
@@ -321,7 +320,6 @@ AbstractNode *Parser::ifStatement() {
 
     std::map<AbstractNode *, AbstractNode *> elifs;
 
-    // TODO: Make this a loop for all elifs
     while (m_currentToken.getType() == TokenType::kw_elif) {
         // Consume 'elif'
         next();
@@ -345,6 +343,80 @@ AbstractNode *Parser::ifStatement() {
 
 }
 
+AbstractNode *Parser::functionDefinition() {
+    std::string id;
+    std::vector<std::string> parameterIdentifiers;
+    AbstractNode *functionBlock;
+
+    // Consume 'fn'
+    next();
+
+    id = m_currentToken.getValue();
+
+    // Consume function identifier
+    next();
+
+    if (m_currentToken.getType() != TokenType::LParen) {
+        throw EvaluatorException("Expected left enclosing parenthesis around the function parameters.");
+    }
+
+    // Consume '('
+    next();
+
+    if (m_currentToken.getType() != TokenType::RParen) {
+
+        parameterIdentifiers.emplace_back(m_currentToken.getValue());
+
+        // Consume first param
+        next();
+
+        while (m_currentToken.getType() == TokenType::Comma) {
+            // Consume ','
+            next();
+
+            parameterIdentifiers.emplace_back(m_currentToken.getValue());
+
+            // Consume param
+            next();
+        }
+    }
+
+    if (m_currentToken.getType() != TokenType::RParen) {
+        throw EvaluatorException("Expected right enclosing parenthesis around the function parameters.");
+    }
+
+    // Consume ')'
+    next();
+
+    functionBlock = block();
+
+
+    return new FunctionDefinitionNode(id, parameterIdentifiers, functionBlock);
+}
+
+AbstractNode *Parser::parseReturn() {
+    std::vector<AbstractNode *> expressions;
+
+    // Consume 'return'
+    next();
+
+
+    if (m_currentToken.getType() != TokenType::RBrace) {
+
+        expressions.emplace_back(bitwiseOr());
+
+        while (m_currentToken.getType() == TokenType::Comma) {
+
+            // Consume ','
+            next();
+
+            expressions.emplace_back(bitwiseOr());
+        }
+    }
+
+    return new ReturnNode(expressions);
+}
+
 
 AbstractNode *Parser::statement() {
     switch (m_currentToken.getType()) {
@@ -356,6 +428,10 @@ AbstractNode *Parser::statement() {
             return print();
         case TokenType::kw_if:
             return ifStatement();
+        case TokenType::kw_fn:
+            return functionDefinition();
+        case TokenType::kw_return:
+            return parseReturn();
         default:
             throw EvaluatorException("TODO: Fix later --- Unknown.");
     }

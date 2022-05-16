@@ -727,6 +727,14 @@ void Evaluator::visit(const ConditionalNode &node) {
     }, condition));
 }
 
+void Evaluator::visit(const FunctionDefinitionNode &node) {
+    // TODO: Unimplemented
+}
+
+void Evaluator::visit(const ReturnNode &node) {
+    // TODO: Unimplemented
+}
+
 
 int PrettyPrinter::s_indent = 0;
 
@@ -961,6 +969,14 @@ void PrettyPrinter::visit(const ConditionalNode &node) {
 
 }
 
+void PrettyPrinter::visit(const FunctionDefinitionNode &node) {
+
+}
+
+void PrettyPrinter::visit(const ReturnNode &node) {
+
+}
+
 VectorNode::VectorNode(
         const std::vector<AbstractNode *> &children) : m_children(children) {}
 
@@ -989,5 +1005,13 @@ ConditionalNode::ConditionalNode(AbstractNode *condition, AbstractNode *ifBlock,
 ConditionalNode::ConditionalNode(AbstractNode *condition, AbstractNode *ifBlock,
                                  std::map<AbstractNode *, AbstractNode *> &elifs) : condition(condition),
                                                                                     ifBlock(ifBlock), elifs(elifs) {
+
+}
+
+FunctionDefinitionNode::FunctionDefinitionNode(const std::string &fnName, const std::vector<std::string> &parameters,
+                                               AbstractNode *block) : functionName(fnName),
+                                                                      functionParameters(parameters), block(block) {}
+
+ReturnNode::ReturnNode(const std::vector<AbstractNode *> &stmts) : statements(stmts) {
 
 }

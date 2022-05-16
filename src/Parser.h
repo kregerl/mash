@@ -42,6 +42,10 @@ public:
 
     AbstractNode *ifStatement();
 
+    AbstractNode *functionDefinition();
+
+    AbstractNode *parseReturn();
+
     AbstractNode *statement();
 
 private:

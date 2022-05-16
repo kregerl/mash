@@ -35,4 +35,18 @@ Example program currently being used for testing the interpreter
     }
 }
 
+
+
+
+x = 1+1
+    y = 102
+    z = 103
+    if (x > y) {
+        print("Here")
+    } elif ((z - x) < y) {
+        print("Elif")
+    } else {
+        print("Not here")
+    }
+
 ```

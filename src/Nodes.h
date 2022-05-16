@@ -102,6 +102,10 @@ class PrintNode;
 
 class ConditionalNode;
 
+class FunctionDefinitionNode;
+
+class ReturnNode;
+
 class Visitor {
 public:
     virtual void visit(const NumberNode &node) = 0;
@@ -129,6 +133,10 @@ public:
     virtual void visit(const PrintNode &node) = 0;
 
     virtual void visit(const ConditionalNode &node) = 0;
+
+    virtual void visit(const FunctionDefinitionNode &node) = 0;
+
+    virtual void visit(const ReturnNode &node) = 0;
 };
 
 
@@ -321,6 +329,29 @@ public:
     std::map<AbstractNode *, AbstractNode *> elifs;
 };
 
+class FunctionDefinitionNode : public AbstractNode {
+public:
+    VISITABLE
+
+    explicit FunctionDefinitionNode(const std::string &fnName, const std::vector<std::string> &parameters,
+                                    AbstractNode *block);
+
+public:
+    const std::string functionName;
+    const std::vector<std::string> functionParameters;
+    AbstractNode *block;
+};
+
+class ReturnNode : public AbstractNode {
+public:
+    VISITABLE
+
+    explicit ReturnNode(const std::vector<AbstractNode *> &stmts);
+
+public:
+    std::vector<AbstractNode *> statements;
+};
+
 
 template<typename Visitor, typename Visitable, typename ResultType>
 class ValueGetter {
@@ -421,6 +452,10 @@ public:
 
     void visit(const ConditionalNode &node) override;
 
+    void visit(const FunctionDefinitionNode &node) override;
+
+    void visit(const ReturnNode &node) override;
+
 public:
     static std::unordered_map<std::string, Returnable> s_variables;
     static std::unordered_map<std::string, Function> s_functions;
@@ -455,6 +490,9 @@ public:
 
     void visit(const ConditionalNode &node) override;
 
+    void visit(const FunctionDefinitionNode &node) override;
+
+    void visit(const ReturnNode &node) override;
 
 protected:
     static int s_indent;

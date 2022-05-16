@@ -50,6 +50,8 @@ enum class TokenType {
     kw_if,
     kw_else,
     kw_elif,
+    kw_fn,
+    kw_return,
     LessThan,
     GreaterThan
 };
