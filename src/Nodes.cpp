@@ -584,6 +584,19 @@ void Evaluator::visit(const CastNode& node) {
                     }
                 }
             },
+            [&node](StringLiteral& s) -> Returnable {
+                switch (node.m_keyword.getType()) {
+                    case TokenType::KeywordHex: {
+                        return StringLiteral::asHex(s);
+                    }
+                    case TokenType::KeywordBinary: {
+                        return StringLiteral::asBin(s);
+                    }
+                    default: {
+                        throw EvaluatorException("Trying to cast to an unknown type.");
+                    }
+                }
+            },
             [](auto&) -> Returnable {
                 throw EvaluatorException("Casting types other than numerics is not supported.");
             }

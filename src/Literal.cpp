@@ -4,6 +4,7 @@
 #include <sstream>
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
 
 NumericLiteral::NumericLiteral(double value) : Literal(value), m_internalType(InternalType::Double) {}
 
@@ -135,7 +136,7 @@ NumericLiteral NumericLiteral::operator>>(const NumericLiteral& n) {
     }
 }
 
-void NumericLiteral::operator+=(const NumericLiteral &n) {
+void NumericLiteral::operator+=(const NumericLiteral& n) {
     m_value += n.getValue();
 }
 
@@ -210,5 +211,31 @@ StringLiteral StringLiteral::operator>>(const NumericLiteral& n) {
     } else {
         throw EvaluatorException("String shifts are only supported for integer types!");
     }
+}
+
+StringLiteral StringLiteral::asHex(StringLiteral& s) {
+    std::stringstream ss;
+    ss << "0x";
+    for (auto const& ch : s.getValue()) {
+        ss << std::hex << static_cast<int>(ch);
+    }
+
+    return StringLiteral(ss.str());
+}
+
+StringLiteral StringLiteral::asBin(StringLiteral& s) {
+    std::stringstream ss;
+
+    for (auto const& ch : s.getValue()) {
+        std::string bin;
+        auto value = static_cast<unsigned char>(ch);
+        while (value != 0) {
+            bin += (value % 2 == 0 ? "0" : "1");
+            value /= 2;
+        }
+        std::reverse(bin.begin(), bin.end());
+        ss << '0' << bin << ' ';
+    }
+    return StringLiteral(ss.str());
 }
 

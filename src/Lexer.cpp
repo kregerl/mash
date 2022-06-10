@@ -142,7 +142,7 @@ Token Lexer::getTokenFromString(const std::string& string) {
     } else if (string == "<<") {
         type = TokenType::BitwiseShiftLeft;
     } else if (string == ">>") {
-        type = TokenType::BitwiseShiftLeft;
+        type = TokenType::BitwiseShiftRight;
     } else if (string == "as") {
         type = TokenType::KeywordAs;
     } else if (string == "hex") {
@@ -197,7 +197,8 @@ std::vector<Token> Lexer::tokenize() {
             case '<':
             case '>':
                 if (m_expression[i + 1] == c) {
-                    tokens.emplace_back(getTokenFromString(std::string(c, 2)));
+                    // TODO: Fix std::string(char, amount) not giving the correct string
+                    tokens.emplace_back(getTokenFromString(std::string(2, c)));
                     i++;
                 } else {
                     tokens.emplace_back(getTokenFromChar(c));

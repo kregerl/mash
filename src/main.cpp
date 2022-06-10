@@ -43,8 +43,9 @@ int main(int argc, char** argv) {
             for (const auto& entry : Evaluator::s_variables) {
                 std::cout << std::setprecision(interpreter.getPrecision()) << entry.first << ": ";
                 std::visit(overload{
-                        [](const double& d) { std::cout << d << std::endl; },
-                        [](auto& a) { std::cout << "Unknown" << std::endl; }
+                        [](NumericLiteral& d) { std::cout << d << std::endl; },
+                        [](StringLiteral& d) { std::cout << d << std::endl; },
+                        [](auto& a) { std::cout << "Unknown" << a << std::endl; }
                 }, entry.second);
             }
         } else if (expression == "lsf") {

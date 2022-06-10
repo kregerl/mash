@@ -28,31 +28,31 @@ public:
 
     void setInternalType(InternalType type);
 
-    friend std::ostream &operator<<(std::ostream &os, const NumericLiteral &n);
+    friend std::ostream& operator<<(std::ostream& os, const NumericLiteral& n);
 
-    NumericLiteral operator+(const NumericLiteral &n);
+    NumericLiteral operator+(const NumericLiteral& n);
 
-    NumericLiteral operator-(const NumericLiteral &n);
+    NumericLiteral operator-(const NumericLiteral& n);
 
-    NumericLiteral operator*(const NumericLiteral &n);
+    NumericLiteral operator*(const NumericLiteral& n);
 
-    NumericLiteral operator/(const NumericLiteral &n);
+    NumericLiteral operator/(const NumericLiteral& n);
 
-    NumericLiteral operator%(const NumericLiteral &n);
+    NumericLiteral operator%(const NumericLiteral& n);
 
-    NumericLiteral operator|(const NumericLiteral &n);
+    NumericLiteral operator|(const NumericLiteral& n);
 
-    NumericLiteral operator&(const NumericLiteral &n);
+    NumericLiteral operator&(const NumericLiteral& n);
 
-    NumericLiteral operator^(const NumericLiteral &n);
+    NumericLiteral operator^(const NumericLiteral& n);
 
-    NumericLiteral operator<<(const NumericLiteral &n);
+    NumericLiteral operator<<(const NumericLiteral& n);
 
-    NumericLiteral operator>>(const NumericLiteral &n);
+    NumericLiteral operator>>(const NumericLiteral& n);
 
-    void operator+=(const NumericLiteral &n);
+    void operator+=(const NumericLiteral& n);
 
-    inline bool operator==(const int &n) { return m_value == n; }
+    inline bool operator==(const int& n) { return m_value == n; }
 
 private:
     InternalType m_internalType;
@@ -63,34 +63,38 @@ class StringLiteral : public Literal<std::string> {
 public:
     StringLiteral();
 
-    explicit StringLiteral(const std::string &s);
+    explicit StringLiteral(const std::string& s);
 
-    explicit StringLiteral(const char &c);
+    explicit StringLiteral(const char& c);
 
-    friend std::ostream &operator<<(std::ostream &os, const StringLiteral &s);
+    friend std::ostream& operator<<(std::ostream& os, const StringLiteral& s);
 
     StringLiteral operator[](int i);
 
-    StringLiteral operator+(const StringLiteral &n);
+    StringLiteral operator+(const StringLiteral& n);
 
-    StringLiteral operator-(const StringLiteral &n);
+    StringLiteral operator-(const StringLiteral& n);
 
-    StringLiteral operator+(const std::string &n);
+    StringLiteral operator+(const std::string& n);
 
-    StringLiteral operator+(const char &n);
+    StringLiteral operator+(const char& n);
 
-    StringLiteral operator*(const NumericLiteral &n);
+    StringLiteral operator*(const NumericLiteral& n);
 
-    StringLiteral operator<<(const NumericLiteral &n);
+    StringLiteral operator<<(const NumericLiteral& n);
 
-    StringLiteral operator>>(const NumericLiteral &n);
+    StringLiteral operator>>(const NumericLiteral& n);
+
+    static StringLiteral asHex(StringLiteral &s);
+
+    static StringLiteral asBin(StringLiteral &s);
 };
 
 class Identifier : public Literal<std::string> {
 public:
-    explicit Identifier(const std::string &s);
+    explicit Identifier(const std::string& s);
 
-    friend std::ostream &operator<<(std::ostream &os, const Identifier &i);
+    friend std::ostream& operator<<(std::ostream& os, const Identifier& i);
 };
 
 
