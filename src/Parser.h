@@ -6,47 +6,35 @@
 
 class Parser {
 public:
-    explicit Parser(const std::vector<Token> &tokens);
+    explicit Parser(const std::vector<Token>& tokens);
 
     ~Parser() = default;
 
     void next();
 
-    AbstractNode *parse();
+    AbstractNode* parse();
 
-    AbstractNode *factor();
+    AbstractNode* factor();
 
-    AbstractNode *factorialExpression();
+    AbstractNode* castExpression();
 
-    AbstractNode *exponentialExpression();
+    AbstractNode* factorialExpression();
 
-    AbstractNode *multiplicativeExpression();
+    AbstractNode* exponentialExpression();
 
-    AbstractNode *additiveExpression();
+    AbstractNode* multiplicativeExpression();
 
-    AbstractNode *conditional();
+    AbstractNode* additiveExpression();
 
-    AbstractNode *shift();
+    AbstractNode* shift();
 
-    AbstractNode *bitwiseAnd();
+    AbstractNode* bitwiseAnd();
 
-    AbstractNode *bitwiseXor();
+    AbstractNode* bitwiseXor();
 
-    AbstractNode *bitwiseOr();
+    AbstractNode* bitwiseOr();
 
-    AbstractNode *assignment();
-
-    AbstractNode *block();
-
-    AbstractNode *print();
-
-    AbstractNode *ifStatement();
-
-    AbstractNode *functionDefinition();
-
-    AbstractNode *parseReturn();
-
-    AbstractNode *statement();
+    AbstractNode* assignment();
 
 private:
     const std::vector<Token> m_tokens;

@@ -2,6 +2,8 @@
 #include "Nodes.h"
 #include <string>
 #include <sstream>
+#include <iostream>
+#include <iomanip>
 
 NumericLiteral::NumericLiteral(double value) : Literal(value), m_internalType(InternalType::Double) {}
 
@@ -15,30 +17,53 @@ void NumericLiteral::setInternalType(InternalType type) {
     this->m_internalType = type;
 }
 
-std::ostream &operator<<(std::ostream &os, const NumericLiteral &n) {
+std::ostream& operator<<(std::ostream& os, const NumericLiteral& n) {
     std::stringstream ss;
-    ss << n.getValue() << " (" << internalTypeStrings[static_cast<int>(n.getInternalType())] << ")";
+    switch (n.getInternalType()) {
+        case InternalType::Double: {
+            ss << std::setprecision(32) << n.getValue();
+            break;
+        }
+        case InternalType::Integer: {
+            ss << std::setprecision(32) << long(n.getValue());
+            break;
+        }
+        case InternalType::Hex: {
+            ss << "0x" << std::hex << long(n.getValue());
+            break;
+        }
+        case InternalType::Binary: {
+            std::string bin;
+            int value = int(n.getValue());
+            while (value != 0) {
+                bin = (value % 2 == 0 ? "0" : "1") + bin;
+                value /= 2;
+            }
+            ss << "0b" << bin;
+            break;
+        }
+    }
     os << ss.str();
     return os;
 }
 
-NumericLiteral NumericLiteral::operator+(const NumericLiteral &n) {
+NumericLiteral NumericLiteral::operator+(const NumericLiteral& n) {
     return NumericLiteral(m_value + n.getValue(), std::min(m_internalType, n.getInternalType()));
 }
 
-NumericLiteral NumericLiteral::operator-(const NumericLiteral &n) {
+NumericLiteral NumericLiteral::operator-(const NumericLiteral& n) {
     return NumericLiteral(m_value - n.getValue(), std::min(m_internalType, n.getInternalType()));
 }
 
-NumericLiteral NumericLiteral::operator*(const NumericLiteral &n) {
+NumericLiteral NumericLiteral::operator*(const NumericLiteral& n) {
     return NumericLiteral(m_value * n.getValue(), std::min(m_internalType, n.getInternalType()));
 }
 
-NumericLiteral NumericLiteral::operator/(const NumericLiteral &n) {
+NumericLiteral NumericLiteral::operator/(const NumericLiteral& n) {
     return NumericLiteral(m_value / n.getValue(), std::min(m_internalType, n.getInternalType()));
 }
 
-NumericLiteral NumericLiteral::operator%(const NumericLiteral &n) {
+NumericLiteral NumericLiteral::operator%(const NumericLiteral& n) {
     if (m_internalType > InternalType::Double && n.getInternalType() > InternalType::Double) {
         return NumericLiteral(static_cast<int>(m_value) % static_cast<int>(n.getValue()),
                               std::min(m_internalType, n.getInternalType()));
@@ -50,7 +75,7 @@ NumericLiteral NumericLiteral::operator%(const NumericLiteral &n) {
     }
 }
 
-NumericLiteral NumericLiteral::operator|(const NumericLiteral &n) {
+NumericLiteral NumericLiteral::operator|(const NumericLiteral& n) {
     if (m_internalType > InternalType::Double && n.getInternalType() > InternalType::Double) {
         return NumericLiteral(static_cast<int>(m_value) | static_cast<int>(n.getValue()),
                               std::min(m_internalType, n.getInternalType()));
@@ -62,7 +87,7 @@ NumericLiteral NumericLiteral::operator|(const NumericLiteral &n) {
     }
 }
 
-NumericLiteral NumericLiteral::operator&(const NumericLiteral &n) {
+NumericLiteral NumericLiteral::operator&(const NumericLiteral& n) {
     if (m_internalType > InternalType::Double && n.getInternalType() > InternalType::Double) {
         return NumericLiteral(static_cast<int>(m_value) & static_cast<int>(n.getValue()),
                               std::min(m_internalType, n.getInternalType()));
@@ -74,7 +99,7 @@ NumericLiteral NumericLiteral::operator&(const NumericLiteral &n) {
     }
 }
 
-NumericLiteral NumericLiteral::operator^(const NumericLiteral &n) {
+NumericLiteral NumericLiteral::operator^(const NumericLiteral& n) {
     if (m_internalType > InternalType::Double && n.getInternalType() > InternalType::Double) {
         return NumericLiteral(static_cast<int>(m_value) ^ static_cast<int>(n.getValue()),
                               std::min(m_internalType, n.getInternalType()));
@@ -86,7 +111,7 @@ NumericLiteral NumericLiteral::operator^(const NumericLiteral &n) {
     }
 }
 
-NumericLiteral NumericLiteral::operator<<(const NumericLiteral &n) {
+NumericLiteral NumericLiteral::operator<<(const NumericLiteral& n) {
     if (m_internalType > InternalType::Double && n.getInternalType() > InternalType::Double) {
         return NumericLiteral(static_cast<int>(m_value) << static_cast<int>(n.getValue()),
                               std::min(m_internalType, n.getInternalType()));
@@ -98,7 +123,7 @@ NumericLiteral NumericLiteral::operator<<(const NumericLiteral &n) {
     }
 }
 
-NumericLiteral NumericLiteral::operator>>(const NumericLiteral &n) {
+NumericLiteral NumericLiteral::operator>>(const NumericLiteral& n) {
     if (m_internalType > InternalType::Double && n.getInternalType() > InternalType::Double) {
         return NumericLiteral(static_cast<int>(m_value) >> static_cast<int>(n.getValue()),
                               std::min(m_internalType, n.getInternalType()));
@@ -116,25 +141,25 @@ void NumericLiteral::operator+=(const NumericLiteral &n) {
 
 StringLiteral::StringLiteral() : Literal("") {};
 
-StringLiteral::StringLiteral(const std::string &s) : Literal(s) {}
+StringLiteral::StringLiteral(const std::string& s) : Literal(s) {}
 
-StringLiteral::StringLiteral(const char &c) : Literal(std::to_string(c)) {}
+StringLiteral::StringLiteral(const char& c) : Literal(std::to_string(c)) {}
 
 
-std::ostream &operator<<(std::ostream &os, const StringLiteral &s) {
+std::ostream& operator<<(std::ostream& os, const StringLiteral& s) {
     os << s.getValue();
     return os;
 }
 
-StringLiteral StringLiteral::operator+(const StringLiteral &n) {
+StringLiteral StringLiteral::operator+(const StringLiteral& n) {
     return StringLiteral(m_value + n.getValue());
 }
 
-StringLiteral StringLiteral::operator+(const std::string &n) {
+StringLiteral StringLiteral::operator+(const std::string& n) {
     return StringLiteral(m_value + n);
 }
 
-StringLiteral StringLiteral::operator*(const NumericLiteral &n) {
+StringLiteral StringLiteral::operator*(const NumericLiteral& n) {
     if (n.getInternalType() > InternalType::Double) {
         StringLiteral s;
         for (int i = 0; i < n.getValue(); i++) {
@@ -145,7 +170,7 @@ StringLiteral StringLiteral::operator*(const NumericLiteral &n) {
     throw EvaluatorException("Cannot multiply a string by a decimal value!");
 }
 
-StringLiteral StringLiteral::operator-(const StringLiteral &n) {
+StringLiteral StringLiteral::operator-(const StringLiteral& n) {
     std::string s = m_value;
     size_t pos = std::string::npos;
     while ((pos = s.find(n.getValue())) != std::string::npos) {
@@ -161,11 +186,11 @@ StringLiteral StringLiteral::operator[](int i) {
     return StringLiteral(m_value.at(i));
 }
 
-StringLiteral StringLiteral::operator+(const char &n) {
+StringLiteral StringLiteral::operator+(const char& n) {
     return StringLiteral(m_value + n);
 }
 
-StringLiteral StringLiteral::operator<<(const NumericLiteral &n) {
+StringLiteral StringLiteral::operator<<(const NumericLiteral& n) {
     if (n.getInternalType() > InternalType::Double) {
         int val = static_cast<int>(n.getValue());
         std::string s = m_value.substr(val, m_value.size()) + m_value.substr(0, val);
@@ -176,7 +201,7 @@ StringLiteral StringLiteral::operator<<(const NumericLiteral &n) {
 
 }
 
-StringLiteral StringLiteral::operator>>(const NumericLiteral &n) {
+StringLiteral StringLiteral::operator>>(const NumericLiteral& n) {
     if (n.getInternalType() > InternalType::Double) {
         int val = static_cast<int>(n.getValue());
         std::string s = m_value.substr(m_value.size() - val, val) +

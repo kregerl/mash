@@ -2,32 +2,24 @@
 #include <sstream>
 #include <iomanip>
 #include <unistd.h>
-#include <filesystem>
-#include <fstream>
 
 #include "Interpreter.h"
 #include "Nodes.h"
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     auto interpreter = Interpreter();
     if (argc == 2) {
-        std::ifstream file(argv[1]);
-        std::stringstream buffer;
-        buffer << file.rdbuf();
-        interpreter.interpret(buffer.str());
-        return 0;
+        std::cout << "Unknown arguments" << std::endl;
+        return -1;
     }
 
     if (argc == 3) {
         std::string flag = argv[1];
         if (flag == "-i") {
-            if (std::filesystem::exists(argv[2])) {
-                std::cout << "HERE" << std::endl;
-            }
             interpreter.interpret(argv[2]);
-            return 0;
+            return -1;
         } else if (flag == "-precision") {
-            interpreter.setPrecision(std::stoi(argv[2]));
+            Interpreter::precision = std::stoi(argv[2]);
         }
     }
 
@@ -48,16 +40,15 @@ int main(int argc, char **argv) {
         } else if (expression == "clear") {
             system("clear");
         } else if (expression == "lsv") {
-            for (const auto &entry : Evaluator::s_variables) {
+            for (const auto& entry : Evaluator::s_variables) {
                 std::cout << std::setprecision(interpreter.getPrecision()) << entry.first << ": ";
                 std::visit(overload{
-                        [](const NumericLiteral &d) { std::cout << d << std::endl; },
-                        [](const StringLiteral &d) { std::cout << d << std::endl; },
-                        [](auto &a) { std::cout << "Unknown" << std::endl; }
+                        [](const double& d) { std::cout << d << std::endl; },
+                        [](auto& a) { std::cout << "Unknown" << std::endl; }
                 }, entry.second);
             }
         } else if (expression == "lsf") {
-            for (const auto &entry : Evaluator::s_functions) {
+            for (const auto& entry : Evaluator::s_functions) {
                 std::cout << entry.first << ": (";
                 for (int i = 0; i < entry.second.m_parameters.size(); i++) {
                     std::string param = entry.second.m_parameters[i];

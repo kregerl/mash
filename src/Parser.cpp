@@ -1,9 +1,8 @@
 #include "Parser.h"
 #include "Nodes.h"
 #include <iostream>
-#include <map>
 
-Parser::Parser(const std::vector<Token> &tokens) : m_tokens(tokens), m_currentIndex(0) {
+Parser::Parser(const std::vector<Token>& tokens) : m_tokens(tokens), m_currentIndex(0) {
     m_currentToken = m_tokens.at(m_currentIndex);
 }
 
@@ -14,21 +13,15 @@ void Parser::next() {
 
 }
 
-AbstractNode *Parser::parse() {
-    auto statements = std::vector<AbstractNode *>();
-
-    while (m_currentToken.getType() != TokenType::EndOfLine) {
-        statements.push_back(statement());
+AbstractNode* Parser::parse() {
+    auto n = assignment();
+    if (m_currentToken.getType() != TokenType::EndOfLine) {
+        throw EvaluatorException("Expected token EOL but got token '" + m_currentToken.toString() + "'");
     }
-
-//    auto n = assignment();
-//    if (m_currentToken.getType() != TokenType::EndOfLine) {
-//        throw EvaluatorException("Expected token EOL but got token '" + m_currentToken.toString() + "'");
-//    }
-    return new ProgramNode(statements);
+    return n;
 }
 
-AbstractNode *Parser::factor() {
+AbstractNode* Parser::factor() {
     Token token = m_currentToken;
     if (token.getType() == TokenType::Number) {
         next();
@@ -37,7 +30,7 @@ AbstractNode *Parser::factor() {
         // Remove "LParen" from the list
         next();
         // The expression used here needs to be updated whenever an operator with lower precedence is added
-        AbstractNode *node = bitwiseOr();
+        AbstractNode* node = bitwiseOr();
         // Remove RParen from the list after parsing the expression inside
         if (m_currentToken.getType() == TokenType::RParen) {
             next();
@@ -57,18 +50,18 @@ AbstractNode *Parser::factor() {
         }
         next();
         str = str.substr(0, str.size() - 1);
-        AbstractNode *node = new StringNode(StringLiteral(str));
+        AbstractNode* node = new StringNode(StringLiteral(str));
         return node;
     } else if (token.getType() == TokenType::Subtraction) {
         next();
-        AbstractNode *node = new UnaryOpNode(UnaryOpType::Negation, factor());
+        AbstractNode* node = new UnaryOpNode(UnaryOpType::Negation, factor());
         return node;
     } else if (token.getType() == TokenType::Identifier) {
         next();
-        AbstractNode *node = new IdentifierNode(token.getValue());
+        AbstractNode* node = new IdentifierNode(token.getValue());
         if (m_currentToken.getType() == TokenType::LParen) {
             next();
-            std::vector<AbstractNode *> parameters;
+            std::vector<AbstractNode*> parameters;
             parameters.emplace_back(bitwiseOr());
             while (m_currentToken.getType() != TokenType::RParen) {
                 if (m_currentToken.getType() == TokenType::Comma) {
@@ -79,7 +72,7 @@ AbstractNode *Parser::factor() {
                 }
             }
             next();
-            auto *n = dynamic_cast<IdentifierNode *>(node);
+            auto* n = dynamic_cast<IdentifierNode*>(node);
             if (n != nullptr) {
                 node = new FunctionNode(n, parameters);
             } else {
@@ -89,7 +82,7 @@ AbstractNode *Parser::factor() {
         return node;
     } else if (token.getType() == TokenType::LBracket) {
         next();
-        std::vector<AbstractNode *> contents;
+        std::vector<AbstractNode*> contents;
         contents.emplace_back(bitwiseOr());
         while (m_currentToken.getType() != TokenType::RBracket) {
             if (m_currentToken.getType() == TokenType::Comma) {
@@ -98,11 +91,11 @@ AbstractNode *Parser::factor() {
             } else if (m_currentToken.getType() == TokenType::Colon) {
                 next();
                 int index = contents.size() - 1;
-                AbstractNode *first = contents.at(index);
+                AbstractNode* first = contents.at(index);
                 if (first == nullptr) {
                     first = new NumberNode(NumericLiteral(0, InternalType::Integer));
                 }
-                AbstractNode *n = new BinaryOpNode(BinaryOpType::VectorSlice, first, bitwiseOr());
+                AbstractNode* n = new BinaryOpNode(BinaryOpType::VectorSlice, first, bitwiseOr());
                 next();
                 return n;
             } else {
@@ -117,8 +110,24 @@ AbstractNode *Parser::factor() {
     return nullptr;
 }
 
-AbstractNode *Parser::factorialExpression() {
-    AbstractNode *node = factor();
+AbstractNode* Parser::castExpression() {
+    AbstractNode* node = factor();
+
+    if (m_currentToken.getType() == TokenType::KeywordAs) {
+        next();
+        Token token = m_currentToken;
+        if (token.getType() == TokenType::KeywordHex || token.getType() == TokenType::KeywordBinary) {
+            next();
+            node = new CastNode(node, token);
+        } else {
+            throw EvaluatorException("Expecting type keyword after keyword 'as'.");
+        }
+    }
+    return node;
+}
+
+AbstractNode* Parser::factorialExpression() {
+    AbstractNode* node = castExpression();
     while (m_currentToken.getType() == TokenType::Factorial) {
         next();
         node = new UnaryOpNode(UnaryOpType::Factorial, node);
@@ -126,8 +135,8 @@ AbstractNode *Parser::factorialExpression() {
     return node;
 }
 
-AbstractNode *Parser::exponentialExpression() {
-    AbstractNode *node = factorialExpression();
+AbstractNode* Parser::exponentialExpression() {
+    AbstractNode* node = factorialExpression();
     while (m_currentToken.getType() == TokenType::Exp) {
         next();
         node = new BinaryOpNode(BinaryOpType::Exp, node, factorialExpression());
@@ -135,8 +144,8 @@ AbstractNode *Parser::exponentialExpression() {
     return node;
 }
 
-AbstractNode *Parser::multiplicativeExpression() {
-    AbstractNode *node = exponentialExpression();
+AbstractNode* Parser::multiplicativeExpression() {
+    AbstractNode* node = exponentialExpression();
 
     while (m_currentToken.getType() == TokenType::Multiplication || m_currentToken.getType() == TokenType::Division ||
            m_currentToken.getType() == TokenType::Modulo) {
@@ -155,8 +164,8 @@ AbstractNode *Parser::multiplicativeExpression() {
     return node;
 }
 
-AbstractNode *Parser::additiveExpression() {
-    AbstractNode *node = multiplicativeExpression();
+AbstractNode* Parser::additiveExpression() {
+    AbstractNode* node = multiplicativeExpression();
 
     while (m_currentToken.getType() == TokenType::Addition || m_currentToken.getType() == TokenType::Subtraction) {
         Token token = m_currentToken;
@@ -172,41 +181,24 @@ AbstractNode *Parser::additiveExpression() {
     return node;
 }
 
-AbstractNode *Parser::conditional() {
-    AbstractNode *node = additiveExpression();
-
-    while (m_currentToken.getType() == TokenType::LessThan || m_currentToken.getType() == TokenType::GreaterThan) {
-        Token token = m_currentToken;
-        if (token.getType() == TokenType::LessThan) {
-            next();
-            node = new BinaryOpNode(BinaryOpType::LessThan, node, additiveExpression());
-        }
-        if (token.getType() == TokenType::GreaterThan) {
-            next();
-            node = new BinaryOpNode(BinaryOpType::GreaterThan, node, additiveExpression());
-        }
-    }
-    return node;
-}
-
-AbstractNode *Parser::shift() {
-    AbstractNode *node = conditional();
+AbstractNode* Parser::shift() {
+    AbstractNode* node = additiveExpression();
     while (m_currentToken.getType() == TokenType::BitwiseShiftLeft ||
            m_currentToken.getType() == TokenType::BitwiseShiftRight) {
         Token token = m_currentToken;
         if (token.getType() == TokenType::BitwiseShiftLeft) {
             next();
-            node = new BinaryOpNode(BinaryOpType::BW_Shift_Left, node, conditional());
+            node = new BinaryOpNode(BinaryOpType::BW_Shift_Left, node, additiveExpression());
         } else if (token.getType() == TokenType::BitwiseShiftRight) {
             next();
-            node = new BinaryOpNode(BinaryOpType::BW_Shift_Right, node, conditional());
+            node = new BinaryOpNode(BinaryOpType::BW_Shift_Right, node, additiveExpression());
         }
     }
     return node;
 }
 
-AbstractNode *Parser::bitwiseAnd() {
-    AbstractNode *node = shift();
+AbstractNode* Parser::bitwiseAnd() {
+    AbstractNode* node = shift();
     while (m_currentToken.getType() == TokenType::Bitwiseand) {
         next();
         node = new BinaryOpNode(BinaryOpType::BW_And, node, shift());
@@ -214,8 +206,8 @@ AbstractNode *Parser::bitwiseAnd() {
     return node;
 }
 
-AbstractNode *Parser::bitwiseXor() {
-    AbstractNode *node = bitwiseAnd();
+AbstractNode* Parser::bitwiseXor() {
+    AbstractNode* node = bitwiseAnd();
     while (m_currentToken.getType() == TokenType::Bitwisexor) {
         next();
         node = new BinaryOpNode(BinaryOpType::BW_Xor, node, bitwiseAnd());
@@ -223,8 +215,8 @@ AbstractNode *Parser::bitwiseXor() {
     return node;
 }
 
-AbstractNode *Parser::bitwiseOr() {
-    AbstractNode *node = bitwiseXor();
+AbstractNode* Parser::bitwiseOr() {
+    AbstractNode* node = bitwiseXor();
     while (m_currentToken.getType() == TokenType::Bitwiseor) {
         next();
         node = new BinaryOpNode(BinaryOpType::BW_Or, node, bitwiseXor());
@@ -232,209 +224,25 @@ AbstractNode *Parser::bitwiseOr() {
     return node;
 }
 
-AbstractNode *Parser::assignment() {
-
-    IdentifierNode *identifier;
-    AbstractNode *expression;
-
-    if (m_currentToken.getType() != TokenType::Identifier) {
-        throw EvaluatorException("Expected identifier after variable declaration keyword.");
-    }
-    identifier = new IdentifierNode(m_currentToken.getValue());
-
-    next();
-    if (m_currentToken.getType() != TokenType::Equals) {
-        throw EvaluatorException("Expected equals after identifier.");
-    }
-    next();
-    expression = bitwiseOr();
-
-    return new AssignmentNode(identifier, expression);
-}
-
-AbstractNode *Parser::block() {
-    auto statements = std::vector<AbstractNode *>();
-
-    // Consume '{'
-    next();
-
-    while (m_currentToken.getType() != TokenType::RBrace && m_currentToken.getType() != TokenType::EndOfLine) {
-        statements.push_back(statement());
-    }
-
-    if (m_currentToken.getType() != TokenType::RBrace) {
-        throw EvaluatorException("Expected enclosing right brace.");
-    }
-
-    // Consume '}'
-    next();
-
-    return new BlockNode(statements);
-}
-
-AbstractNode *Parser::print() {
-    // Consume 'print'
-    next();
-
-    if (m_currentToken.getType() != TokenType::LParen) {
-        throw EvaluatorException("Expected enclosing parenthesis around the contents of print statement.");
-    }
-    // Consume '('
-    next();
-
-    AbstractNode *expression = bitwiseOr();
-
-    if (m_currentToken.getType() != TokenType::RParen) {
-        throw EvaluatorException("Expected enclosing parenthesis around the contents of print statement.");
-    }
-    // Consume ')'
-    next();
-
-    return new PrintNode(expression);
-}
-
-AbstractNode *Parser::ifStatement() {
-
-    AbstractNode *conditional;
-    AbstractNode *ifBlock;
-
-
-    // Consume "if" token
-    next();
-
-    if (m_currentToken.getType() != TokenType::LParen) {
-        throw EvaluatorException("Expected enclosing parenthesis around the condition.");
-    }
-    // Consume '('
-    next();
-
-    conditional = bitwiseOr();
-
-    if (m_currentToken.getType() != TokenType::RParen) {
-        throw EvaluatorException("Expected enclosing parenthesis around the condition.");
-    }
-    // Consume ')'
-    next();
-
-    ifBlock = block();
-
-    std::map<AbstractNode *, AbstractNode *> elifs;
-
-    while (m_currentToken.getType() == TokenType::kw_elif) {
-        // Consume 'elif'
+AbstractNode* Parser::assignment() {
+    AbstractNode* node = bitwiseOr();
+    while (m_currentToken.getType() == TokenType::Equals) {
         next();
-        AbstractNode *elifConditional = bitwiseOr();
-
-        AbstractNode *elifBlock = block();
-
-        elifs[elifConditional] = elifBlock;
-    }
-
-    if (m_currentToken.getType() != TokenType::kw_else) {
-        return new ConditionalNode(conditional, ifBlock, elifs);
-    }
-
-    // Consume 'else'
-    next();
-
-    AbstractNode *elseBlock = block();
-
-    return new ConditionalNode(conditional, ifBlock, elifs, elseBlock);
-
-}
-
-AbstractNode *Parser::functionDefinition() {
-    std::string id;
-    std::vector<std::string> parameterIdentifiers;
-    AbstractNode *functionBlock;
-
-    // Consume 'fn'
-    next();
-
-    id = m_currentToken.getValue();
-
-    // Consume function identifier
-    next();
-
-    if (m_currentToken.getType() != TokenType::LParen) {
-        throw EvaluatorException("Expected left enclosing parenthesis around the function parameters.");
-    }
-
-    // Consume '('
-    next();
-
-    if (m_currentToken.getType() != TokenType::RParen) {
-
-        parameterIdentifiers.emplace_back(m_currentToken.getValue());
-
-        // Consume first param
-        next();
-
-        while (m_currentToken.getType() == TokenType::Comma) {
-            // Consume ','
-            next();
-
-            parameterIdentifiers.emplace_back(m_currentToken.getValue());
-
-            // Consume param
-            next();
+        auto* n = dynamic_cast<IdentifierNode*>(node);
+        if (n != nullptr) {
+            node = new AssignmentNode(n, bitwiseOr());
+        } else {
+            auto* fn = dynamic_cast<FunctionNode*>(node);
+            if (fn != nullptr) {
+                node = new FunctionAssignmentNode(fn, bitwiseOr());
+            } else {
+                throw EvaluatorException("Assignments must be between an Identifier and a number!");
+            }
         }
     }
-
-    if (m_currentToken.getType() != TokenType::RParen) {
-        throw EvaluatorException("Expected right enclosing parenthesis around the function parameters.");
-    }
-
-    // Consume ')'
-    next();
-
-    functionBlock = block();
-
-
-    return new FunctionDefinitionNode(id, parameterIdentifiers, functionBlock);
-}
-
-AbstractNode *Parser::parseReturn() {
-    std::vector<AbstractNode *> expressions;
-
-    // Consume 'return'
-    next();
-
-
-    if (m_currentToken.getType() != TokenType::RBrace) {
-
-        expressions.emplace_back(bitwiseOr());
-
-        while (m_currentToken.getType() == TokenType::Comma) {
-
-            // Consume ','
-            next();
-
-            expressions.emplace_back(bitwiseOr());
-        }
-    }
-
-    return new ReturnNode(expressions);
+    return node;
 }
 
 
-AbstractNode *Parser::statement() {
-    switch (m_currentToken.getType()) {
-        case TokenType::Identifier:
-            return assignment();
-        case TokenType::LBrace:
-            return block();
-        case TokenType::kw_print:
-            return print();
-        case TokenType::kw_if:
-            return ifStatement();
-        case TokenType::kw_fn:
-            return functionDefinition();
-        case TokenType::kw_return:
-            return parseReturn();
-        default:
-            throw EvaluatorException("TODO: Fix later --- Unknown.");
-    }
-}
 
 

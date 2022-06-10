@@ -41,19 +41,9 @@ enum class TokenType {
     Comma,
     Colon,
     EndOfLine,
-    kw_int32,
-    kw_int64,
-    kw_real,
-    kw_string,
-    kw_var,
-    kw_print,
-    kw_if,
-    kw_else,
-    kw_elif,
-    kw_fn,
-    kw_return,
-    LessThan,
-    GreaterThan
+    KeywordAs,
+    KeywordHex,
+    KeywordBinary
 };
 
 /*
@@ -75,27 +65,27 @@ class Token {
 public:
     Token() = default;
 
-    Token(const std::string &value, const TokenType &type);
+    Token(const std::string& value, const TokenType& type);
 
-    Token(const std::string &value, const TokenType &type, const InternalType &internalType);
+    Token(const std::string& value, const TokenType& type, const InternalType& internalType);
 
     ~Token() = default;
 
-    const TokenType &getType();
+    const TokenType& getType();
 
-    const TokenType &getType() const;
+    const TokenType& getType() const;
 
-    const std::string &getValue();
+    const std::string& getValue();
 
-    const std::string &getValue() const;
+    const std::string& getValue() const;
 
     std::string toString() const;
 
     InternalType getInternalType() const;
 
-    friend std::ostream &operator<<(std::ostream &os, const Token &token);
+    friend std::ostream& operator<<(std::ostream& os, const Token& token);
 
-    friend bool operator==(const Token &t1, const Token &t2);
+    friend bool operator==(const Token& t1, const Token& t2);
 
 private:
     TokenType m_type;
@@ -106,18 +96,17 @@ private:
 
 class Lexer {
 public:
-    Lexer(const std::string &expression);
+    Lexer(const std::string& expression);
 
     ~Lexer() = default;
 
-    static Token getTokenFromChar(const char &c);
+    static Token getTokenFromChar(const char& c);
 
-    static Token getTokenFromString(const std::string &s);
+    static Token getTokenFromString(const std::string& string);
 
-    // TODO: clean this up
-    Token readNumberToken(int *i);
+    std::string readWord(int& i);
 
-    std::string readWord(int &i);
+    Token readNumberToken(int* i);
 
     std::vector<Token> tokenize();
 
@@ -127,11 +116,11 @@ private:
 
 class TokenizeException : public std::exception {
 public:
-    explicit TokenizeException(const std::string &message) : msg(message) {}
+    explicit TokenizeException(const std::string& message) : msg(message) {}
 
     ~TokenizeException() noexcept override = default;
 
-    virtual const char *what() const noexcept {
+    virtual const char* what() const noexcept {
         return msg.c_str();
     }
 

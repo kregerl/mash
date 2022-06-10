@@ -5,9 +5,11 @@
 
 class Interpreter {
 public:
+    static int precision;
+
     Interpreter() : m_precision(-1) {}
 
-    void interpret(const std::string &expression);
+    void interpret(const std::string& expression);
 
     void setPrecision(int precision);
 

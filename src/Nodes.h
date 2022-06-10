@@ -8,7 +8,6 @@
 #include <memory>
 #include <string>
 #include <variant>
-#include <map>
 
 #define VISITABLE virtual void accept(Visitor &visitor) override {visitor.visit(*this);}
 
@@ -49,9 +48,7 @@ enum class UnaryOpType {
     ArcTangent,
     AbsoluteValue,
     Log,
-    NaturalLog,
-    ToHex,
-    Sum
+    NaturalLog
 };
 enum class BinaryOpType {
     Plus = 0,
@@ -66,9 +63,7 @@ enum class BinaryOpType {
     BW_Shift_Left,
     BW_Shift_Right,
     LogBase,
-    VectorSlice,
-    LessThan,
-    GreaterThan
+    VectorSlice
 };
 
 enum class CollectionType {
@@ -94,49 +89,30 @@ class FunctionAssignmentNode;
 
 class VectorNode;
 
-class ProgramNode;
-
-class BlockNode;
-
-class PrintNode;
-
-class ConditionalNode;
-
-class FunctionDefinitionNode;
-
-class ReturnNode;
+class CastNode;
 
 class Visitor {
 public:
-    virtual void visit(const NumberNode &node) = 0;
+    virtual void visit(const NumberNode& node) = 0;
 
-    virtual void visit(const IdentifierNode &node) = 0;
+    virtual void visit(const IdentifierNode& node) = 0;
 
-    virtual void visit(const StringNode &node) = 0;
+    virtual void visit(const StringNode& node) = 0;
 
-    virtual void visit(const BinaryOpNode &node) = 0;
+    virtual void visit(const BinaryOpNode& node) = 0;
 
-    virtual void visit(const UnaryOpNode &node) = 0;
+    virtual void visit(const UnaryOpNode& node) = 0;
 
-    virtual void visit(const AssignmentNode &node) = 0;
+    virtual void visit(const AssignmentNode& node) = 0;
 
-    virtual void visit(const FunctionNode &node) = 0;
+    virtual void visit(const FunctionNode& node) = 0;
 
-    virtual void visit(const FunctionAssignmentNode &node) = 0;
+    virtual void visit(const FunctionAssignmentNode& node) = 0;
 
-    virtual void visit(const VectorNode &node) = 0;
+    virtual void visit(const VectorNode& node) = 0;
 
-    virtual void visit(const ProgramNode &node) = 0;
+    virtual void visit(const CastNode& node) = 0;
 
-    virtual void visit(const BlockNode &node) = 0;
-
-    virtual void visit(const PrintNode &node) = 0;
-
-    virtual void visit(const ConditionalNode &node) = 0;
-
-    virtual void visit(const FunctionDefinitionNode &node) = 0;
-
-    virtual void visit(const ReturnNode &node) = 0;
 };
 
 
@@ -144,7 +120,7 @@ class AbstractNode {
 public:
     virtual ~AbstractNode() = default;
 
-    virtual void accept(Visitor &visitor) = 0;
+    virtual void accept(Visitor& visitor) = 0;
 };
 
 template<typename T>
@@ -178,178 +154,114 @@ class IdentifierNode : public ValueNode<std::string> {
 public:
     VISITABLE
 
-    explicit IdentifierNode(const std::string &value);
+    explicit IdentifierNode(const std::string& value);
 };
 
 class UnaryOpNode : public AbstractNode {
 public:
     VISITABLE
 
-    UnaryOpNode(UnaryOpType type, AbstractNode *child);
+    UnaryOpNode(UnaryOpType type, AbstractNode* child);
 
     UnaryOpType getType() const;
 
-    AbstractNode *getChild() const;
+    AbstractNode* getChild() const;
 
 
 private:
     UnaryOpType m_type;
-    AbstractNode *m_child;
+    AbstractNode* m_child;
 };
 
 class AssignmentNode : public AbstractNode {
 public:
     VISITABLE
 
-    AssignmentNode(IdentifierNode *var, AbstractNode *value);
+    AssignmentNode(IdentifierNode* var, AbstractNode* value);
 
-    AbstractNode *getValue() const;
+    AbstractNode* getValue() const;
 
-    IdentifierNode *getIdentifier() const;
+    IdentifierNode* getIdentifier() const;
 
     std::string getIdentifierStr() const;
 
 private:
-    IdentifierNode *var;
-    AbstractNode *value;
+    IdentifierNode* var;
+    AbstractNode* value;
 };
 
 class BinaryOpNode : public AbstractNode {
 public:
     VISITABLE
 
-    BinaryOpNode(BinaryOpType, AbstractNode *left, AbstractNode *right);
+    BinaryOpNode(BinaryOpType, AbstractNode* left, AbstractNode* right);
 
 
     BinaryOpType getType() const;
 
-    AbstractNode *left() const;
+    AbstractNode* left() const;
 
-    AbstractNode *right() const;
+    AbstractNode* right() const;
 
 private:
     BinaryOpType m_type;
-    AbstractNode *m_left;
-    AbstractNode *m_right;
+    AbstractNode* m_left;
+    AbstractNode* m_right;
 };
 
 class FunctionNode : public AbstractNode {
 public:
     VISITABLE
 
-    FunctionNode(IdentifierNode *name, std::vector<AbstractNode *> parameters);
+    FunctionNode(IdentifierNode* name, std::vector<AbstractNode*> parameters);
 
-    IdentifierNode *getIdentifier() const;
+    IdentifierNode* getIdentifier() const;
 
     std::string getFunctionName() const;
 
-    std::vector<AbstractNode *> getFunctionParameters() const;
+    std::vector<AbstractNode*> getFunctionParameters() const;
 
 private:
-    IdentifierNode *m_functionName;
-    std::vector<AbstractNode *> m_functionParameters;
+    IdentifierNode* m_functionName;
+    std::vector<AbstractNode*> m_functionParameters;
 };
 
 class FunctionAssignmentNode : public AbstractNode {
 public:
     VISITABLE
 
-    FunctionAssignmentNode(FunctionNode *function, AbstractNode *value);
+    FunctionAssignmentNode(FunctionNode* function, AbstractNode* value);
 
-    FunctionNode *getFunctionNode() const;
+    FunctionNode* getFunctionNode() const;
 
-    AbstractNode *getValue() const;
+    AbstractNode* getValue() const;
 
 private:
-    FunctionNode *m_functionNode;
-    AbstractNode *m_value;
+    FunctionNode* m_functionNode;
+    AbstractNode* m_value;
 };
 
 class VectorNode : public AbstractNode {
 public:
     VISITABLE
 
-    explicit VectorNode(const std::vector<AbstractNode *> &children);
+    VectorNode(const std::vector<AbstractNode*>& children);
 
-    std::vector<AbstractNode *> getChildren() const;
+    std::vector<AbstractNode*> getChildren() const;
 
 private:
-    std::vector<AbstractNode *> m_children;
+    std::vector<AbstractNode*> m_children;
 };
 
-class StatementNode : public AbstractNode {
-public:
-    void accept(Visitor &v) override = 0;
-};
-
-class ProgramNode : public AbstractNode {
+class CastNode : public AbstractNode {
 public:
     VISITABLE
 
-    explicit ProgramNode(std::vector<AbstractNode *> nodes);
+    CastNode(AbstractNode* value, Token keyword);
 
 public:
-    std::vector<AbstractNode *> statements;
-};
-
-class BlockNode : public AbstractNode {
-public:
-    VISITABLE
-
-    explicit BlockNode(std::vector<AbstractNode *> statements);
-
-public:
-    std::vector<AbstractNode *> statements;
-};
-
-class PrintNode : public AbstractNode {
-public:
-    VISITABLE
-
-    explicit PrintNode(AbstractNode *expression);
-
-public:
-    AbstractNode *expression;
-};
-
-class ConditionalNode : public AbstractNode {
-public:
-    VISITABLE
-
-    explicit ConditionalNode(AbstractNode *condition, AbstractNode *ifBlock,
-                             std::map<AbstractNode *, AbstractNode *> &elifs);
-
-    explicit ConditionalNode(AbstractNode *condition, AbstractNode *ifBlock,
-                             std::map<AbstractNode *, AbstractNode *> &elifs, AbstractNode *elseBlock);
-
-public:
-    AbstractNode *condition;
-    AbstractNode *ifBlock;
-    AbstractNode *elseBlock;
-    std::map<AbstractNode *, AbstractNode *> elifs;
-};
-
-class FunctionDefinitionNode : public AbstractNode {
-public:
-    VISITABLE
-
-    explicit FunctionDefinitionNode(const std::string &fnName, const std::vector<std::string> &parameters,
-                                    AbstractNode *block);
-
-public:
-    const std::string functionName;
-    const std::vector<std::string> functionParameters;
-    AbstractNode *block;
-};
-
-class ReturnNode : public AbstractNode {
-public:
-    VISITABLE
-
-    explicit ReturnNode(const std::vector<AbstractNode *> &stmts);
-
-public:
-    std::vector<AbstractNode *> statements;
+    AbstractNode* m_value;
+    Token m_keyword;
 };
 
 
@@ -368,11 +280,11 @@ protected:
 
 class Function {
 public:
-    Function(std::vector<std::string> parameters, AbstractNode *value) : m_parameters(parameters), m_value(value) {}
+    Function(std::vector<std::string> parameters, AbstractNode* value) : m_parameters(parameters), m_value(value) {}
 
 public:
     std::vector<std::string> m_parameters;
-    AbstractNode *m_value;
+    AbstractNode* m_value;
 };
 
 
@@ -390,7 +302,7 @@ struct Collection {
     CollectionType type;
     std::vector<Returnable> elements;
 
-    friend std::ostream &operator<<(std::ostream &os, const Collection &c) {
+    friend std::ostream& operator<<(std::ostream& os, const Collection& c) {
         std::string left, right;
         switch (c.type) {
             case CollectionType::Set: {
@@ -408,9 +320,9 @@ struct Collection {
         for (int i = 0; i < c.elements.size(); i++) {
             auto element = c.elements[i];
             std::visit(overload{
-                    [&os](NumericLiteral &d) { os << std::to_string(d.getValue()); },
-                    [&os](Collection &c) { os << c; },
-                    [&os](auto &a) { os << std::string("Unknown type!"); }
+                    [&os](NumericLiteral& d) { os << std::to_string(d.getValue()); },
+                    [&os](Collection& c) { os << c; },
+                    [&os](auto& a) { os << std::string("Unknown type!"); }
             }, element);
             if (i < c.elements.size() - 1) {
                 os << std::string(", ");
@@ -422,39 +334,29 @@ struct Collection {
 };
 
 
-class Evaluator : public ValueGetter<Evaluator, AbstractNode *, Returnable>, public Visitor {
+class Evaluator : public ValueGetter<Evaluator, AbstractNode*, Returnable>, public Visitor {
 public:
     Evaluator() = default;
 
-    void visit(const NumberNode &node) override;
+    void visit(const NumberNode& node) override;
 
-    void visit(const IdentifierNode &node) override;
+    void visit(const IdentifierNode& node) override;
 
-    virtual void visit(const StringNode &node) override;
+    virtual void visit(const StringNode& node) override;
 
-    void visit(const BinaryOpNode &node) override;
+    void visit(const BinaryOpNode& node) override;
 
-    void visit(const UnaryOpNode &node) override;
+    void visit(const UnaryOpNode& node) override;
 
-    void visit(const AssignmentNode &node) override;
+    void visit(const AssignmentNode& node) override;
 
-    void visit(const FunctionNode &node) override;
+    void visit(const FunctionNode& node) override;
 
-    void visit(const FunctionAssignmentNode &node) override;
+    void visit(const FunctionAssignmentNode& node) override;
 
-    void visit(const VectorNode &node) override;
+    void visit(const VectorNode& node) override;
 
-    void visit(const ProgramNode &node) override;
-
-    void visit(const BlockNode &node) override;
-
-    void visit(const PrintNode &node) override;
-
-    void visit(const ConditionalNode &node) override;
-
-    void visit(const FunctionDefinitionNode &node) override;
-
-    void visit(const ReturnNode &node) override;
+    void visit(const CastNode& node) override;
 
 public:
     static std::unordered_map<std::string, Returnable> s_variables;
@@ -462,37 +364,27 @@ public:
 };
 
 
-class PrettyPrinter : public ValueGetter<PrettyPrinter, AbstractNode *, std::string>, public Visitor {
+class PrettyPrinter : public ValueGetter<PrettyPrinter, AbstractNode*, std::string>, public Visitor {
 public:
-    void visit(const NumberNode &node) override;
+    void visit(const NumberNode& node) override;
 
-    void visit(const IdentifierNode &node) override;
+    void visit(const IdentifierNode& node) override;
 
-    virtual void visit(const StringNode &node) override;
+    virtual void visit(const StringNode& node) override;
 
-    void visit(const BinaryOpNode &node) override;
+    void visit(const BinaryOpNode& node) override;
 
-    void visit(const UnaryOpNode &node) override;
+    void visit(const UnaryOpNode& node) override;
 
-    void visit(const AssignmentNode &node) override;
+    void visit(const AssignmentNode& node) override;
 
-    void visit(const FunctionNode &node) override;
+    void visit(const FunctionNode& node) override;
 
-    void visit(const FunctionAssignmentNode &node) override;
+    void visit(const FunctionAssignmentNode& node) override;
 
-    void visit(const VectorNode &node) override;
+    void visit(const VectorNode& node) override;
 
-    void visit(const ProgramNode &node) override;
-
-    void visit(const BlockNode &node) override;
-
-    void visit(const PrintNode &node) override;
-
-    void visit(const ConditionalNode &node) override;
-
-    void visit(const FunctionDefinitionNode &node) override;
-
-    void visit(const ReturnNode &node) override;
+    void visit(const CastNode& node) override;
 
 protected:
     static int s_indent;
@@ -501,11 +393,11 @@ protected:
 
 class EvaluatorException : public std::exception {
 public:
-    explicit EvaluatorException(const std::string &message) : msg(message) {}
+    explicit EvaluatorException(const std::string& message) : msg(message) {}
 
     ~EvaluatorException() noexcept override = default;
 
-    virtual const char *what() const noexcept {
+    virtual const char* what() const noexcept {
         return msg.c_str();
     }
 
@@ -514,4 +406,102 @@ private:
     std::string msg;
 };
 
+// TODO: Implement sets.
+namespace Vector {
+    static Collection scalarMultiplication(Collection& c, NumericLiteral scalar) {
+        Collection res = {CollectionType::Vector, {}};
+        for (auto elem : c.elements) {
+            res.elements.emplace_back(std::visit(overload{
+                    [&scalar](NumericLiteral& d) -> Returnable { return scalar * d; },
+                    [](auto& a) -> Returnable {
+                        throw EvaluatorException("Scalar Multiplication not supported on specified types.");
+                    }
+            }, elem));
+        }
+        return res;
+    }
+
+    static Collection scalarMultiplication(NumericLiteral scalar, Collection& c) {
+        return scalarMultiplication(c, scalar);
+    }
+
+    static Collection scalarDivision(NumericLiteral scalar, Collection& c) {
+        Collection res = {CollectionType::Vector, {}};
+        if (scalar == 0) {
+            throw EvaluatorException("Error, division by zero!");
+        }
+        for (auto elem : c.elements) {
+            res.elements.emplace_back(std::visit(overload{
+                    [&scalar](NumericLiteral& d) -> Returnable { return d / scalar; },
+                    [](auto& a) -> Returnable {
+                        throw EvaluatorException("Scalar Multiplication not supported on specified types.");
+                    }
+            }, elem));
+        }
+        return res;
+    }
+
+    static Collection scalarDivision(Collection& c, NumericLiteral scalar) {
+        return scalarDivision(scalar, c);
+    }
+
+    static Collection scalarModulo(NumericLiteral scalar, Collection& c) {
+        Collection res = {CollectionType::Vector, {}};
+        if (scalar == 0) {
+            throw EvaluatorException("Error, division by zero!");
+        }
+        for (auto elem : c.elements) {
+            res.elements.emplace_back(std::visit(overload{
+                    [&scalar](NumericLiteral& d) -> Returnable {
+                        return d % scalar;
+                    },
+                    [](auto& a) -> Returnable {
+                        throw EvaluatorException("Scalar Multiplication not supported on specified types.");
+                    }
+            }, elem));
+        }
+        return res;
+    }
+
+    static Collection scalarModulo(Collection& c, NumericLiteral scalar) {
+        return scalarModulo(scalar, c);
+    }
+
+
+    static Collection addition(Collection& c1, Collection& c2) {
+        Collection res = {CollectionType::Vector, {}};
+        if (c1.elements.size() != c2.elements.size())
+            throw EvaluatorException("Cannot add vectors of different dimensions.");
+        for (int i = 0; i < c1.elements.size(); i++) {
+            Returnable e1 = c1.elements[i];
+            Returnable e2 = c2.elements[i];
+            res.elements.emplace_back(std::visit(overload{
+                    [](NumericLiteral& a, NumericLiteral& b) -> Returnable { return a + b; },
+                    [](auto& a, auto& b) -> Returnable {
+                        throw EvaluatorException("Unknown vector operation between types.");
+                    }
+            }, e1, e2));
+        }
+        return res;
+    }
+
+    static Collection subtraction(Collection& c1, Collection& c2) {
+        Collection res = {CollectionType::Vector, {}};
+        if (c1.elements.size() != c2.elements.size())
+            throw EvaluatorException("Cannot add vectors of different dimensions.");
+        for (int i = 0; i < c1.elements.size(); i++) {
+            Returnable e1 = c1.elements[i];
+            Returnable e2 = c2.elements[i];
+            res.elements.emplace_back(std::visit(overload{
+                    [](NumericLiteral& a, NumericLiteral& b) -> Returnable { return a - b; },
+                    [](auto& a, auto& b) -> Returnable {
+                        throw EvaluatorException("Unknown vector operation between types.");
+                    }
+            }, e1, e2));
+        }
+        return res;
+    }
+
+
+}
 #endif //MASH_NODES_H
